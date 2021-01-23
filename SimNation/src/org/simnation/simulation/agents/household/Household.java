@@ -53,6 +53,15 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 		getState().setFamily(dbs.getFamily());
 		getState().setCash(new Money(dbs.getCash()));
 		
+		/*
+		 * ToDo
+		 * 1. get firm sending pre-defined batches to market
+		 * 2. get household to send pre-defined demands
+		 * 3. evaluate market functionality
+		 * 
+		 * 
+		 */
+		
 		for (final NeedDefinition nd : Root.getInstance().getNeedSet().asList()) {
 		/*	// calculate need base of family and save it to the agent's state
 			final Need need=nd.calculateNeed(family,getState().getTime());

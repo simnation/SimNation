@@ -15,7 +15,6 @@ import java.util.List;
 import org.simnation.model.population.Citizen;
 import org.simnation.model.technology.Batch;
 import org.simnation.simulation.business.Money;
-import org.simnation.simulation.model.Root;
 import org.simnation.simulation.model.RootDomain;
 import org.simplesim.model.State;
 
