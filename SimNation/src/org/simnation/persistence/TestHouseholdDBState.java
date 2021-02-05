@@ -2,9 +2,9 @@ package org.simnation.persistence;
 
 import javax.jdo.annotations.PersistenceCapable;
 
+import org.simnation.agents.household.HouseholdDBS;
+import org.simnation.context.geography.Region;
 import org.simnation.core.Time;
-import org.simnation.model.geography.Region;
-import org.simnation.simulation.agents.household.HouseholdDBS;
 
 //@PersistenceCapable
 public class TestHouseholdDBState extends HouseholdDBS implements TestAgentDBState {

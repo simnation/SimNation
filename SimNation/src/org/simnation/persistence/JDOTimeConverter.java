@@ -15,18 +15,20 @@ import javax.jdo.AttributeConverter;
 import org.simplesim.core.scheduling.Time;
 
 /**
- *  *
+ *  Converter class used by JDO to persist {@code Time} class in database
  */
 public class JDOTimeConverter implements AttributeConverter<Time,Long> {
 
+	/**
+	 *  {@inheritDoc}
+	 */
 	public Long convertToDatastore(Time time) {
 		return time.getTicks();
 	}
 
-	public Time convertToAttribute(int value) {
-		return new Time(value);
-	}
-	
+	/**
+	 *  {@inheritDoc}
+	 */
 	public Time convertToAttribute(Long value) {
 		return new Time(value);
 	}

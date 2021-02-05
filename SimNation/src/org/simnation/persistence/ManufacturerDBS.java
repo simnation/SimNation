@@ -4,7 +4,8 @@ import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.PersistenceCapable;
 
-import org.simnation.model.technology.Good;
+import org.simnation.agents.firm.EnterpriseDBS;
+import org.simnation.context.technology.Good;
 
 import javax.jdo.annotations.InheritanceStrategy;
 
