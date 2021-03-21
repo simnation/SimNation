@@ -1,4 +1,4 @@
-package org.simnation.persistence;
+package org.simnation.zzz_old;
 
 
 //Marker interface: Can be loaded from a scenario database

@@ -31,6 +31,7 @@ import org.simnation.context.needs.Need;
 import org.simnation.context.needs.Need.URGENCY;
 import org.simnation.context.technology.Good;
 import org.simnation.model.Limits;
+import org.simnation.model.Model;
 
 
 /**
@@ -42,17 +43,18 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 	private final HouseholdStrategy strategy;
 
 	private static final String AGENT_NAME="Household";
-	//private static final int NUMBER_OF_NEEDS=Limits.MAX_NEEDSET_SIZE;
-	//private static final double lambda=0.33f;
-	//private static final double mu=0.33f;
-
 
 	public Household(HouseholdState state) {
 		super(state);
 		strategy=new HouseholdStrategy(this);
 		
+			
+		enqueueEvent(EVENT.testEvent,Time.HOUR);
+		
 		/*
 		 * ToDo
+		 * (0. Set need events according to stock)
+		 * 0. Set revolving events
 		 * 1. get firm sending pre-defined batches to market
 		 * 2. get household to send pre-defined demands
 		 * 3. evaluate market functionality
@@ -69,13 +71,9 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 			addEvent(getFrustrationEvent(nd),need.getFrustrationTime(dbs.getNeedLevel(nd)));
 		
 		} */
-		enqueueEvent(EVENT.START_PERIOD,Time.ZERO);
+		
 	}
 	
-	protected void executeStrategy(Time time) {
-		strategy.execute(time);
-	}
-
 	/*
 	 * Does event handling of agent
 	 */
@@ -83,9 +81,9 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 		if (isActivationEvent(event)) processNeedActivation(getNeedDefinition(event));
 		else if (isFrustrationEvent(event)) processNeedFrustration(getNeedDefinition(event));
 		else switch (event) { // all other events are handled here...
-			case ACTIVATE_HOUSEHOLD:
+			case testEvent:
 				break;
-			case START_PERIOD:
+/*			case START_PERIOD:
 				planBudget();
 				addEvent(EVENT.START_PERIOD,EVENT.START_PERIOD.period());
 				break;
@@ -96,26 +94,44 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 			case JOB_SEARCH:
 				jobSearch();
 				break;
-			default: // error: event type not known - this should never happen!
-				super.handleEvent(event);
+	*/
+				default: // error: event type not known - this should never happen!
+				throw new UnhandledEventType(event.name(),getName());
 		}
+	}
+
+	/**
+	 * @param needDefinition
+	 */
+	private void processNeedFrustration(Need needDefinition) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @param needDefinition
+	 */
+	private void processNeedActivation(Need needDefinition) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	protected void handleMessage(RoutedMessage msg) {
 		if (msg.getContent().getClass()==Demand.class) {
-			final Supply<Good> supply=msg.getContent();
-			getState().add((Batch) supply.getBatch());
-		} else throw new UnhandledMessageType(msg.getContent().getClass().getName(),getName()); 
+			Batch batch=(Batch) ((Demand<?>) msg.getContent()).getItem().getType();
+			getState().getInventory().get(batch.getType()).merge(batch);
+			}
+		else throw new UnhandledMessageType(msg.getContent().getClass().getName(),getName()); 
 	}
 
 	// calculates budgets for all needs; budget is always >= 0
-	private void planBudget() {
+/*	private void planBudget() {
 		// Assuming that income was paid the day before, the overall budget equals the actual cash
 		double totalBudget=getState().getCash().getValue();
 		getState().setTotalBudget(totalBudget);
 		// 1.) calc budgets of ALL needs based on predicted consumption and last period's average price
-		for (final Need iter : Root.getContext().getNeeds().asList()) {
+		for (final Need iter : Root.getContext().getNeeds().get()) {
 			// amount equals family's consumption rate divided by the good's saturation ability
 			final double x=getState().getNeed(iter).getConsumptionRate()/(iter.getSatisfier().getSaturation()*iter.getPeriod().getTicks());
 			// get an educated best guess of the price at the local market
@@ -151,7 +167,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 	// starts buying
 	private void processNeedActivation(Need nd) {
 		// has a suitable batch been delivered, yet?
-		final IndividualNeed need=getState().getNeed(nd);
+		final HouseholdNeed need=getState().getNeed(nd);
 		final Batch batch=getBatchFromCart(nd);
 		// decision by case analysis
 		if (batch==null) { // no suitable supply found
@@ -168,7 +184,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 	// triggered by any need frustration event, puts agent into regression phase and deactivates need
 	private void processNeedFrustration(Need nd) {
 		double saturation=0;
-		final IndividualNeed need=getState().getNeed(nd);
+		final HouseholdNeed need=getState().getNeed(nd);
 		final Batch batch=getBatchFromCart(nd);
 		if (batch!=null) saturation=batch.getSaturationAbility();
 		if (saturation<=0) {
@@ -194,7 +210,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 	}
 
 	private float calcMaxPrice(final Need nd) {
-		final IndividualNeed need=getState().getNeed(nd);
+		final HouseholdNeed need=getState().getNeed(nd);
 		final int deltaT=getEventTimeReverse(getFrustrationEvent(nd))-getTime();
 		final int remainingPeriod=Time.BUDGET_PERIOD-getTime()%Time.BUDGET_PERIOD;
 		final double internalExp=getState().getPersonality(); // internal const
@@ -220,7 +236,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 	}
 
 	private int calcAmount(Need nd) {
-		final IndividualNeed need=getState().getNeed(nd);
+		final HouseholdNeed need=getState().getNeed(nd);
 		final double amount=need.calcAmount(getEventTimeReverse(getFrustrationEvent(nd))-getTime());
 		return (int) Math.round(amount/nd.getSatisfier().getSaturation());
 	}
@@ -257,6 +273,12 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 		return null;
 	}
 	
+	*/
+	
+	private HouseholdStrategy getStrategy() {
+		return strategy;
+	}
+
 	public String getName() {
 		return AGENT_NAME;
 	}
@@ -268,23 +290,24 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 	enum EVENT {
 		/* 21 needs altogether, do not change without changing Limits.MAX_NEEDSET_SIZE */
 		// activation events
-		NEED_ACTIVATION_00,NEED_ACTIVATION_01,NEED_ACTIVATION_02,
-		NEED_ACTIVATION_03,NEED_ACTIVATION_04,NEED_ACTIVATION_05,
-		NEED_ACTIVATION_06,NEED_ACTIVATION_07,NEED_ACTIVATION_08,
-		NEED_ACTIVATION_09,NEED_ACTIVATION_10,NEED_ACTIVATION_11,
-		NEED_ACTIVATION_12,NEED_ACTIVATION_13,NEED_ACTIVATION_14,
-		NEED_ACTIVATION_15,NEED_ACTIVATION_16,NEED_ACTIVATION_17,
-		NEED_ACTIVATION_18,NEED_ACTIVATION_19,NEED_ACTIVATION_20,
+		activateNeed_00,activateNeed_01,activateNeed_02,
+		activateNeed_03,activateNeed_04,activateNeed_05,
+		activateNeed_06,activateNeed_07,activateNeed_08,
+		activateNeed_09,activateNeed_10,activateNeed_11,
+		activateNeed_12,activateNeed_13,activateNeed_14,
+		activateNeed_15,activateNeed_16,activateNeed_17,
+		activateNeed_18,activateNeed_19,activateNeed_20,
 		// frustration events
-		NEED_FRUSTRATION_00,NEED_FRUSTRATION_01,NEED_FRUSTRATION_02,
-		NEED_FRUSTRATION_03,NEED_FRUSTRATION_04,NEED_FRUSTRATION_05,
-		NEED_FRUSTRATION_06,NEED_FRUSTRATION_07,NEED_FRUSTRATION_08,
-		NEED_FRUSTRATION_09,NEED_FRUSTRATION_10,NEED_FRUSTRATION_11,
-		NEED_FRUSTRATION_12,NEED_FRUSTRATION_13,NEED_FRUSTRATION_14,
-		NEED_FRUSTRATION_15,NEED_FRUSTRATION_16,NEED_FRUSTRATION_17,
-		NEED_FRUSTRATION_18,NEED_FRUSTRATION_19,NEED_FRUSTRATION_20,
+		frustrateNeed_00,frustrateNeed_01,frustrateNeed_02,
+		frustrateNeed_03,frustrateNeed_04,frustrateNeed_05,
+		frustrateNeed_06,frustrateNeed_07,frustrateNeed_08,
+		frustrateNeed_09,frustrateNeed_10,frustrateNeed_11,
+		frustrateNeed_12,frustrateNeed_13,frustrateNeed_14,
+		frustrateNeed_15,frustrateNeed_16,frustrateNeed_17,
+		frustrateNeed_18,frustrateNeed_19,frustrateNeed_20,
 		// other events
-		START_PERIOD(),
+		testEvent,
+		startPeriod(),
 		START_DAY(),
 		JOB_SEARCH();
 
@@ -299,6 +322,10 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 	private static final Map<Need,EVENT> mapNeed2FrustrationEvent=new HashMap<>();
 	
 	public static void initNeedMap(Collection<Need> needSet) {
+		urgencyMap.clear();
+		mapEvent2Need.clear();
+		mapNeed2ActivationEvent.clear();
+		mapNeed2FrustrationEvent.clear();
 		for (URGENCY u : URGENCY.values())
 			urgencyMap.put(u,new ArrayList<Need>());
 		int index=0; // init mappings
@@ -327,6 +354,14 @@ public final class Household extends AbstractBasicAgent<HouseholdState,Household
 	
 	private static Need getNeedDefinition(EVENT event) {
 		return mapEvent2Need.get(event);
+	}
+	
+	private static boolean isActivationEvent(EVENT event) {
+		return event.ordinal()<Limits.MAX_NEEDSET_SIZE;
+	}
+	
+	private static boolean isFrustrationEvent(EVENT event) {
+		return (event.ordinal()>=Limits.MAX_NEEDSET_SIZE)&&(event.ordinal()<2*Limits.MAX_NEEDSET_SIZE);
 	}
 	
 }

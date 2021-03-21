@@ -38,7 +38,7 @@ import org.simplesim.core.scheduling.Time;
  * contentment of a household. That in turn may lead the way to model political dynamics within the agent population
  *
  */
-public final class IndividualNeed { 
+public final class HouseholdNeed { 
 	
 	// set internal time stamp if need couldn't be satisfied, set to INFINITY if not
 	// save frustration time here to be able to switch between activation and frustration phase

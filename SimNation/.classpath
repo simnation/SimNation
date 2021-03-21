@@ -13,7 +13,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/JSimpleSim"/>
-	<classpathentry exported="true" kind="lib" path="lib/javax.jdo-3.2.0-m13.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javax.jdo-3.2.0-m13.jar" sourcepath="lib/javax.jdo-3.2.0-m13-src.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/datanucleus-api-jdo-5.2.5.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/datanucleus-core-5.2.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/datanucleus-jdo-query-5.0.9.jar"/>

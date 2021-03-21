@@ -25,6 +25,6 @@ public enum SkillDefinition {
     
     public static final Integer BASIC_SKILL_LEVEL=0;
 
-    public static int length() { return(values().length); }
+    public static int size() { return(values().length); }
 
 }

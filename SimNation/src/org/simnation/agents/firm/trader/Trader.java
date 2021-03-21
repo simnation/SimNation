@@ -28,11 +28,8 @@ import org.simnation.simulation.model.Root;
 
 public final class Trader extends Enterprise<TraderState> {
 
-	private static final long serialVersionUID=4019727098897397688L;
 
-	private static final AgentType TYPE=AgentType.TRADER;
-
-	private enum EVENT implements AbstractBasicAgent.EventType {
+	private enum EVENT {
 
 		PLAN_LOGISTICS("Plan logistic and send deliveries to local markets",0,0),
 		BOOKING_INVOKED("Check payments",Time.DAY,Time.DAY),

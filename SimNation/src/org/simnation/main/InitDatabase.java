@@ -17,8 +17,16 @@ import javax.jdo.Transaction;
 
 import org.simnation.agents.household.HouseholdDBS;
 import org.simnation.context.geography.Region;
+import org.simnation.context.geography.RegionSet;
 import org.simnation.context.needs.Need;
+import org.simnation.context.needs.Need.DURATION;
+import org.simnation.context.needs.Need.INCIDENCE;
+import org.simnation.context.needs.Need.URGENCY;
+import org.simnation.context.needs.NeedSet;
+import org.simnation.context.population.Citizen;
 import org.simnation.context.technology.Good;
+import org.simnation.context.technology.GoodSet;
+import org.simnation.persistence.DataAccessObject;
 import org.simplesim.core.scheduling.Time;
 
 /**
@@ -26,92 +34,97 @@ import org.simplesim.core.scheduling.Time;
  */
 public class InitDatabase {
 	
-	private static HouseholdDBS generateHousehold() {
+	private final NeedSet needs=new NeedSet();
+	private final GoodSet goods=new GoodSet();
+	private final RegionSet regions=new RegionSet();
+	
+	private Good pizza;
+	private Need nutrition;
+	
+	public static void main(String[] args) {
+		DataAccessObject dao=new DataAccessObject("simnation-database");
+		InitDatabase id=new InitDatabase();
+		try
+		{
+			id.populateRegionSet();
+			id.regions.get(0).getHouseholdList().add(id.generateHousehold());
+			id.regions.save(dao);
+			
+			id.populateGoodSet();
+			id.populateNeedSet();
+			id.nutrition.setSatisfier(id.pizza);
+			
+			id.goods.save(dao);
+			id.needs.save(dao);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally
+		{
+		    dao.close();
+		}
+	
+	}
+
+	private HouseholdDBS generateHousehold() {
 		HouseholdDBS hh=new HouseholdDBS();
+		hh.getFamily().add(Citizen.generateRandom());
+		hh.getFamily().add(Citizen.generateRandom());
 		hh.setCash(10000);
 		int stock[]=new int[1];
-		stock[0]=2;
+		stock[0]=34;
 		hh.setStock(stock);
 		return hh;
 	}
 	
-	private static Region generateRegion() {
+	private void populateRegionSet() {
 		Region region = new Region();
 	    region.setName("Bavaria");
 	    region.setCity("Munich");
 	    region.setArea(10.24d);
 	    region.setLatitude(0);
 	    region.setLongitude(0);
-	    return region;
+	    regions.add(region);
 	}
 	
-	private static Good generateGoods() {
+	private void populateGoodSet() throws Exception {
 		Good flour=new Good();
 		flour.setName("Flour");
-		flour.setUnit("g");
+		flour.setUnit("kg");
 		flour.setService(false);
-		flour.setNeed(null);
+		goods.add(flour);
 		
 		Good vegetables=new Good();
 		vegetables.setName("Vegetables");
-		vegetables.setUnit("g");
+		vegetables.setUnit("kg");
 		vegetables.setService(false);
-		vegetables.setNeed(null);
+		goods.add(vegetables);
 		
-		Good pizza=new Good();
+		pizza=new Good();
 		pizza.setName("Pizza");
 		pizza.setUnit("pc.");
 		pizza.setService(false);
 		
-		pizza.addPrecursor(flour, 150);
-		pizza.addPrecursor(vegetables, 100);
-		return pizza;
+		pizza.addPrecursor(flour, 0.2);
+		pizza.addPrecursor(vegetables, 0.15);
+		goods.add(pizza);
 	}
 
 	/**
 	 * @return
 	 */
-	private static Need generateNeed() {
-		Need need=new Need();
-		need.setName("Nutrition");
-		need.setUnit("kJ");
-		need.setActivationTime(Time.DAY);
-		need.setFrustrationTime(new Time(3*Time.TICKS_PER_DAY));
-		need.setConsumptionRate(1600d/Time.TICKS_PER_DAY);
-		return need;
-	}
-
-	public static void main(String[] args) {
-		PersistenceManagerFactory pmf = JDOHelper.getPersistenceManagerFactory("simnation-database");
-		PersistenceManager pm = pmf.getPersistenceManager();
-		Transaction tx=pm.currentTransaction();
-		try
-		{
-		    tx.begin();
-		    Good pizza=generateGoods();
-		    Need nutrition=generateNeed();
-		    pizza.setNeed(nutrition);
-		    nutrition.setSatisfier(pizza);
-		    
-		    pm.makePersistent(pizza);   
-		    pm.makePersistent(nutrition);   
-		    
-		    
-		    Region region=generateRegion();
-		    region.getHouseholdList().add(generateHousehold());
-		    pm.makePersistent(region);
-		    
-		    tx.commit();
-		}
-		finally
-		{
-		    if (tx.isActive())
-		    {
-		        tx.rollback();
-		    }
-		    pm.close();
-		}
-
+	private void populateNeedSet() {
+		nutrition=new Need();
+		nutrition.setName("Nutrition");
+		nutrition.setUnit("kJ");
+		nutrition.setActivationTime(Time.DAY);
+		nutrition.setFrustrationTime(new Time(3*Time.TICKS_PER_DAY));
+		nutrition.setSaturation(2400);
+		nutrition.setConsumption(9200);
+		nutrition.setIncidence(INCIDENCE.CONTINUOUSLY);
+		nutrition.setUrgency(URGENCY.EXISTENTIAL);
+		nutrition.setDuration(DURATION.INSTANTLY);
+		needs.add(nutrition);
 	}
 
 }

@@ -37,8 +37,8 @@ import org.simnation.context.population.Citizen;
 public class HouseholdDBS {
 
 	private long cash;
-//	@Serialized
-//	private List<Citizen> family=new ArrayList<>();
+	@Serialized
+	private List<Citizen> family=new ArrayList<>();
 	@Serialized
 	private int stock[]; // grade of initial need satisfaction
 
@@ -55,7 +55,7 @@ public class HouseholdDBS {
 		this.cash=cash;
 	}
 
-	/*public List<Citizen> getFamily() {
+	public List<Citizen> getFamily() {
 		return family;
 	}
 
@@ -63,10 +63,7 @@ public class HouseholdDBS {
 		family=value;
 	}
 
-	public float[] getNeedLevel() {
-		return needLevel;
-	}*/
-
+	
 	public void setStock(int index, int amount) {
 		stock[index]=amount;
 	}

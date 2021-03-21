@@ -17,8 +17,8 @@ package org.simnation.persistence;
  */
 public interface Persistable {
 	
-	void load(DataAccessObject dao);
+	void load(DataAccessObject dao) throws Exception;
 	
-	void save(DataAccessObject dao);
+	void save(DataAccessObject dao) throws Exception;
 	
 }

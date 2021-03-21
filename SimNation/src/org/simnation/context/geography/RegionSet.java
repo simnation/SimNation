@@ -63,15 +63,14 @@ public final class RegionSet implements Persistable {
 	}
 
 	@Override
-	public void load(DataAccessObject dao) {
-		// TODO Auto-generated method stub
-		
+	public void load(DataAccessObject dao) throws Exception {
+		list.clear();
+		list.addAll(dao.load(Region.class));
 	}
 
 	@Override
-	public void save(DataAccessObject dao) {
-		// TODO Auto-generated method stub
-		
+	public void save(DataAccessObject dao) throws Exception {
+		dao.store(list);
 	}
 
 }

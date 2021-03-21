@@ -14,25 +14,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.jdo.annotations.Convert;
-import javax.jdo.annotations.DatastoreIdentity;
-import javax.jdo.annotations.Embedded;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.Inheritance;
-import javax.jdo.annotations.InheritanceStrategy;
+import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Join;
 import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.simnation.agents.household.IndividualNeed;
+import org.simnation.agents.household.HouseholdNeed;
 import org.simnation.context.needs.Need;
 import org.simnation.context.technology.ProductionTechnology.IProductionFunction;
 import org.simnation.model.Limits;
-import org.simnation.zzz_old.Resource;
-import org.simnation.zzz_old.Service;
-import org.simplesim.core.scheduling.Time;
 
 /**
  * A good is a node of a value chain and contains all its characteristics and
@@ -40,7 +32,7 @@ import org.simplesim.core.scheduling.Time;
  *
  * There are various types of goods. First, a good can either be storable or
  * non-storable. Storable goods can either be durable (having a depreciation
- * time) or non-durable. Last, any good can be used to satisfy a {@link IndividualNeed} or
+ * time) or non-durable. Last, any good can be used to satisfy a {@link HouseholdNeed} or
  * as a {@link Precursor} for the production of other goods.
  *
  * Some types of goods have a special characteristic, modeled as a derived
@@ -49,7 +41,7 @@ import org.simplesim.core.scheduling.Time;
  * <li>...is non-storable is a {@link Service} in this implementation.
  * <li>...has no precursors is a {@link Resource}. It is a <i>source</i> of the
  * value chain network.
- * <li>...satisfies a {@link IndividualNeed} is a consumable (see {@link #isConsumable()}). It is a <i>sink</i>
+ * <li>...satisfies a {@link HouseholdNeed} is a consumable (see {@link #isConsumable()}). It is a <i>sink</i>
  * of the value chain network. Note that a consumable that is also a precursor leads to competing demands
  * <li>...produces other goods is a {@link Machine}. Note that machines to
  * produce other machines introduce a self-replicating element into the value
@@ -126,8 +118,8 @@ public class Good {
 	// private long stock;
 	// private double gamma;
 	
-	@Persistent(mappedBy="satisfier")
-	private Need need;
+	//@Column(name="satisfier")
+	//private Need need;
 	
 	// general --> calculated values, not in scenario description!
 	// values serve as initial values to start the simulation
@@ -137,7 +129,7 @@ public class Good {
 	private double value; // initial price
 	
 	@NotPersistent
-	private final List<Good> successor_list=new ArrayList<>(); // links to the successors
+	private final List<Good> successorList=new ArrayList<>(); // links to the successors
 
 
 	public void addPrecursor(Good good, double value) {
@@ -149,7 +141,7 @@ public class Good {
 	}
 
 	void addSuccessor(Good succ) {
-		successor_list.add(succ);
+		successorList.add(succ);
 	}
 
 	public void deletePrecursor(Good good) {
@@ -157,16 +149,16 @@ public class Good {
 	}
 
 	public void deletePrecursor(int index) {
-		precursors.get(index).getGood().successor_list.remove(this);
+		precursors.get(index).getGood().successorList.remove(this);
 		precursors.remove(index);
 	}
 
 	public void deleteSuccessor(Good good) {
-		successor_list.remove(good);
+		successorList.remove(good);
 	}
 
 	public void deleteSuccessor(int index) {
-		successor_list.remove(index);
+		successorList.remove(index);
 	}
 
 	/**
@@ -218,10 +210,6 @@ public class Good {
 	public ProductionTechnology getTechology() {
 		return technology;
 	}
-	
-	public boolean isConsumable() {
-		return need!=null;
-	}
 
 	public String getName() {
 		return name;
@@ -249,30 +237,21 @@ public class Good {
 		for (int i=0; i<getPrecursorCount(); i++) if (getPrecursors().get(i).getGood().equals(good)) return i;
 		return -1;
 	}
-	
-	public Need getNeed() {
-		return need;
-	}
-
-	public void setNeed(Need value) {
-		need=value;
-	}
-
 
 	public int getPrecursorCount() {
 		return precursors.size();
 	}
 
 	public Good getSuccessor(int index) {
-		return successor_list.get(index);
+		return successorList.get(index);
 	}
 
 	public List<Good> getSuccessors() {
-		return Collections.unmodifiableList(successor_list);
+		return Collections.unmodifiableList(successorList);
 	}
 
 	public int getSuccessorsTotal() {
-		return successor_list.size();
+		return successorList.size();
 	}
 
 	public String getUnit() {
@@ -333,8 +312,8 @@ public class Good {
 
 	// unties good from its connections to others good in chain
 	public void untie() {
-		for (final Precursor precursor : getPrecursors()) precursor.getGood().successor_list.remove(this);
-		for (final Good successor : successor_list) successor.deletePrecursor(this);
+		for (final Precursor precursor : getPrecursors()) precursor.getGood().successorList.remove(this);
+		for (final Good successor : successorList) successor.deletePrecursor(this);
 	}
 
 	@Override

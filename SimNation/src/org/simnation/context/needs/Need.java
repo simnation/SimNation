@@ -11,30 +11,32 @@
 package org.simnation.context.needs;
 
 import javax.jdo.annotations.Column;
-import javax.jdo.annotations.Convert;
-import javax.jdo.annotations.DatastoreIdentity;
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.simnation.persistence.JDOTimeConverter;
-
+import org.simnation.agents.household.HouseholdNeed;
 import org.simnation.context.technology.Good;
 import org.simplesim.core.scheduling.Time;
 
 /**
- * Basic class to define all available needs within the model. Each type is only
- * instantiated ONCE (just like @link Good), so IdentityHashMap and = can be
- * used!
+ * Main class to define the need system of the model.
+ * <p>
+ * A {@code Need} is the basic driver of the household's motivation system. The aim of a {@code Household} is to
+ * satisfy its needs the best way possible. This class defines all attributes of a need itself.
+ *  <p>
+ *  Note: Each needs should be instantiated only ONCE (just like {@code Good}), so identity can be used!
+ *  
+ *  @see NeedSet
+ *  @see Good
+ *  @see HouseholdNeed
  */
 @PersistenceCapable
-//@DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY)
 public class Need {
 
 	/**
-	 * Most needs can be satisfied instantly on consumption. However, services are
-	 * bought for a period of time.
+	 * Needs can be satisfied instantly on consumption (e.g. food) or by availability for a period of time (e.g. housing).
+	 * A periodical need is satisfied by a good that is a service.
 	 */
 	public enum DURATION { INSTANTLY, PERIODICALLY; }
 
@@ -58,25 +60,44 @@ public class Need {
 
 	@PrimaryKey
 	private String name;
+	
+	/** unit the consumption is measured with */
 	private String unit;
-	@Column(name="GOOD_ID")
+	
+	/** link to good that can satisfy this need */
+	@Column(name="GOOD_FK")
 	private Good satisfier=null;
-	private double consumptionRate; // consumption of satisfier per time unit
+	
+	/** saturation ability per one unit satisfying good */
+	private double saturation;  // this should be part of a Good or Product class
+	
+	/** how often a household pursues this need? */
 	@Persistent(converter=org.simnation.persistence.JDOTimeConverter.class)
 	private Time activationTime; // how often is this need to be checked?
+	
+	/** when does the household enters resignation process? Must be longer than activation time! */
 	@Persistent(converter=org.simnation.persistence.JDOTimeConverter.class)
 	private Time frustrationTime; // after which time the agent resigns from follow up the need?
-	private URGENCY urgency=URGENCY.BASIC;
-	private INCIDENCE incidence=INCIDENCE.CONTINUOUSLY;
-	private DURATION duration=DURATION.INSTANTLY;
+	
+	/** consumption of one household member per activation period */
+	private double consumption;
+	
+	/** urgency level of this need */
+	private URGENCY urgency;
+	
+	/** incidence of this need */
+	private INCIDENCE incidence;
+	
+	/** duration of this need */
+	private DURATION duration;
 	
 	
 	public Time getActivationTime() {
 		return activationTime;
 	}
 
-	public double getConsumptionRate() {
-		return consumptionRate;
+	public double getConsumption() {
+		return consumption;
 	}
 
 	public DURATION getDuration() {
@@ -111,8 +132,8 @@ public class Need {
 		activationTime=vaue;
 	}
 
-	public void setConsumptionRate(double vaue) {
-		consumptionRate=vaue;
+	public void setConsumption(double vaue) {
+		consumption=vaue;
 	}
 
 	public void setDuration(DURATION value) {
@@ -156,6 +177,20 @@ public class Need {
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	/**
+	 * @return the saturation
+	 */
+	public double getSaturation() {
+		return saturation;
+	}
+
+	/**
+	 * @param saturation the saturation to set
+	 */
+	public void setSaturation(double saturation) {
+		this.saturation = saturation;
 	}
 	
 	/*add other general need functionality here

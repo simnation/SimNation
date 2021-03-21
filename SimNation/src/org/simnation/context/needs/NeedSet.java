@@ -1,79 +1,76 @@
 package org.simnation.context.needs;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.simnation.model.Limits;
+import org.simnation.agents.household.Household;
+import org.simnation.context.technology.Good;
 import org.simnation.persistence.DataAccessObject;
 import org.simnation.persistence.Persistable;
 
 /**
  * Assigns every need type a table containing all characteristic values concerning the need Need types and tables have
  * to be defined in the simulation scenario
+ * 
+ *  This class defines which needs can be pursued.   
  */
 public final class NeedSet implements Persistable {
 
-	private final List<Need> list=new ArrayList<>(Limits.MAX_NEEDSET_SIZE);
-	private final Map<String, Need> map=new HashMap<>((4*Limits.MAX_NEEDSET_SIZE)/3);
+	private final Set<Need> needs=new HashSet<>();
 
-	public boolean add(Need nd) {
-		if ((exists(nd.getName()))||(size()>=Limits.MAX_NEEDSET_SIZE)) return false;
-		list.add(nd); // add new type
-		map.put(nd.getName(),nd);// for referencing by name
-		return true;
+	/** list of all consumable goods, acting as sink node of a graph */
+	private final Set<Good> consumables=new HashSet<>();
+	
+
+	public void add(Need need) {
+		needs.add(need); // add new type
+		consumables.add(need.getSatisfier());
 	}
 
-	public List<Need> asList() {
-		return Collections.unmodifiableList(list);
+	public Set<Need> get() {
+		return needs;
 	}
 
 	public void clear() {
-		list.clear();
-		map.clear();
-	}
-
-	public boolean remove(String text) {
-		final Need nd=get(text);
-		if (nd==null) return false;
-		return remove(nd);
+		needs.clear();
+		consumables.clear();
 	}
 
 	public boolean remove(Need nd) {
-		if (!list.remove(nd)) return false;
-		map.remove(nd.getName());
-		return true;
+		return needs.remove(nd);
 	}
 
-	public boolean exists(String name) {
-		return map.containsKey(name);
-	}
-
-	public Need get(String name) {
-		return map.get(name);
+	public boolean exists(Need need) {
+		return needs.contains(need);
 	}
 
 	public int size() {
-		return list.size();
+		return needs.size();
 	}
 	
-	public Iterator<Need> iterator() {
-		return list.iterator();
+	/**
+	 * Return a {@code Set} of all consumable goods.
+	 * <p>
+	 * A {@code Need} can be satisfied by the consumption of a {@code Good}. Consumables are the set of goods that can serve to satisfice needs.
+	 * 
+	 * @return the set of consumable goods
+	 */
+	public Set<Good> getConsumables() {
+		return consumables;
 	}
 
 	@Override
-	public void load(DataAccessObject dao) {
-		// TODO Auto-generated method stub
-		
+	public void load(DataAccessObject dao) throws Exception {
+		clear();
+		final Collection<Need> list=dao.load(Need.class);
+		for (Need need : list) add(need);
+		Household.initNeedMap(needs);
 	}
-
+	
 	@Override
-	public void save(DataAccessObject dao) {
-		// TODO Auto-generated method stub
-		
+	public void save(DataAccessObject dao) throws Exception {
+		dao.store(needs);
 	}
 
 }

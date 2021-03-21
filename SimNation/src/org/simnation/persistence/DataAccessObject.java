@@ -1,9 +1,7 @@
 package org.simnation.persistence;
 
-import java.sql.DriverManager;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
@@ -23,38 +21,30 @@ public final class DataAccessObject {
 	public DataAccessObject(PersistenceManager value) {
 		pm=value;
 	}
-
+	
+	public DataAccessObject(String persistenceUnitName) {
+		pm=JDOHelper.getPersistenceManagerFactory(persistenceUnitName).getPersistenceManager();
+	}
+	
 	public void close() {
 		if (pm.currentTransaction().isActive()) pm.currentTransaction().rollback();
 		pm.close();
 	}
 
-	public <T> List<T> load(Class<T> clazz) {
-		return query("SELECT FROM "+clazz.getName());
+	@SuppressWarnings("unchecked")
+	public <T> List<T> load(Class<T> clazz) throws Exception {
+		final Query<T> query=pm.newQuery("SELECT FROM "+clazz.getName());
+		final List<T> result=query.executeList();
+		query.closeAll();
+		return result;
 	}
 	
-	public <T> List<T> load(Class<T> clazz,int region) {
-		return query("SELECT FROM "+clazz.getName()+" WHERE region.id=="+region);
+	public void store(Set<?> set) throws Exception {
+		pm.currentTransaction().begin();
+		pm.makePersistentAll(set);
+		pm.currentTransaction().commit();
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> List<T> query(String jdoql) {
-		final Query query=pm.newQuery(jdoql);
-		return (List<T>) query.execute();
-	}
-
-	/**
-	 * Returns the number of elements of the specific class within a region. 
-	 * 
-	 * @param clazz - respective class, i.e. name of table
-	 * @param region - region, has to be a column in the class's table!
-	 * @return number of elements
-	 */
-	public <T> int count(Class<T> clazz,int region) {
-		final Query query=pm.newQuery("SELECT count(region) FROM "+clazz.getName()+" WHERE region.id=="+region);
-		final long result=(Long) query.execute();
-		return (int) result;
-	}
 
 	public void store(List<?> list) throws Exception {
 		pm.currentTransaction().begin();

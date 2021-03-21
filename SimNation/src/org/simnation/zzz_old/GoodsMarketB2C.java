@@ -72,11 +72,11 @@ public final class GoodsMarketB2C extends Market<Good,GoodsMarketB2CState<Good>>
 		switch (event) {
 			case INVOKE_MARKET:
 				processMessages();
-				clearMarket(Root.getContext().getGoods().asList());
+				clearMarket(Root.getContext().getGoods().get());
 				addEvent(EVENT.INVOKE_MARKET,EVENT.INVOKE_MARKET.period());
 				break;
 			case TRIGGER_EOB:
-				clearDemands(Root.getContext().getGoods().asList());
+				clearDemands(Root.getContext().getGoods().get());
 				// updateMarketInfo();
 				addEvent(EVENT.TRIGGER_EOB,EVENT.TRIGGER_EOB.period());
 				break;

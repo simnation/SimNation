@@ -31,14 +31,14 @@ public final class Model extends RoutingDomain {
 	/**
 	 * @return the vc
 	 */
-	public GoodSet getGoodDefinitionSet() {
+	public GoodSet getGoodSet() {
 		return vc;
 	}
 
 	/**
 	 * @return the nd
 	 */
-	public NeedSet getNeedDefinitionSet() {
+	public NeedSet getNeedSet() {
 		return nd;
 	}
 

@@ -33,6 +33,13 @@ public class Batch implements Tradable<Good>, Mergable<Batch> {
 		quality=q;
 	}
 
+	/**
+	 * Standard constructor initializing a batch with zero values. 
+	 */
+	public Batch(Good good) {
+		this(good,0,0,0);
+	}
+
 	@Override
 	public long getQuantity() {
 		return quantity.get();

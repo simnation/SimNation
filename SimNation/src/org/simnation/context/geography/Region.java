@@ -18,8 +18,11 @@ import javax.jdo.annotations.PrimaryKey;
 import org.simnation.agents.household.HouseholdDBS;
 
 @PersistenceCapable
-@DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY)
 public class Region {
+
+	@Persistent(primaryKey="true",valueStrategy=IdGeneratorStrategy.IDENTITY)
+	private int index;
+
 
 	private String name="Berlin";
 	private String city="City";
@@ -27,7 +30,7 @@ public class Region {
 	private double latitude=NOT_INITIALIZED; // in radians!!!
 	private double longitude=NOT_INITIALIZED;
 	
-	@Element(column="REGION_ID")
+	@Element(column="REGION_FK")
 	private Set<HouseholdDBS> householdList=new HashSet<>();
 	
 	
@@ -116,6 +119,14 @@ public class Region {
 
 	public String getName() {
 		return name;
+	}
+	
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
 	}
 
 	public void setArea(double value) {

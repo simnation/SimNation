@@ -11,11 +11,13 @@ public final class Limits {
 	public static final int MAX_REGIONAL_POPULATION=5000000;
 	public static final int MAX_REGIONAL_AREA=100000; // km^2
 	
-	// Simulation system limits
-	public static final int MAX_STRINGLENGTH=32;
-	public final static int MAX_CHILDREN=7;
-	public final static int MAX_AGE=100;
+	// Citizen generation limits
+	public static final int MAX_CHILDREN=20;
+	public static final long MAX_AGE=100*Time.TICKS_PER_YEAR;
 	public static final int MAX_SKILL=100;
+	public static final float INTROVERSION=0.0f;
+	public static final float EXTRAVERSION=2.0f;
+	
 	
 	public static final int NUMBER_OF_TRIES=5; // number of activation events before regression starts
 	

@@ -54,12 +54,13 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 		while (getInport().hasMessages()) handleMessage(getInport().poll());
 		// process events
 		while (getEventQueue().getMin().equals(time)) handleEvent(getEventQueue().dequeue(),time);
-		executeStrategy(time);
 		return getTimeOfNextEvent();
 	}
 
 	/**
 	 * Handles the content of a due message.
+	 * <p>
+	 * This method is called first on agent activation. It also updates the agent's internal state.
 	 *
 	 * @param msg the next message to be handled by the agent
 	 */
@@ -67,19 +68,15 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 
 	/**
 	 * Handles a due event.
+	 * <p>
+	 * This method is called second on agent activation, after the message handling. It also updates the agent's internal state.
+	 *
 	 *
 	 * @param <E>   the type of the event
 	 * @param event the event as such (containing also additional information)
 	 * @param time  the time stamp of the event
 	 */
 	protected abstract void handleEvent(E event, Time time);
-
-	/**
-	 * Executes the agent's strategy thus implements the agent's behavior
-	 *
-	 * @param time the current simulation time
-	 */
-	protected abstract void executeStrategy(Time time);
 
 	/**
 	 * Sends a message via the agent's outport.

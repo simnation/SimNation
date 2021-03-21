@@ -21,7 +21,7 @@ import org.simplesim.core.scheduling.Time;
 public final class HouseholdStrategy implements AgentStrategy {
 	
 	private final Household household;
-	private final float[] budget;
+	private final float[] budget=new float[24];;
 	private long totalBudget;
 
 

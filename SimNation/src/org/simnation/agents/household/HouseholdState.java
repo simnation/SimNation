@@ -11,22 +11,31 @@
 package org.simnation.agents.household;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.simnation.agents.business.Money;
 import org.simnation.agents.common.Batch;
 import org.simnation.context.population.Citizen;
+import org.simnation.context.technology.Good;
+import org.simnation.model.Model;
 import org.simplesim.model.State;
 
 public class HouseholdState implements State {
 
-	private final IndividualNeed[] need;
+	private final Map<Good,Batch> stock=new IdentityHashMap<>();
+	private final HouseholdNeed[] need;
 	private final List<Citizen> family;
 	private final Money cash;
 	
 	public HouseholdState(HouseholdDBS dbs) {
+		for (Good consumable : Model.getInstance().getNeedSet().getConsumables())
+			stock.put(consumable, new Batch(consumable));
+
 		int stock[]=dbs.getStock();
-		need=new IndividualNeed[stock.length];
+		need=new HouseholdNeed[stock.length];
 		
 		// fill in need here
 		
@@ -35,7 +44,11 @@ public class HouseholdState implements State {
 		family=new ArrayList<>(); //dbs.getFamily();
 		cash=dbs.getMoney();
 	}
-
+	
+	public Map<Good,Batch> getInventory() {
+		return stock;
+	}
+	
 	public Money getCash() {
 		return cash;
 	}
@@ -48,7 +61,7 @@ public class HouseholdState implements State {
 		return family;
 	}
 	
-	public IndividualNeed getNeed(int index) {
+	public HouseholdNeed getNeed(int index) {
 		return need[index];
 	}
 	
