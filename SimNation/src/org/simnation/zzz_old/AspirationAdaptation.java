@@ -1,10 +1,9 @@
 /**
  * 
  */
-package org.simnation.agents.firm;
+package org.simnation.zzz_old;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -16,28 +15,21 @@ import java.util.Map;
 /**
  * This class implements the aspiration adaptation algorithm.
  * <p>
- * Aspiration adaptation is a heuristic algorithm for multi-goal decision.
+ * Aspiration adaptation is a heuristic algorithm for multi-goal optimization.
  * <ul>
- * <li>There is a set of goal variables which have to be <i>maximized</i>.
- * <li>There is also a set of actions that influence the goal variables.
- * <li>The influence can vary and is monitored by this algorithm with an influence scheme.
- * <li>The goal variables aim to achieve certain <i>aspiration levels</i>.
- * <li>The urgency order of the goals may vary depending on their actual aspiration level.
- * The algorithm return the action supporting the most urgent with least negative and most positive effects on goals
- * 
+ * <li>There is a given set of goal variables that have to be <u>maximized</u>.
+ * <li>There is a given set of actions that influence these goal variables.
+ * <li>The algorithm evaluates how an action influences the goal variables by means of an influence scheme.
+ * <li>The algorithm aims the goal variables to achieve certain <i>aspiration levels</i>.
+ * <li>The urgency of the goals varies according to a given urgency order and depending on their actual aspiration level.
  * </ul>
- * 
- *  (see references for more details).
- * 
- *  
- *  
- *  
- *  
+ * The algorithm returns the action supporting the most urgent goal with the least negative and most positive effects on all goals
+ * <p>   
  *  @see <a href="https://www.sciencedirect.com/science/article/abs/pii/S0022249697912050">Aspiration Adaptation Theory</a>
  *  @see <a href="https://www.jstor.org/stable/40748622?seq=1">First publication (as of 1962, German)</a>
  *
  */
-public class Management {
+public class AspirationAdaptation {
 	
 	public interface GoalVariable {
 		// aspiration scale
@@ -48,11 +40,7 @@ public class Management {
 		public float getLimit(); // limit for aspiration adaptation scheme
 		// current value of the goal variable to correct influence scheme
 		public double getValue(); // current value of the goal variable  
-	
-		public default boolean isBelowLimit() {
-			return getLimit()<getValue();
-		}
-		
+		public default boolean isBelowLimit() { return getLimit()<getValue(); }
 	}
 	
 	public interface Action {
@@ -67,17 +55,16 @@ public class Management {
 		
 		private final float a[];
 	
-		
-		AspirationLevel(float init[]) { a=init; }
-		
+		AspirationLevel(float init[]) { a=init; }	
 		AspirationLevel(int size) { this(new float[size]); }
-		
 		float get(int index) { return a[index]; }
-		
 		void set(int index, float value) { a[index]=value; }
-		
-		void retreat(int index) {
+		void decrease(int index) {
 			a[index]-=goalList.get(index).getStep();
+		}
+		
+		void increase(int index) {
+			a[index]+=goalList.get(index).getStep();
 		}
 				
 		boolean contains(AspirationLevel other) {
@@ -88,7 +75,7 @@ public class Management {
 		@Override
 		public int hashCode() {
 			int hash=Float.hashCode(a[0]);
-			for (int i=1; i<a.length;i++) hash+=Float.hashCode(a[i])*71;
+			for (int i=1; i<a.length;i++) hash=(hash*71)^Float.hashCode(a[i]);
 			return hash;
 		}
 		
@@ -119,7 +106,7 @@ public class Management {
 	 * 
 	 * @param goals list of goal variables 
 	 */
-	public Management(List<GoalVariable> goals, float[] al) {	
+	public AspirationAdaptation(List<GoalVariable> goals, float[] al) {	
 		// init goal and action lists
 		goalList=new ArrayList<>(goals); // copy goal variables
 		dim=goalList.size();
@@ -142,7 +129,8 @@ public class Management {
 		}
 		
 		// add a neutral "no action" element with zero influence to the action set
-		lastAction=addAction(new Action() { public void doAction() {}},noInfluence);
+		lastAction=addAction(new Action() { @Override
+		public void doAction() {}},noInfluence);
 	}
 	
 	/**
@@ -153,7 +141,7 @@ public class Management {
 	 * 
 	 * @param goals list of goal variables 
 	 */
-	public Management(List<GoalVariable> goals) {
+	public AspirationAdaptation(List<GoalVariable> goals) {
 		this(goals,null);
 	}
 	
@@ -163,9 +151,55 @@ public class Management {
 		return action;
 	}
 		
- 
+	public Action decideAction() {
+		updateInfluenceScheme();		// correct influence scheme
+		constructExpectedFeasibleSet();	// construct set of feasible aspiration levels
+		updateUrgencyOrder();			// update urgency order
+		adjustAspirationLevel();		// adjust aspiration level to be contained in the comprehensive hull
+		maximizeAspirationLevel();		// upward aspiration adaptation
+		lastAction=selectBestAction(expectedFeasibleSet.get(aspirationLevel));
+		return lastAction; 
+	}
+	
 	/**
-	 * Generates a permutation of goal indices sorted by descending urgency.
+	 * Maximizes the aspiration level along the boundary of the feasible set.
+	 * <p>
+	 * Tries to maximize the aspiration level (AL) of the most urgent goal variable. Then the AL of the second most urgent
+	 * is maximized and so on. Result should be the optimal AL that can be reached by the given set of actions.
+	 */
+	private void maximizeAspirationLevel() {
+		for (int index=0; index<dim; index++) {
+			while (isAspirationLevelFeasible()) {
+				aspirationLevel.increase(urgencyOrder[index]);
+			}
+			aspirationLevel.decrease(urgencyOrder[index]);
+		}
+	}
+
+	/**
+	 * Adapts the aspiration level so that it is within the comprehensive hull of the feasible set
+	 */
+	private void adjustAspirationLevel() {
+		while(!isAspirationLevelFeasible()) {
+			aspirationLevel.decrease(getRetreatVariable());
+			updateUrgencyOrder();
+		}
+	}
+	
+	private int getRetreatVariable() {
+		return urgencyOrder[dim];
+	}
+	
+	
+	private boolean isAspirationLevelFeasible() {
+		for (AspirationLevel entry : expectedFeasibleSet.keySet()) {
+			if (!entry.contains(aspirationLevel)) return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Generates a permutation of goal indices according to the current aspiration level and sorted by descending urgency.
 	 * <p>
 	 * The new urgency order contains the indexes of the goal variable sorted with descending urgency, the last element
 	 * indicating the retreat variable
@@ -183,46 +217,16 @@ public class Management {
 		}
 	}
 
-	
-	public Action decideAction() {
-		updateInfluenceScheme();		// correct influence scheme
-		constructExpectedFeasibleSet();	// construct set of feasible aspiration levels
-		adjustAspirationLevel();		// adjust aspiration level to be contained in the comprehensive hull
-		maximizeAspirationLevel();		// upward aspiration adaptation
-		lastAction=selectBestAction(expectedFeasibleSet.get(aspirationLevel));
-		return lastAction; 
-	}
-	
 	/**
-	 * 
-	 */
-	private void maximizeAspirationLevel() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
-	 * 
-	 */
-	private void adjustAspirationLevel() {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
-	
-	private boolean isAspirationLevelFeasible() {
-		for (AspirationLevel entry : expectedFeasibleSet.keySet()) {
-			if (!entry.contains(aspirationLevel)) return false;
-		}
-		return true;
-	}
-
-	/**
+	 * Finds the best action to realize the given aspiration level.
+	 * <p>
+	 * An aspiration level might be assigned to several actions. The action list is narrowed by the following criteria:
+	 * (1) select the actions with the least negative influences
+	 * (2) of this subset, select the action with the most positive influences
 	 * 
 	 */
 	private Action selectBestAction(List<Action> actionList) {
-		
+		// list actions with the least negative influences
 		int best=Integer.MAX_VALUE;
 		for (Action action : actionList) best=Math.min(best,
 				countInfluence(influenceScheme.get(action),INFLUENCE.negative));
@@ -230,7 +234,7 @@ public class Management {
 		    if (countInfluence(influenceScheme.get(iter.next()),INFLUENCE.negative)>best)
 		    	iter.remove();
 		}
-		
+		// of this subset, select actions with most positive influences
 		best=0;
 		for (Action action : actionList) best=Math.max(best,
 				countInfluence(influenceScheme.get(action),INFLUENCE.positive));
@@ -238,7 +242,7 @@ public class Management {
 		    if (countInfluence(influenceScheme.get(iter.next()),INFLUENCE.positive)<best)
 		    	iter.remove();
 		}
-		
+		// return first element, since all remaining elements are tantamount
 		return actionList.get(0);	
 	}
 	
@@ -251,6 +255,9 @@ public class Management {
 	}
 
 	
+	/**
+	 * Constructs a set of aspiration levels that can be reached by the available actions.
+	 */
 	private void constructExpectedFeasibleSet() {
 		final float[] aLow=new float[dim]; // lower aspiration bound
 		final float[] aMid=new float[dim]; // mid value
