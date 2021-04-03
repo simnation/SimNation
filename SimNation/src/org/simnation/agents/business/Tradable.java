@@ -57,8 +57,8 @@ public interface Tradable<T> extends Comparable<Tradable<T>> {
 	/**
 	 * @return total monetary value of the transaction
 	 */
-	default public long getTotalValue() {
-		return Math.round((double)getPrice()*getQuantity());
+	default public double getTotalValue() {
+		return ((double)getPrice())*getQuantity();
 	}
 	
 	/**

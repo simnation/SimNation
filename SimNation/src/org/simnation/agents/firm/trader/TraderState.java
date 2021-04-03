@@ -1,22 +1,25 @@
-/**
+/*
+ * SimNation is a multi-agent model to simulate economic systems. It is scalable 
+ * and used JSimpleSim as technical backbone for concurrent discrete event simulation.
+ * 
+ * This software is published as open source and licensed under GNU GPLv3.
+ * 
+ * Contributors:
+ * 	- Rene Kuhlemann - development and initial implementation
  * 
  */
 package org.simnation.agents.firm.trader;
 
 
-import org.simnation.agents.firm.EnterpriseState;
-import org.simnation.agents.firm.common.Storage;
-import org.simnation.agents.firm.common.Warehouse;
+import org.simplesim.model.State;
 
 
 
 /**
  * 
- * @author Rene Kuhlemann
  */
-public final class TraderState extends EnterpriseState {
+public final class TraderState implements State {
 	
-    private static final long serialVersionUID = -6620449813386784492L;
     
  	
 	

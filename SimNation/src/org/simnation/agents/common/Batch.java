@@ -55,10 +55,9 @@ public class Batch implements Tradable<Good>, Mergable<Batch> {
 
 	@Override
 	public long merge(Batch other) {
-		final double a1=this.getQuantity();
-		final double a2=other.getQuantity();
-		price=(float) (((a1*this.getPrice())+(a2*other.getPrice()))/(a1+a2));
-		quality=(float) (((a1*this.getQuality())+(a2*other.getQuality()))/(a1+a2));
+		final double sum=this.getQuantity()+other.getQuantity();
+		price=(float) (((this.getQuantity()*this.getPrice())+(other.getQuantity()*other.getPrice()))/sum);
+		quality=(float) (((this.getQuantity()*this.getQuality())+(other.getQuantity()*other.getQuality()))/sum);
 		return quantity.getAndAdd(other.consume());
 	}
 

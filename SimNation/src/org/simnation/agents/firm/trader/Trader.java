@@ -1,3 +1,13 @@
+/*
+ * SimNation is a multi-agent model to simulate economic systems. It is scalable 
+ * and used JSimpleSim as technical backbone for concurrent discrete event simulation.
+ * 
+ * This software is published as open source and licensed under GNU GPLv3.
+ * 
+ * Contributors:
+ * 	- Rene Kuhlemann - development and initial implementation
+ * 
+ */
 package org.simnation.agents.firm.trader;
 
 import org.simnation.agents.AbstractBasicAgent;
@@ -8,7 +18,7 @@ import org.simnation.agents.common.Command;
 import org.simnation.agents.common.Command.COMMAND;
 import org.simnation.agents.firm.Enterprise;
 import org.simnation.agents.firm.common.BulkStorage;
-import org.simnation.agents.firm.common.Storage;
+import org.simnation.agents.firm.common.Inventory;
 import org.simnation.agents.market.MarketInfo;
 import org.simnation.context.technology.Good;
 import org.simnation.core.AgentType;
@@ -16,51 +26,29 @@ import org.simnation.core.Message;
 import org.simnation.core.Time;
 import org.simnation.model.persistence.TraderDBS;
 import org.simnation.simulation.model.Root;
+import org.simplesim.core.messaging.RoutedMessage;
 
 
 /**
  * Represents an enterprise that buy a single product at the B2B-market and sells it to the local B2C-markets. So, it
  * has an important logistic and allocation function.
  *
- * @author Rene Kuhlemann
- *
  */
 
-public final class Trader extends Enterprise<TraderState> {
+public final class Trader extends AbstractBasicAgent<TraderState,Trader.EVENT> {
 
 
-	private enum EVENT {
+	 enum EVENT {
 
-		PLAN_LOGISTICS("Plan logistic and send deliveries to local markets",0,0),
-		BOOKING_INVOKED("Check payments",Time.DAY,Time.DAY),
-		DAY_STARTED("New day started",8*Time.HOUR,Time.DAY),
-		WEEK_ENDED("Working week ended",0,Time.WEEK),
-		STOCKUP_TRIGGERED("Reorder period",0,Time.CHANGING);
+		PLAN_LOGISTICS,
+		BOOKING_INVOKED,
+		DAY_STARTED,
+		WEEK_ENDED,
+		STOCKUP_TRIGGERED;
 
 		/*
 		 * PROCUREMNT_TRIGGERED, ASPIRATION_ADAPTATION_TRIGGERED, ACCOUNTING_PERIOD_ENDED, MACHINE_LIFETIME_ENDED;
 		 */
-
-		private String name;
-		private int offset,period;
-
-		EVENT(String n,int ofs,int per) {
-			name=n;
-			offset=ofs;
-			period=per;
-		}
-
-		public int offset() {
-			return offset;
-		}
-
-		public int period() {
-			return period;
-		}
-
-		public String toString() {
-			return name;
-		}
 
 	}
 
@@ -91,7 +79,7 @@ public final class Trader extends Enterprise<TraderState> {
 	protected void handleEvent(final EVENT event) {
 		switch (event) {			
 			case STOCKUP_TRIGGERED:
-				final Storage store=getState().getStorage();
+				final Inventory store=getState().getStorage();
 				final int plan=store.calcOrderVolume(getState().getServiceLevel(),getState().getTime());
 				getState().getProduction().order(plan);
 				// tprod ist f�r ein Gut konstant -> in State abspeichern!!!
@@ -134,9 +122,14 @@ public final class Trader extends Enterprise<TraderState> {
 		
 	}
 
+	@Override
+	protected void handleMessage(RoutedMessage msg) { // TODO Auto-generated method stub
+	 }
 
-	protected TraderState createState() {
-		return new TraderState();
+	@Override
+	protected void handleEvent(EVENT event, Time time) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

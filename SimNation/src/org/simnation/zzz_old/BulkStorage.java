@@ -1,4 +1,4 @@
-package org.simnation.agents.firm.common;
+package org.simnation.zzz_old;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,16 +10,15 @@ import org.simnation.context.technology.Good;
 /**
  * Storage with only on container for all (merged) batches, like a silo
  *
- * @author Martin Sanski and Rene Kuhlemann
  *
  */
-public final class BulkStorage extends Storage {
+public final class BulkStorage extends Inventory {
 
 	private final Batch batch; // type of stored items
 
 	public BulkStorage(Good good,int start) {
 		super(start);
-		batch=new Batch(good.getStandardProduct());
+		batch=new Batch(good);
 	}
 
 	public BulkStorage(Good good) {
@@ -62,7 +61,7 @@ public final class BulkStorage extends Storage {
 	}
 
 	public Good getGood() {
-		return batch.getProduct().getGood();
+		return batch.getType();
 	}
 
 	@Override
