@@ -32,7 +32,7 @@ public final class Procurement {
 
 	public void checkInventory() {
 	    EnterpriseState state=parent.getState();
-	    for (Inventory storage : state.getWarehouse().getInputStorages()) {
+	    for (Storage storage : state.getWarehouse().getInputStorages()) {
 	        if (storage.reachedReorderLevel()) {
 	            int amount=storage.calcOrderVolume(state.getServiceLevel(),state.getTime());
 	            // willingness to pay is derived by price of current stock and a correction factor

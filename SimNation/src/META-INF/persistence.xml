@@ -5,20 +5,41 @@
         http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd"
 	version="2.2">
 
-	<persistence-unit name="simnation-database">
+	<persistence-unit name="Simulation">
 		<class>org.simnation.context.geography.Region</class>
 		<class>org.simnation.context.technology.Good</class>
 		<class>org.simnation.context.technology.Good$Precursor</class>
 		<class>org.simnation.context.needs.Need</class>
 		<class>org.simnation.agents.household.HouseholdDBS</class>
+		<class>org.simnation.agents.firm.trader.TraderDBS</class>
 		<exclude-unlisted-classes />
 		<properties>
-			<property name="javax.jdo.option.ConnectionURL" value="jdbc:h2:d:\\test" />
-			<property name="datanucleus.generateSchema.database.mode" value="drop-and-create"/>
+			<property name="javax.jdo.option.ConnectionURL" value="jdbc:h2:file:d://test" />
 			<property name="datanucleus.schema.autoCreateAll" value="true" />
 		</properties>
-		
+	</persistence-unit>
+	
+	<persistence-unit name="Scenario">
+		<class>org.simnation.context.geography.Region</class>
+		<class>org.simnation.context.technology.Good</class>
+		<class>org.simnation.context.technology.Good$Precursor</class>
+		<class>org.simnation.context.needs.Need</class>
+		<class>org.simnation.agents.household.HouseholdDBS</class>
+		<class>org.simnation.agents.firm.trader.TraderDBS</class>
+		<exclude-unlisted-classes />
+		<properties>
+			<property name="javax.jdo.option.ConnectionURL" value="jdbc:h2:file:d://test" />
+			<property name="datanucleus.schema.autoCreateAll" value="true" />
+			<property name="datanucleus.generateSchema.database.mode" value="drop-and-create" />
+		</properties>
+	</persistence-unit>
+	
+			
 		<!--
+		
+		<property name="datanucleus.generateSchema.database.mode" value="drop-and-create"/>
+			
+		
 		<property name="javax.jdo.option.ConnectionURL" value="odf:file:myfile.ods" />
 		 
 		<class>org.simnation.model.technology.ProductionTechnology$ProductionFunctionSet</class>
@@ -31,7 +52,7 @@
 			value="create" /> <property name="datanucleus.generateSchema.scripts.create.target" 
 			value="e:\\git\\simnation\\scenario\\createDLL.txt" /> <property name="datanucleus.validateSchema" 
 			value="false" /> -->
-	</persistence-unit>
+	
 	<!-- <persistence-unit name="Scenario"> <class>org.simnation.model.Time</class> 
 		<class>org.simnation.model.needs.Need</class> <class>org.simnation.model.needs.Need$ValueEntry</class> 
 		<class>org.simnation.model.technology.AbstractProductionFunction</class> 

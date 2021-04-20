@@ -52,7 +52,7 @@ public interface Tradable<T> extends Comparable<Tradable<T>> {
 	/**
 	 * @return price per package
 	 */
-	float getPrice();
+	double getPrice();
 
 	/**
 	 * @return total monetary value of the transaction

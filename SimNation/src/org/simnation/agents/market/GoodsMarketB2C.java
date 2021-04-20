@@ -6,6 +6,7 @@
 package org.simnation.agents.market;
 
 import java.util.List;
+import java.util.Set;
 
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
@@ -18,18 +19,21 @@ import org.simplesim.core.scheduling.Time;
  *
  */
 public final class GoodsMarketB2C extends Market<Good> {
+	
+	private static final String AGENT_NAME="GoodsMarketB2C";
+
 
 	public static final Time MARKET_OFFSET=new Time(0,0,0,12,0,0);
 	public static final Time MARKET_PERIOD=Time.DAY;
 
 	/**
 	 * @param strat
-	 * @param segList
+	 * @param segments
 	 * @param offset
 	 * @param p
 	 */
-	public GoodsMarketB2C(List<Good> segList) {
-		super(segList,MARKET_OFFSET,MARKET_PERIOD,new SimpleDoubleAuctionStrategy<>());
+	public GoodsMarketB2C(Set<Good> segments) {
+		super(segments,MARKET_OFFSET,MARKET_PERIOD,new SimpleDoubleAuctionStrategy<>());
 	}
 
 	/*
@@ -44,6 +48,10 @@ public final class GoodsMarketB2C extends Market<Good> {
 		else((Batch) d.getItem()).merge(batch);
 		long cost=Math.round(price*amount);
 		s.getMoney().merge(d.getMoney().split(cost));
+	}
+	
+	public String getName() {
+		return AGENT_NAME;
 	}
 
 }

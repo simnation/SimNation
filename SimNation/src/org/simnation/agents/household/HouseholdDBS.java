@@ -13,6 +13,7 @@ package org.simnation.agents.household;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jdo.annotations.Column;
 import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.NotPersistent;
@@ -23,7 +24,10 @@ import javax.jdo.annotations.Serialized;
 
 import org.simnation.agents.business.Money;
 import org.simnation.agents.common.Batch;
+import org.simnation.agents.common.DatabaseState;
+import org.simnation.context.geography.Region;
 import org.simnation.context.population.Citizen;
+import org.simplesim.model.State;
 
 /**
  * Saves the {@link HouseholdState} in a form that can directly be made
@@ -34,8 +38,10 @@ import org.simnation.context.population.Citizen;
  */
 @PersistenceCapable
 @DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY)
-public class HouseholdDBS {
+public class HouseholdDBS implements DatabaseState<HouseholdState> {
 
+	@Column(name="REGION_FK")
+	private Region region=null; // the households parent region
 	private long cash;
 	@Serialized
 	private List<Citizen> family=new ArrayList<>();
@@ -75,5 +81,18 @@ public class HouseholdDBS {
 	public int[] getStock() {
 		return stock;
 	}
+
+	public Region getRegion() { return region; }
+
+	public void setRegion(Region region) { this.region = region; }
+	
+
+	@Override
+	public void convertToDBS(HouseholdState state) { // TODO Auto-generated method stub
+	 }
+
+	@Override
+	public HouseholdState convertToState() { // TODO Auto-generated method stub
+	return null; }
 
 }

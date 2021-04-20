@@ -14,7 +14,7 @@ import org.simnation.core.Product;
  * to ensure delivery ability.<p> 
  * {@link Manufacturer}: Precursors and outgoing products are stored in the same warehouse, each product is stored 
  * in a separate shelf, first slot (index=0) is the outgoing product. <p>
- * {@link Trader}: Buy and sells only ONE good, so there is only one {@link Inventory} and there are convenience methods
+ * {@link Trader}: Buy and sells only ONE good, so there is only one {@link Storage} and there are convenience methods
  * implemented for the trader agent to access the first slot directly. <p>
  * So, a warehouse serves to buffer over-production and to realize a certain delivery reliability. On the other hand, it enables
  * to build up a safety stock to assure a continuous flow of goods.
@@ -23,15 +23,15 @@ import org.simnation.core.Product;
  */
 public final class Warehouse {
 
-	private final List<Inventory> inventory=new ArrayList<Inventory>(Limits.MAX_PRECURSORS+1);
+	private final List<Storage> inventory=new ArrayList<Storage>(Limits.MAX_PRECURSORS+1);
 	private final static int OUTPUT_STORAGE_INDEX=0;
 
-	public void addInputStorage(Inventory storage) {
+	public void addInputStorage(Storage storage) {
 		if (inventory.isEmpty()) inventory.add(null); // index 0 i reserved for output
 		inventory.add(storage);
 	}
 
-	public void setOutputStorage(Inventory storage) {
+	public void setOutputStorage(Storage storage) {
 		if (inventory.isEmpty()) inventory.add(storage);
 		else inventory.set(OUTPUT_STORAGE_INDEX,storage);
 	}
@@ -112,12 +112,12 @@ public final class Warehouse {
 		getOutputStorage().resetStatistics(time);
 	}
 
-	public Inventory getOutputStorage() {
+	public Storage getOutputStorage() {
 		return inventory.get(OUTPUT_STORAGE_INDEX);
 	}
 
-	private Inventory get(Good good) {
-		for (final Inventory iter : inventory)
+	private Storage get(Good good) {
+		for (final Storage iter : inventory)
 			// a good is only initialized ONCE by the value chain, so == should be ok!
 			if (iter.getGood()==good) return iter;
 		return null;

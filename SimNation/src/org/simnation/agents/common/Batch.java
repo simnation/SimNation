@@ -22,10 +22,10 @@ public class Batch implements Tradable<Good>, Mergable<Batch> {
 
 	private final Good good;
 	private final AtomicLong quantity;
-	private volatile float price;
+	private volatile double price;
 	private volatile float quality;
 
-	public Batch(Good g, long a, float p, float q) {
+	public Batch(Good g, long a, double p, float q) {
 		if (a<0) throw new IllegalArgumentException("Batch constructor: initial quantity negative!");
 		good=g;
 		quantity=new AtomicLong(a);
@@ -74,7 +74,7 @@ public class Batch implements Tradable<Good>, Mergable<Batch> {
 	}
 
 	@Override
-	public float getPrice() {
+	public double getPrice() {
 		return price;
 	}
 

@@ -1,4 +1,4 @@
-package org.simnation.persistence;
+package org.simnation.zzz_old;
 
 import javax.jdo.annotations.Column;
 import javax.jdo.annotations.Inheritance;
@@ -18,15 +18,15 @@ import javax.jdo.annotations.InheritanceStrategy;
  */
 @PersistenceCapable
 @Inheritance(strategy=InheritanceStrategy.NEW_TABLE)
-public class TraderDBS extends EnterpriseDBS {
+public class ManufacturerDBS extends EnterpriseDBS {
 
 	@Column(name="good")
 	private Good good; // reference to the corresponding good
 	private int pckgSize;
+	private int capacity;
 	private int initAmount;
 	private int initPrice;
 	private float initQuality;
-	private int initMoney; 
 
 	public Good getGood() {
 		return good;
@@ -68,14 +68,12 @@ public class TraderDBS extends EnterpriseDBS {
 		this.initQuality=initQuality;
 	}
 
-	public int getInitMoney() {
-		return initMoney;
+	public int getCapacity() {
+		return capacity;
 	}
 
-	public void setInitMoney(int initMoney) {
-		this.initMoney = initMoney;
+	public void setCapacity(int capacity) {
+		this.capacity=capacity;
 	}
-
-
 
 }

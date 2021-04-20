@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
@@ -33,7 +34,7 @@ public class MarketState<T> implements State {
 	private final Map<T,List<Demand<T>>> demandList=new IdentityHashMap<>();
 	private final Map<T,List<Supply<T>>> supplyList=new IdentityHashMap<>();
 	
-	public MarketState(List<T> segmentList) {
+	public MarketState(Set<T> segmentList) {
 		for (T segement : segmentList) {
 			demandList.put(segement,new ArrayList<Demand<T>>());
 			supplyList.put(segement,new ArrayList<Supply<T>>());

@@ -31,7 +31,7 @@ public class HouseholdState implements State {
 	private final Money cash;
 	
 	public HouseholdState(HouseholdDBS dbs) {
-		for (Good consumable : Model.getInstance().getNeedSet().getConsumables())
+		for (Good consumable : Model.getInstance().getConsumableSet())
 			stock.put(consumable, new Batch(consumable));
 
 		int stock[]=dbs.getStock();

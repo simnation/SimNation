@@ -8,7 +8,7 @@
  * Contributors: - Rene Kuhlemann - development and initial implementation
  *
  */
-package org.simnation.context.technology;
+package org.simnation.zzz_old;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -28,7 +28,7 @@ public final class GoodSet implements Persistable {
 	/** list of all goods representing the value chain */
 	private final Set<Good> goods=new HashSet<>();
 	
-	/** list of all resources, acting as sources node of a graph */
+	/** list of all resources, acting as source nodes of a graph */
 	private final Set<Good> resources=new HashSet<>();
 	
 	public void add(Good good) {

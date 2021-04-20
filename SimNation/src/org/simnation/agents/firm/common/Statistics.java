@@ -1,5 +1,5 @@
 /*
- * SimNation is a multi-agent model to simulate economic systems. It is scalable 
+ * SimNation is a multi-agent model to simulate economic systems. It is scalable
  * and used JSimpleSim as technical backbone for concurrent discrete event simulation.
  * 
  * This software is published as open source and licensed under GNU GPLv3.
@@ -10,90 +10,45 @@
  */
 package org.simnation.agents.firm.common;
 
-import org.simnation.agents.common.Batch;
-import org.simnation.context.technology.Good;
-
 /**
- * Inventory represent the storage of a good and provides additional statistic
- * functionality.
+ * Provides evaluation of order data and simple forecasting.
  * <p>
- * The inventory contains a {@code Batch} of a {@code Good}. Additional batches
- * are merged with the storage batch, yielding averaged price and quality.
- * Statistics support order quantity forecast by exponential smoothing and
- * safety stock calculation.
- * <p>
- * There is optional inventory management provided based on a
- * time-quantity-policy: Reorder or production happen in a constant lead-time. A
- * new stock level is calculated based on the actual demand during the
- * lead-time. Forecasting is done by a recursive algorithm based on exponential
- * smoothing.
+ * Calculates average and variance by exponential smoothing.
  * 
- * @see Good
- * @see Batch
  * @see <a href=
  *      "https://fanf2.user.srcf.net/hermes/doc/antiforgery/stats.pdf">Reference
  *      for exponentially-weighted mean and variance</a>
  * 
  */
-public class Inventory {
+public class Statistics {
 
-	private final Batch batch; // stored items
 	private double average; // demand average 
 	private double variance; // demand variance
 	private int count; // total requests
 	private int misses; // out-of-stock requests
 	private float alpha=0.1f; // exponential smoothing factor
 
-	public Inventory(Good good) {
-		batch=new Batch(good);
+	public Statistics() {
 		resetStatistics();
 	}
 
 	/**
-	 * Removes a quantity from the inventory and returns it as a new batch
+	 * Estimates the reorder volume based on previous demand, safety stock and
+	 * current stock level.
 	 * <p>
-	 * Note: The quantity is limited by the overall batch size in stock.
-	 * 
-	 * @param quantity the requested quantity
-	 * @return the new batch containing the quantity
-	 */
-	public Batch removeFromStock(long quantity) {
-		return batch.split(updateStatistics(quantity));
-	}
-
-	/**
-	 * Restocks the inventory.
-	 * <p>
-	 * Note: Statistics should be reset after restocking.
-	 * 
-	 * @param item the new batch added to the inventory
-	 */
-	public void restock(Batch item) {
-		if (!batch.isSameGoodAs(item))
-			throw new IllegalArgumentException("Tried to store a batch of a different good!");
-		batch.merge(item);
-	}
-
-	/**
-	 * Estimates the reorder volume based on previous demand, safety stock and current stock level.
-	 * <p>
-	 * Note: Reset statistics to synchronize with order cycle 
+	 * Note: Reset statistics to synchronize with order cycle
 	 * 
 	 * @param sl the desired service level (0<sl<=1)
 	 * @return reorder volume for next service period
 	 */
 	public long calcReorderVolume(float sl) {
 		// calc safety stock based on service level and variance of previous demands
-		double safetyStock=getSafetyFactor(sl)*Math.sqrt(getDemandVariance()*count);
+		double safetyStock=getSafetyFactor(sl)*Math.sqrt(getVariance()*count);
 		// add estimated demand volume of next period
-		long targetQuantity=Math.round(count*getDemandAverage()+safetyStock);
+		long targetQuantity=Math.round(count*getAverage()+safetyStock);
 		// consider remaining quantity in stock
-		return targetQuantity-getStockLevel();
+		return targetQuantity;
 	}
-
-	public Good getGood() { return batch.getType(); }
-
-	public boolean isEmpty() { return batch.isEmpty(); }
 
 	/**
 	 * Returns the actual service level of this inventory
@@ -105,12 +60,6 @@ public class Inventory {
 		return (count-misses)/count;
 	}
 
-	public long getStockLevel() { return batch.getQuantity(); }
-
-	public float getAverageValue() { return batch.getPrice(); }
-
-	public double getTotalValue() { return batch.getTotalValue(); }
-
 	public float getSmoothingFactor() { return alpha; }
 
 	/**
@@ -120,29 +69,31 @@ public class Inventory {
 	 */
 	public void setSmoothingFactor(float value) { alpha=value; }
 
-	public double getDemandAverage() { return average; }
+	public double getAverage() { return average; }
 
-	public double getDemandVariance() { return variance; }
+	public double getVariance() { return variance; }
 
 	public void resetStatistics() {
 		average=variance=0;
 		misses=count=0;
 	}
 
-	private long updateStatistics(long orderedQuantity) {
-		// do statistics
-		if (count==0) average=orderedQuantity;
+	/**
+	 * Updates statistic values
+	 * 
+	 * @param quantity actual (delivered) quantity
+	 * @param miss     fail of fulfillment?
+	 */
+	public void updateStatistics(long quantity, boolean miss) {
+		if (count==0) average=quantity;
 		else { // see reference in class documentation for algorithm 
-			final double diff=orderedQuantity-average;
+			final double diff=quantity-average;
 			final double incr=alpha*diff;
 			average=average+incr; // update mean
 			variance=(1-alpha)*(variance+diff*incr); // recursive calculation based on Welford's method
 		}
-		// determine maximum quantity
 		count++;
-		if (orderedQuantity<=getStockLevel()) return orderedQuantity;
-		misses++; // record stock-out
-		return getStockLevel();
+		if (miss) misses++;
 	}
 
 	/**

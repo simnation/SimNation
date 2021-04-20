@@ -15,7 +15,8 @@ package org.simnation.agents.business;
  */
 public final class Supply<T> implements Comparable<Supply<T>> {
 
-	private final int[] addr;
+	private final int[] supplier;
+	private final double price; // selling price <> batch price
 	private final Tradable<T> item; // item offered
 	private volatile Money money=null; // optional: cash payment - only for cash-based trades
 
@@ -26,9 +27,10 @@ public final class Supply<T> implements Comparable<Supply<T>> {
 	 * @param order
 	 * @param payment
 	 */
-	public Supply(int[] a, Tradable<T> t) {
-		addr=a;
+	public Supply(int[] addr, Tradable<T> t, double p) {
+		supplier=addr;
 		item=t;
+		price=p;
 	}
 
 	public Tradable<T> getItem() {
@@ -39,8 +41,8 @@ public final class Supply<T> implements Comparable<Supply<T>> {
 		return getItem().getType();
 	}
 
-	public float getPrice() {
-		return getItem().getPrice();
+	public double getPrice() {
+		return price;
 	}
 
 	public long getQuantity() {
@@ -48,7 +50,7 @@ public final class Supply<T> implements Comparable<Supply<T>> {
 	}
 
 	public int[] getAddr() {
-		return addr;
+		return supplier;
 	}
 
 	public Money getMoney() {

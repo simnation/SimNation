@@ -8,7 +8,7 @@ import org.simnation.agents.common.Command;
 import org.simnation.agents.common.Command.COMMAND;
 import org.simnation.agents.firm.Enterprise;
 import org.simnation.agents.firm.common.BulkStorage;
-import org.simnation.agents.firm.common.Inventory;
+import org.simnation.agents.firm.common.Storage;
 import org.simnation.agents.market.MarketInfo;
 import org.simnation.context.technology.Good;
 import org.simnation.context.technology.Precursor;
@@ -109,7 +109,7 @@ public final class Manufacturer extends Enterprise<ManufacturerState> {
 				addEvent(EVENT.PRODUCTION_FINISHED,getState().getProductionTime());
 				break;
 			case STOCKUP_TRIGGERED:
-				final Inventory store=getState().getWarehouse().getOutputStorage();
+				final Storage store=getState().getWarehouse().getOutputStorage();
 				final int plan=store.calcOrderVolume(getState().getServiceLevel(),getState().getTime());
 				getState().getProduction().order(plan);
 				// tprod ist f�r ein Gut konstant -> in State abspeichern!!!
@@ -156,7 +156,7 @@ public final class Manufacturer extends Enterprise<ManufacturerState> {
 		return getState().getMachine().getGood();
 	}
 	
-	private Inventory getStorage() {
+	private Storage getStorage() {
 		return getState().getWarehouse().getOutputStorage();
 	}
 	

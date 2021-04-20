@@ -12,7 +12,7 @@ import org.simnation.context.technology.Good;
  *
  *
  */
-public final class BulkStorage extends Inventory {
+public final class BulkStorage extends Storage {
 
 	private final Batch batch; // type of stored items
 
