@@ -36,7 +36,8 @@
 	
 			
 		<!--
-		
+		<property name="javax.jdo.option.ConnectionURL" value="jdbc:h2:file:d://test" />
+			
 		<property name="datanucleus.generateSchema.database.mode" value="drop-and-create"/>
 			
 		

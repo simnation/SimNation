@@ -21,6 +21,12 @@ import org.simnation.agents.business.Supply;
  */
 public interface MarketStrategy<T> {
 	
+	/**
+	 * 
+	 * @param market
+	 * @param demand
+	 * @param supply
+	 */
 	void doMarketClearing(Market<T> market, List<Demand<T>> demand, List<Supply<T>> supply);
 
 }

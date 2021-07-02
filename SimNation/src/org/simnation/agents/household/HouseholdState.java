@@ -26,31 +26,19 @@ import org.simplesim.model.State;
 public class HouseholdState implements State {
 
 	private final Map<Good,Batch> stock=new IdentityHashMap<>();
-	private final HouseholdNeed[] need;
-	private final List<Citizen> family;
-	private final Money cash;
+	private final HouseholdNeed[] need=null;
+	List<Citizen> family;
+	Money money;
 	
-	public HouseholdState(HouseholdDBS dbs) {
-		for (Good consumable : Model.getInstance().getConsumableSet())
-			stock.put(consumable, new Batch(consumable));
-
-		int stock[]=dbs.getStock();
-		need=new HouseholdNeed[stock.length];
-		
-		// fill in need here
-		
-		
-		
-		family=new ArrayList<>(); //dbs.getFamily();
-		cash=dbs.getMoney();
+	public HouseholdState() {
 	}
 	
 	public Map<Good,Batch> getInventory() {
 		return stock;
 	}
 	
-	public Money getCash() {
-		return cash;
+	public Money getMoney() {
+		return money;
 	}
 	
 	public Citizen getFamilyMember(int index) {

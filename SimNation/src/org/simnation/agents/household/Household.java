@@ -14,15 +14,21 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.common.Batch;
 import org.simnation.context.needs.Need;
 import org.simnation.context.needs.Need.URGENCY;
+import org.simnation.context.technology.Good;
+import org.simnation.model.Domain;
 import org.simnation.model.Limits;
+import org.simnation.model.Model;
 import org.simplesim.core.messaging.RoutedMessage;
 import org.simplesim.core.scheduling.Time;
 
@@ -40,7 +46,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		super(dbs.convertToState());
 		strategy=new HouseholdStrategy(this);
 
-		enqueueEvent(EVENT.testEvent,Time.HOUR);
+		enqueueEvent(EVENT.testEvent,new Time(0,8,0));
 
 		/*
 		 * ToDo (0. Set need events according to stock) 0. Set revolving events 1. get
@@ -75,7 +81,8 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		else if (isFrustrationEvent(event)) processNeedFrustration(getNeedDefinition(event));
 		else switch (event) { // all other events are handled here...
 		case testEvent:
-			log(time,"test event");
+			log("\t send demand event");
+			sendDemand();
 			enqueueEvent(EVENT.testEvent,time.add(Time.DAY));
 			break;
 		/*
@@ -88,6 +95,19 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		default: // error: event type not known - this should never happen!
 			throw new UnhandledEventType(event,this);
 		}
+	}
+
+	/**
+	 * @param i
+	 */
+	private void sendDemand() { 
+		Good good=Model.getInstance().getNeedSet().iterator().next().getSatisfier();
+		int q=(int) (Math.random()*200);
+			Demand<Good> demand=new Demand<>(this.getAddress(),good,q,10.5f,0,getState().getMoney().split(1000));
+			RoutedMessage msg=new RoutedMessage(this.getAddress(),((Domain) getParent()).getGoodsMarket().getAddress(),demand); 
+			sendMessage(msg);
+			log("\t send demand to market: "+demand.toString());
+		
 	}
 
 	/**
@@ -109,8 +129,14 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	@Override
 	protected void handleMessage(RoutedMessage msg) {
 		if (msg.getContent().getClass()==Demand.class) {
-			Batch batch=(Batch) ((Demand<?>) msg.getContent()).getItem().getType();
-			getState().getInventory().get(batch.getType()).merge(batch);
+			Demand<Good> demand=msg.getContent();
+			Batch batch=(Batch) demand.getItem();
+			if (batch!=null) {
+				// getState().getInventory().get(batch.getType()).merge(batch);
+				log("\t received batch: "+batch.toString()+" and "+demand.getMoney().toString());
+			} else log("\t received no supply "+demand.getMoney().toString());
+			getState().getMoney().merge(demand.getMoney());
+			log("\t total money: "+getState().getMoney().toString());
 		} else throw new UnhandledMessageType(msg,this);
 	}
 
@@ -263,19 +289,19 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	}
 
 	/* maps each urgency level to its corresponding subset of need definitions */
-	private static final EnumMap<URGENCY, List<Need>> urgencyMap=new EnumMap<>(URGENCY.class);
+	private static final EnumMap<URGENCY, Set<Need>> urgencyMap=new EnumMap<>(URGENCY.class);
 
 	/* maps each event to its specific need definition */
 	private static final Map<EVENT, Need> mapEvent2Need=new EnumMap<>(EVENT.class);
-	private static final Map<Need, EVENT> mapNeed2ActivationEvent=new HashMap<>();
-	private static final Map<Need, EVENT> mapNeed2FrustrationEvent=new HashMap<>();
+	private static final Map<Need, EVENT> mapNeed2ActivationEvent=new IdentityHashMap<>();
+	private static final Map<Need, EVENT> mapNeed2FrustrationEvent=new IdentityHashMap<>();
 
 	public static void initNeedMap(Collection<Need> needSet) {
 		urgencyMap.clear();
 		mapEvent2Need.clear();
 		mapNeed2ActivationEvent.clear();
 		mapNeed2FrustrationEvent.clear();
-		for (URGENCY u : URGENCY.values()) urgencyMap.put(u,new ArrayList<Need>());
+		for (URGENCY u : URGENCY.values()) urgencyMap.put(u,new HashSet<Need>());
 		int index=0; // init mappings
 		for (Need nd : needSet) {
 			// map activation events

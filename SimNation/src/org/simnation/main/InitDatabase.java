@@ -83,7 +83,7 @@ public class InitDatabase {
 		tr.setRegion(domain);
 		tr.setGood(pizza);
 		tr.setStock(5000);
-		tr.setPrice(3.5f);
+		tr.setValue(350*tr.getStock());
 		tr.setQuality(0.43f);
 		tr.setCash(100000);
 		return tr;

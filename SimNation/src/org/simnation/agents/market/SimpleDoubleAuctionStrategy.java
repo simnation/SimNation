@@ -37,10 +37,12 @@ public class SimpleDoubleAuctionStrategy<T> implements MarketStrategy<T> {
 	}
 
 	/**
-	 * @param market
-	 * @param demand
-	 * @param supply
-	 * @param price
+	 * Does the market clearing by calling the market's trade function for each match of supply and demand.
+	 * 
+	 * @param market the market
+	 * @param demand list of the market's demands
+	 * @param supply list of the market's supplies
+	 * @param price the equilibrium price (previously calculated) 
 	 */
 	private void tradeItems(Market<T> market, List<Demand<T>> demand, List<Supply<T>> supply, double price) {
 		Iterator<Demand<T>> diter=demand.iterator();
@@ -66,6 +68,20 @@ public class SimpleDoubleAuctionStrategy<T> implements MarketStrategy<T> {
 		}
 	}
 	
+	/**
+	 * Calculates the market's actual equilibrium price.
+	 * <p>
+	 * In economics, the equilibrium price is the intersection of supply and demand curve. In this implementation,
+	 * supply and demand are <i>discrete</i> functions. So, finding the equilibrium price and quantity has to be done by iteration.
+	 * <p>
+	 * Note: The equilibrium price is calculated as average of the last supply and demand price.
+	 * 
+	 * 
+	 * @param market the market
+	 * @param demand list of the market's demands
+	 * @param supply list of the market's supplies
+	 * @return the equilibrium price
+	 */
 	private double findEquilibriumPrice(List<Demand<T>> demand, List<Supply<T>> supply) {
 		Iterator<Demand<T>> diter=demand.iterator();
 		Iterator<Supply<T>> siter=supply.iterator();

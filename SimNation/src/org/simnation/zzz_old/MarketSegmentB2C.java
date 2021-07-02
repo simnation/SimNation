@@ -89,7 +89,7 @@ public final class MarketSegmentB2C extends MarketSegment2<Good> {
 	 */
 	private void sendDelivery(final GoodsMarketB2C parent,Demand<Good> demand,Supply<Good> offer,int units) {
 		// transfer money to the supplier's cash deposit
-		final int value=units*offer.getBatch().getPrice();
+		final int value=units*offer.getBatch().getMaxPrice();
 		parent.transferMoney(offer.getSupplier(),demand.getMoney(),value);
 		// send the delivery
 		final Batch item=((Batch) offer.getBatch()).split(units);

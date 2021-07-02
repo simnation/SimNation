@@ -12,12 +12,18 @@ import org.simnation.agents.common.Mergable;
 /**
  * Represents an amount of cash.
  * <p>
+ * Money is handled on an integer base, so fast and simple primitive calculation
+ * can be used. Real world data has to be scaled accordingly. One way could
+ * be to work on a cent base, thus multiplying real world values by 100.
+ * <p>
  * For a closed money cycle, money may only be created in two occasions:
  * <ol>
  * <li>when loading the database states during the model initialization
- * <li>during the simulation run by the central bank agent (influences inflation rate)
+ * <li>during the simulation run by the central bank agent (influences inflation
+ * rate)
  * </ol>
- * Never ever create money during a simulation run by any other agent than the central bank!
+ * Never ever create money during a simulation run by any other agent than the
+ * central bank!
  * <p>
  * Note: This class is thread-safe
  */
@@ -26,7 +32,7 @@ public final class Money implements Mergable<Money> {
 	private final AtomicLong value;
 
 	public Money(long val) {
-		if (val<0) throw new IllegalArgumentException("Money constructor: initial value negative!");
+		if (val<0) throw new IllegalArgumentException("Money(): initial value negative!");
 		value=new AtomicLong(val);
 	}
 
@@ -34,16 +40,17 @@ public final class Money implements Mergable<Money> {
 		this(0);
 	}
 
-	public long getValue() {
-		return value.get();
-	}
+	public long getValue() { return value.get(); }
 
+	@Override
 	public Money split(long amount) {
-		if ((amount<0)||(amount>getValue())) throw new IllegalArgumentException("Money.split(): value too large or negative!");
+		if (amount<0||amount>getValue())
+			throw new IllegalArgumentException("Money.split(): value too large or negative!");
 		value.addAndGet(-amount);
 		return new Money(amount);
 	}
 
+	@Override
 	public long merge(Money other) {
 		return value.addAndGet(other.value.getAndSet(0));
 	}
@@ -54,7 +61,7 @@ public final class Money implements Mergable<Money> {
 
 	@Override
 	public String toString() {
-		return "Money["+value+" GE]";
+		return Long.toUnsignedString(getValue())+" $";
 	}
 
 }

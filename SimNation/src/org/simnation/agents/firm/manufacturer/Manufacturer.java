@@ -93,7 +93,7 @@ public final class Manufacturer extends Enterprise<ManufacturerState> {
 		 * Command<Address>(COMMAND.SUBSCRIBE,getAddress())));
 		 */
 		// subscribe to local b2c market
-		final Command<Money> subscription=new Command<Money>(COMMAND.B2C_SUBSCRIBE,getAddress(),getState().getCash());
+		final Command<Money> subscription=new Command<Money>(COMMAND.B2C_SUBSCRIBE,getAddress(),getState().getMoney());
 		final Message<Command<Money>> msg=new Message<>(getAddress(),getB2CMarketAddr(),subscription);
 		sendMessage(msg);
 		

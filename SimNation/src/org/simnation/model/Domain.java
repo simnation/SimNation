@@ -47,6 +47,25 @@ public final class Domain extends RoutingDomain {
 
 	public Region getRegion() { return region; }
 	
+	/**
+	 * Returns the index of this domain.
+	 * 
+	 * @return index of this domain within the first level of the model tree 
+	 */
+	public int getDomainIndex() {
+		return getDomainIndex(getAddress());
+	}
+	
+	/**
+	 * Returns the domain index of the given address.
+	 * 
+	 * @param addr the address
+	 * @return domain index of the entity with the given address within the model tree 
+	 */
+	public static int getDomainIndex(int[] addr) {
+		return addr[0];
+	}
+	
 	public String getName() {
 		return region.getName();
 	}

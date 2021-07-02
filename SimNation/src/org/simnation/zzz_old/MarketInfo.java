@@ -58,7 +58,7 @@ public final class MarketInfo {
     void update(final Tradable<?> m) { 
     	totalAmount+=m.getQuantity();
     	totalVolume+=m.getTotalVolume();
-    	totalValue+=m.getTotalValue();
+    	totalValue+=m.getValue();
     	aggrQuality+=(m.getQuality()*m.getTotalVolume());
     	dealsCounter++;
     }

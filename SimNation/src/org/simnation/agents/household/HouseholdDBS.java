@@ -92,7 +92,11 @@ public class HouseholdDBS implements DatabaseState<HouseholdState> {
 	 }
 
 	@Override
-	public HouseholdState convertToState() { // TODO Auto-generated method stub
-	return null; }
+	public HouseholdState convertToState() { 
+		final HouseholdState state=new HouseholdState();
+		state.family=getFamily();
+		state.money=new Money(getCash());
+		return state;
+	}
 
 }

@@ -16,9 +16,10 @@ package org.simnation.agents.business;
 public final class Supply<T> implements Comparable<Supply<T>> {
 
 	private final int[] supplier;
-	private final double price; // selling price <> batch price
+	private final double price; // actual selling price = batch price + margin
 	private final Tradable<T> item; // item offered
-	private volatile Money money=null; // optional: cash payment - only for cash-based trades
+	private final Money money=new Money(); // cash payment for cash-based trades
+	private final long quantityDelivered;
 
 	/**
 	 * Constructor for supply sent to a market
@@ -30,6 +31,7 @@ public final class Supply<T> implements Comparable<Supply<T>> {
 	public Supply(int[] addr, Tradable<T> t, double p) {
 		supplier=addr;
 		item=t;
+		quantityDelivered=item.getQuantity();
 		price=p;
 	}
 
@@ -37,7 +39,7 @@ public final class Supply<T> implements Comparable<Supply<T>> {
 		return item;
 	}
 
-	public T getMarketSegmentSelector() {
+	public T getMarketSegment() {
 		return getItem().getType();
 	}
 
@@ -48,6 +50,10 @@ public final class Supply<T> implements Comparable<Supply<T>> {
 	public long getQuantity() {
 		return getItem().getQuantity();
 	}
+	
+	public long getQuantitySold() {
+		return quantityDelivered-getQuantity();
+	}
 
 	public int[] getAddr() {
 		return supplier;
@@ -57,13 +63,9 @@ public final class Supply<T> implements Comparable<Supply<T>> {
 		return money;
 	}
 
-	public void setMoney(Money value) {
-		money=value;
-	}
-
 	@Override
 	public String toString() {
-		return getItem().toString();
+		return getItem().toString()+" | price:"+getPrice()+"$/U";
 	}
 
 	/*

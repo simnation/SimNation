@@ -54,7 +54,7 @@ public abstract class MarketSegment2<T> {
 	void addDeal(Supply<T> deal) {
 		Tradable<T> item=deal.getBatch();
 		soldUnits+=item.getTotalVolume();
-		turnover+=item.getTotalValue();
+		turnover+=item.getValue();
 		soldPackages+=item.getQuantity();
 		qualitySum+=item.getQuality()*item.getTotalVolume();
 		deals++;

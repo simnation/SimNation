@@ -5,7 +5,7 @@
  */
 package org.simnation.model;
 
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,116 +22,107 @@ import org.simnation.persistence.Persistable;
 import org.simplesim.model.RoutingDomain;
 
 /**
- * The Model is the top-level domain of the economy and thus designed as a singleton.
+ * The Model is the top-level domain of the economy and thus designed as a
+ * singleton.
  * <p>
  * Parts of the model level are:
  * <ul>
- * <li> B2B goods market, including investment goods ({@code GoodsMarketB2B})
- * <li> money market ({@code MoneyMarket})
- * <li> credit market ({@code CreditMarket})
- * <li> regions / domains ({@code Domain})
- * </ul><p>
+ * <li>B2B goods market, including investment goods ({@code GoodsMarketB2B})
+ * <li>money market ({@code MoneyMarket})
+ * <li>credit market ({@code CreditMarket})
+ * <li>regions / domains ({@code Domain})
+ * </ul>
+ * <p>
  * It also yields public information available for all agents (read-only):
  * <ul>
- * <li> value chain ({@code GoodSet})
- * <li> need hierarchy ({@code NeedSet})
- * <li> geographical information ({@code RegionSet})
- * <li> statistical information
+ * <li>value chain
+ * <li>need hierarchy
+ * <li>geographical information
+ * <li>statistical information
  * </ul>
  * 
  */
 public final class Model extends RoutingDomain implements Persistable {
 
 	private static Model instance=null;
-	
-	/** set of all regions */
-	private final Set<Region> regions=new HashSet<>();
-	
-	/** set of all goods representing the value chain */
-	private final Set<Good> goods=new HashSet<>();
-	
-	/** set of all resources, acting as source nodes of value chain graph */
-	private final Set<Good> resources=new HashSet<>();
-	
-	/** set of all consumable goods, acting as sink nodes of value chain graph */
-	private final Set<Good> consumables=new HashSet<>();
-	
-	/** set of all needs */
-	private final Set<Need> needs=new HashSet<>();
 
-	
-	
+	/** set of all regions */
+	private Set<Region> regions=Collections.emptySet();
+
+	/** set of all goods representing the value chain */
+	private Set<Good> goods=Collections.emptySet();
+
+	/** set of all resources, acting as source nodes of value chain graph */
+	private Set<Good> resources=Collections.emptySet();
+
+	/** set of all consumable goods, acting as sink nodes of value chain graph */
+	private Set<Good> consumables=Collections.emptySet();
+
+	/** set of all needs */
+	private Set<Need> needs=Collections.emptySet();
+
 	private final Set<GoodsMarketB2C> b2c=new HashSet<>();
-	
+
 	// Singleton
 	private Model() {
-		super();
 		setAsRootDomain();
 	}
-	
+
 	public static Model getInstance() {
 		if (instance==null) instance=new Model();
 		return instance;
 	}
-	
-	
 
-	public Set<Good> getGoodSet() {
-		return goods;
-	}
+	public Set<Good> getGoodSet() { return goods; }
 
-	public Set<Need> getNeedSet() {
-		return needs;
-	}
-	
-	public Set<Good> getConsumableSet() {
-		return consumables;
-	}
-	
-	public Set<Good> getResourceSet() {
-		return resources;
-	}
+	public Set<Need> getNeedSet() { return needs; }
+
+	public Set<Good> getConsumableSet() { return consumables; }
+
+	public Set<Good> getResourceSet() { return resources; }
 
 	public Set<Region> getRegionSet() { return regions; }
-	
-	public Set<GoodsMarketB2C> getConsumableMarket() {
-		return b2c;
-	}
-	
+
+	public Set<GoodsMarketB2C> getConsumableMarket() { return b2c; }
+
 	@Override
 	public void load(DataAccessObject dao) throws Exception {
-		// load regions
-		regions.addAll(dao.load(Region.class));
-		// load goods, set up value chain
-		goods.addAll(dao.load(Good.class));
-		for (Good good : goods) if (good.isResource()) resources.add(good);
-		// load needs
-		needs.addAll(dao.load(Need.class));
-		for (Need need : needs) consumables.add(need.getSatisfier());
+		regions=Collections.unmodifiableSet(new HashSet<>(dao.load(Region.class))); // load regions
+		goods=Collections.unmodifiableSet(new HashSet<>(dao.load(Good.class))); // load goods, set up value chain
+		needs=Collections.unmodifiableSet(new HashSet<>(dao.load(Need.class))); // load needs
+		// sort out resource as source of value chain
+		Set<Good> temp=new HashSet<>();
+		for (Good good : getGoodSet()) if (good.isResource()) temp.add(good);
+		resources=Collections.unmodifiableSet(temp);
+		// sort out consumables as sink of value chain
+		temp=new HashSet<>();
+		for (Need need : getNeedSet()) temp.add(need.getSatisfier());
+		consumables=Collections.unmodifiableSet(temp);
 		// init household's need hierarchy and event tables
-		Household.initNeedMap(needs);
+		Household.initNeedMap(getNeedSet());
 		
 		for (Region region : getRegionSet()) {
 			Domain domain=addEntity(new Domain(region)); // also inits regional markets
 			domain.addEntity(domain.getGoodsMarket()); // has to be added externally
 			b2c.add(domain.getGoodsMarket());
-			Collection<HouseholdDBS> households=dao.load(HouseholdDBS.class,region);
-			for (HouseholdDBS dbs : households) domain.addEntity(new Household(dbs));
-			Collection<TraderDBS> traders=dao.load(TraderDBS.class,region);
-			for (TraderDBS dbs : traders) domain.addEntity(new Trader(dbs));
 			
+			// add labor market here as well....
+
+			for (HouseholdDBS dbs : dao.load(HouseholdDBS.class,region)) domain.addEntity(new Household(dbs));
+
+			for (TraderDBS dbs : dao.load(TraderDBS.class,region)) domain.addEntity(new Trader(dbs));
 		}
+		
 	}
-	
+
 	@Override
 	public void save(DataAccessObject dao) throws Exception {
 		dao.store(regions);
 		dao.store(goods);
 		dao.store(needs);
 	}
-	
-	public String getName() {
-		return "root";
-	}
+
+	@Override
+	public String getName() { return "root"; }
 
 }

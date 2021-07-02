@@ -50,15 +50,16 @@ public interface Tradable<T> extends Comparable<Tradable<T>> {
 	long getQuantity();
 
 	/**
-	 * @return price per package
-	 */
-	double getPrice();
-
-	/**
 	 * @return total monetary value of the transaction
 	 */
-	default public double getTotalValue() {
-		return ((double)getPrice())*getQuantity();
+	public long getValue();
+
+	/**
+	 * @return price per package
+	 */
+	default double getPrice() {
+		if (getValue()==0) return Double.NaN;  // avoid division by zero
+		return ((double) getQuantity())/((double) getValue());	
 	}
 	
 	/**

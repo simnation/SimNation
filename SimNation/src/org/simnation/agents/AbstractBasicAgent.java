@@ -5,6 +5,7 @@
  */
 package org.simnation.agents;
 
+import org.simnation.model.Domain;
 import org.simplesim.core.messaging.RoutedMessage;
 import org.simplesim.core.scheduling.HeapEventQueue;
 import org.simplesim.core.scheduling.Time;
@@ -48,6 +49,7 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 
 	@Override
 	protected Time doEvent(Time time) {
+		log(time,"doEvent started");
 		// process messages
 		while (getInport().hasMessages()) handleMessage(getInport().poll());
 		// process events
@@ -101,6 +103,15 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 
 	public void enqueueEvent(E event, Time time) {
 		getEventQueue().enqueue(event,time);
+	}
+	
+	/**
+	 * Returns the index of this agent's domain.
+	 * 
+	 * @return index of the domain this agent resides in
+	 */
+	public int getDomainIndex() {
+		return Domain.getDomainIndex(getAddress());
 	}
 
 }

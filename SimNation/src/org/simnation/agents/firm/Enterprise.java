@@ -14,7 +14,7 @@ public abstract class Enterprise<S extends EnterpriseState,E extends Enum<E>> ex
 
 	public Enterprise(S state) {
 		super(state);
-		initCash(dbs.getCash());
+		initCash(dbs.getMoney());
 	}
 
 	public void initCash(int cash) {
@@ -25,7 +25,7 @@ public abstract class Enterprise<S extends EnterpriseState,E extends Enum<E>> ex
 	public void initInventory(Good good,int amount,int price,float quality) {
 		final Batch batch=new Batch(good.getStandardProduct(),amount,price,quality);
 		getWarehouse().putOnStock(batch);
-		getAccounting().initAccount(ACCOUNT.INVENTORIES,batch.getTotalValue());
+		getAccounting().initAccount(ACCOUNT.INVENTORIES,batch.getValue());
 	}
 
 	public Warehouse getWarehouse() {

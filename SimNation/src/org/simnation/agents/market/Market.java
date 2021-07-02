@@ -68,7 +68,7 @@ public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Marke
 	protected void handleEvent(Event event, Time time) {
 		switch (event) { // all other events are handled here...
 		case MARKET_CLEARING:
-			log(time,"market clearing event");
+			log("\t market clearing event");
 			doMarketClearing();
 			enqueueEvent(Event.MARKET_CLEARING,time.add(period));
 			break;
@@ -82,7 +82,6 @@ public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Marke
 		for (T segment : marketSegments) {
 			List<Demand<T>> demandList=getState().getDemandList(segment);
 			List<Supply<T>> supplyList=getState().getSupplyList(segment);
-			log(Time.ZERO,"demand.size()="+demandList.size()+" | supply.size()="+supplyList.size());
 			getStrategy().doMarketClearing(this,demandList,supplyList);
 
 			for (Supply<T> item : supplyList) sendMessage(getAddress(),item.getAddr(),item);
@@ -93,17 +92,18 @@ public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Marke
 	}
 
 	private void addDemand(Demand<T> demand) {
-		getState().getDemandList(demand.getMarketSegmentSelector()).add(demand);
+		getState().getDemandList(demand.getMarketSegment()).add(demand);
 	}
 
 	private void addSupply(Supply<T> supply) {
-		getState().getSupplyList(supply.getMarketSegmentSelector()).add(supply);
-		log(Time.ZERO,"received supply "+supply.getItem().toString());
+		getState().getSupplyList(supply.getMarketSegment()).add(supply);
 	}
 
-	/*
-	 * Does the actual exchange of item vs. money with the specifics of <T> called
-	 * by the strategy
+	/**
+	 * Does the actual exchange of item vs. money, called by the strategy.
+	 * <p>
+	 * This method only does the actual trading operation taking the specifics of <T> into account.
+	 * Amount and price have to be matched to budget (available money) BEFORE!
 	 */
 	abstract void trade(Demand<T> d, Supply<T> s, long amount, double price);
 

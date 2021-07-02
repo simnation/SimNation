@@ -22,10 +22,10 @@ import org.simnation.context.technology.Good;
 public final class Demand<T> implements Comparable<Demand<T>> {
 
 	private final int[] addr;
-	private final T ms; // market segment
+	private final T marketSegment; // market segment
 	private final int minQuantity; // minimum amount
 	private final float minQuality; // minimum quality - may be zero
-	private final float maxPrice; // maximum price
+	private final double maxPrice; // maximum price
 	private final Money money; // cash payment in advance - only for cash-based trades
 	private Tradable<T> item=null;
 
@@ -33,18 +33,18 @@ public final class Demand<T> implements Comparable<Demand<T>> {
 	 * Constructor for a cash-based trade (cash'n carry)
 	 *
 	 * @param addr   - address of the inquiring household
-	 * @param ms     - market segment (e.g. an instance of {@link Good})
+	 * @param ms	 - market segment (e.g. an instance of {@link Good})
 	 * @param amount - minQuantity
+	 * @param maxPrice  - maxPrice
 	 * @param qual   - minQuality
-	 * @param cost   - maxCost
-	 * @param cash   - payment, should at least be equal to maxCost !
+	 * @param cash   - payment, should at least be equal amount by price, can be {@code null}.
 	 */
-	public Demand(int[] a, T type, int amount, float price, float qual, Money cash) {
-		addr=a;
-		ms=type;
+	public Demand(int[] addr, T ms, int amount, float p, float qual, Money cash) {
+		this.addr=addr;
+		marketSegment=ms;
 		minQuantity=amount;
 		minQuality=qual;
-		maxPrice=price;
+		maxPrice=p;
 		money=cash;
 	}
 
@@ -73,26 +73,29 @@ public final class Demand<T> implements Comparable<Demand<T>> {
 		return minQuality;
 	}
 
-	public float getMaxPrice() {
-		return maxPrice;
-	}
-
-	public T getMarketSegmentSelector() {
-		return ms;
-	}
-
-	public long getMaxCost() {
-		if (getMoney()!=null) return getMoney().getValue();
-		return (long) (getQuantity()*getMaxPrice());
+	public T getMarketSegment() {
+		return marketSegment;
 	}
 
 	public Money getMoney() {
 		return money;
 	}
 
+	public double getMaxPrice() {
+		return maxPrice;
+	}
+
+	public Tradable<T> getItem() {
+		return item;
+	}
+
+	public void setItem(Tradable<T> item) {
+		this.item=item;
+	}
+
 	@Override
 	public String toString() {
-		return "["+getMarketSegmentSelector()+": "+getQuantity()+"U|"+getMaxPrice()+"$]";
+		return "["+getQuantity()+"U of "+getMarketSegment()+" for $"+getMaxPrice()+"] cash: "+getMoney().toString();
 	}
 
 	/*
@@ -104,14 +107,6 @@ public final class Demand<T> implements Comparable<Demand<T>> {
 		if (this.getMaxPrice()<other.getMaxPrice()) return -1;
 		else if (this.getMaxPrice()>other.getMaxPrice()) return 1;
 		return 0;
-	}
-
-	public Tradable<T> getItem() {
-		return item;
-	}
-
-	public void setItem(Tradable<T> item) {
-		this.item=item;
 	}
 
 }

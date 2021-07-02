@@ -20,39 +20,45 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.simnation.agents.household.HouseholdNeed;
+import org.simnation.context.needs.Need;
 import org.simnation.context.technology.ProductionTechnology.IProductionFunction;
 import org.simnation.model.Limits;
 import org.simnation.zzz_old.GoodSet;
-import org.simnation.zzz_old.Resource;
+import org.simplesim.core.scheduling.Time;
 
 /**
- * A good is a node of a value chain and contains all its characteristics and
- * connected elements.
- *
- * There are various types of goods. First, a good can either be storable or
- * non-storable. Storable goods can either be durable (having a depreciation
- * time) or non-durable. Last, any good can be used to satisfy a
- * {@link HouseholdNeed} or as a {@link Precursor} for the production of other
- * goods.
- *
- * Some types of goods have a special characteristic, modeled as a derived
- * class. A good that...
+ * A good is a node of a value chain and contains all its characteristics,
+ * precursors and productionparameters. In Simnation, there are two types of
+ * goods: Storable goods and services.
+ * <p>
+ * <b>Storable goods</b> can be either durable (having a depreciation time,
+ * example: machinery, furniture) or non-durable (having a depreciation time of
+ * zero, example: food). <b>Services</b> are non-storable, they offer a certain
+ * capacity over a given time (example: communication, logistics, medical
+ * services). Here, the depreciation time is the period of service availability.
+ * <p>
+ * Goods are made from precursors (production as transformation process). A good
+ * that has no precursors is a <b>resource</b>. A good that satisfies a
+ * {@link Need} is a <b>consumable</b>. Thus, the value chain resembles a
+ * production network with resources as <i>source</i> and consumables as
+ * <i>sink</i> of the network.
+ * <p>
+ * A {@link Machine} is a special good to transform other goods. Thus, a machine
+ * to produce other machines introduces a self-replicating element into the
+ * value chain.
+ * <p>
+ * Note:
  * <ul>
- * <li>...is non-storable is a {@link Service} in this implementation.
- * <li>...has no precursors is a {@link Resource}. It is a <i>source</i> of the
- * value chain network.
- * <li>...satisfies a {@link HouseholdNeed} is a consumable (see
- * {@link #isConsumable()}). It is a <i>sink</i> of the value chain network.
- * Note that a consumable that is also a precursor leads to competing demands
- * <li>...produces other goods is a {@link Machine}. Note that machines to
- * produce other machines introduce a self-replicating element into the value
- * chain.
+ * <li>There is a 1:1 relationship between needs and goods: Every need has to be
+ * satisfied by one (and only one) good.
+ * <li>Services can be seen as an option to use a given capacity (wholly or
+ * partially).
+ * <li>A consumable that is also a precursor leads to competing demands
+ * (example: corn as food and as a precursor for biofuel)
  * </ul>
  *
  */
 @PersistenceCapable
-//@DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY)
 //@Inheritance(strategy=InheritanceStrategy.SUBCLASS_TABLE)
 public class Good {
 
@@ -97,13 +103,14 @@ public class Good {
 	private String name; // name as primary key
 	private String unit;
 	private boolean service; // is it a service?
+	@Persistent(converter=org.simnation.persistence.JDOTimeConverter.class)
+	private Time depreciationTime=Time.ZERO; // depreciation or service availability time
 
-	// @Embedded
+	//@Persistent(embeddedElement="true",defaultFetchGroup="true")
 	@NotPersistent
 	private ProductionTechnology technology; // contains all technical specifications of this good
 
-	@Persistent(embeddedElement="true")
-	//@Embedded
+	@Persistent(embeddedElement="true", defaultFetchGroup="true")
 	@Join(column="good")
 	private List<Precursor> precursors=new ArrayList<>();
 
@@ -111,9 +118,6 @@ public class Good {
 	// private RESOURCE_TYPE resourceType;
 	// private long stock;
 	// private double gamma;
-
-	//@Column(name="satisfier")
-	//private Need need;
 
 	// general --> calculated values, not in scenario description!
 	// values serve as initial values to start the simulation
@@ -214,6 +218,8 @@ public class Good {
 		return result;
 	}
 
+	public Time getDepreciationTime() { return depreciationTime; }
+
 	int getPrecursorIndexOf(Good good) {
 		for (int i=0; i<getPrecursorCount(); i++) if (getPrecursors().get(i).getGood().equals(good)) return i;
 		return -1;
@@ -241,7 +247,11 @@ public class Good {
 
 	public boolean isResource() { return !hasPrecursors(); }
 
+	public boolean isService() { return service; }
+
 	void setDailyOutput(double value) { output=value; }
+
+	public void setDepreciationTime(Time depreciationTime) { this.depreciationTime=depreciationTime; }
 
 	public void setName(String value) { name=value; }
 
@@ -263,6 +273,8 @@ public class Good {
 
 	public void setProductionTechnology(ProductionTechnology value) { technology=value; }
 
+	public void setService(boolean value) { service=value; }
+
 	public void setUnit(String value) { unit=value; }
 
 	// unties good from its connections to others good in chain
@@ -278,7 +290,7 @@ public class Good {
 
 	@Override
 	public String toString() {
-		return name+"[has "+getPrecursorCount()+" precursors]";
+		return name;
 	}
 
 	@Override
@@ -287,9 +299,5 @@ public class Good {
 		if (that==null||!(that instanceof Good)) return false;
 		return name.equals(((Good) that).name);
 	}
-
-	public boolean isService() { return service; }
-
-	public void setService(boolean value) { service=value; }
 
 }

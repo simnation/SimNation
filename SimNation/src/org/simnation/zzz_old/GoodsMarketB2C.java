@@ -107,7 +107,7 @@ public final class GoodsMarketB2C extends Market<Good,GoodsMarketB2CState<Good>>
 	 * @see simnation.agents.market.Market#addDemand(simnation.business.Demand)
 	 */
 	void addDemand(Demand<Good> demand) {
-		getState().getMarketSegment(demand.getMarketSegmentSelector()).addDemand(demand);
+		getState().getMarketSegment(demand.getMarketSegment()).addDemand(demand);
 		log("received demand: "+demand.toString());
 	}
 
@@ -117,7 +117,7 @@ public final class GoodsMarketB2C extends Market<Good,GoodsMarketB2CState<Good>>
 	 * @see simnation.agents.market.Market#addSupply(simnation.business.Supply)
 	 */
 	void addSupply(Supply<Good> supply) {
-		getState().getMarketSegment(supply.getMarketSegmentSelector()).addSupply(supply);
+		getState().getMarketSegment(supply.getMarketSegment()).addSupply(supply);
 		log("received supply: "+supply.toString());
 	}
 

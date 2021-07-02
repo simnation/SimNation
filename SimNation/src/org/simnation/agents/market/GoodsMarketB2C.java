@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.simnation.agents.business.Demand;
+import org.simnation.agents.business.Money;
 import org.simnation.agents.business.Supply;
 import org.simnation.agents.common.Batch;
 import org.simnation.context.technology.Good;
@@ -20,10 +21,9 @@ import org.simplesim.core.scheduling.Time;
  */
 public final class GoodsMarketB2C extends Market<Good> {
 	
-	private static final String AGENT_NAME="GoodsMarketB2C";
 
 
-	public static final Time MARKET_OFFSET=new Time(0,0,0,12,0,0);
+	public static final Time MARKET_OFFSET=new Time(0,12,0);
 	public static final Time MARKET_PERIOD=Time.DAY;
 
 	/**
@@ -42,16 +42,23 @@ public final class GoodsMarketB2C extends Market<Good> {
 	 * org.simnation.simulation.business.Demand, int, float)
 	 */
 	@Override
-	void trade(Demand<Good> d, Supply<Good> s, long amount, double price) {
-		Batch batch=((Batch) s.getItem()).split(amount);
-		if (d.getItem()==null) d.setItem(batch);
-		else((Batch) d.getItem()).merge(batch);
+	void trade(Demand<Good> demand, Supply<Good> supply, long amount, double price) {
 		long cost=Math.round(price*amount);
-		s.getMoney().merge(d.getMoney().split(cost));
+		long quantity=amount;
+		if (cost>demand.getMoney().getValue()) { // insufficient funds
+			quantity=(long) Math.floor(demand.getMoney().getValue()/price); // round off
+			cost=Math.round(price*quantity);
+		}
+		log("\t market price: $"+Double.toString(price)+", demand: "+amount+",affordable: "+quantity+", cost: $"+cost);
+		Batch batch=((Batch) supply.getItem()).split(quantity);
+		batch.setValue(cost); // set to actual trading value --> the price is what others pay for it.
+		if (demand.getItem()==null) demand.setItem(batch);
+		else((Batch) demand.getItem()).merge(batch);
+		supply.getMoney().merge(demand.getMoney().split(cost));
 	}
 	
 	public String getName() {
-		return AGENT_NAME;
+		return "GoodsMarketB2C";
 	}
 
 }

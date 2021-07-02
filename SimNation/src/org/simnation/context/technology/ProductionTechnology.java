@@ -13,8 +13,8 @@ package org.simnation.context.technology;
 import javax.jdo.annotations.Convert;
 import javax.jdo.annotations.EmbeddedOnly;
 import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
 
+import org.simnation.context.technology.Good.Precursor;
 import org.simplesim.core.scheduling.Time;
 
 @PersistenceCapable
@@ -57,8 +57,7 @@ public class ProductionTechnology {
 		 */
 		COBB_DOUGLAS("Cobb-Douglas", (good, input) -> {
 			double result=Math.pow(input[0],good.getPrecursor(0).getAlpha());
-			for (int i=1; i<good.getPrecursorCount(); i++)
-				result*=Math.pow(input[i],good.getPrecursor(i).getAlpha());
+			for (int i=1; i<good.getPrecursorCount(); i++) result*=Math.pow(input[i],good.getPrecursor(i).getAlpha());
 			return result;
 		}),
 		/**
@@ -75,14 +74,12 @@ public class ProductionTechnology {
 		private final IProductionFunction pfd;
 		private final String name;
 
-		private ProductionFunctionType(String name, IProductionFunction pf) {
+		ProductionFunctionType(String name, IProductionFunction pf) {
 			this.name=name;
 			pfd=pf;
 		}
 
-		public IProductionFunction getProductionFunctionDefinition() {
-			return pfd;
-		}
+		public IProductionFunction getProductionFunctionDefinition() { return pfd; }
 
 		@Override
 		public String toString() {
@@ -91,9 +88,6 @@ public class ProductionTechnology {
 
 	}
 
-	@Persistent(converter=org.simnation.persistence.JDOTimeConverter.class)
-	private Time depreciationTime=Time.DAY; // depreciation time, 0 means this is a non-durable good
-	
 	private Good machine=null; // which machine is used for this technology?
 	private int defaultCapacity; // output capacity of good PER UNIT of this good's machine
 	@Convert(org.simnation.persistence.JDOTimeConverter.class)
@@ -102,62 +96,35 @@ public class ProductionTechnology {
 	@Convert(org.simnation.persistence.JDOProductionFunctionTypeConverter.class)
 	private ProductionFunctionType pft;
 
-	public int getDefaultCapacity() {
-		return defaultCapacity;
-	}
+	public int getDefaultCapacity() { return defaultCapacity; }
 
-	public void setDefaultCapacity(int value) {
-		defaultCapacity=value;
-	}
+	public void setDefaultCapacity(int value) { defaultCapacity=value; }
 
-	public Time getDefaultMakespan() {
-		return defaultMakespan;
-	}
+	public Time getDefaultMakespan() { return defaultMakespan; }
 
-	public void setDefaultMakespan(Time value) {
-		defaultMakespan=value;
-	}
+	public void setDefaultMakespan(Time value) { defaultMakespan=value; }
 
-	public double getDefaultManhours() {
-		return defaultManhours;
-	}
+	public double getDefaultManhours() { return defaultManhours; }
 
-	public void setDefaultManhours(double value) {
-		defaultManhours=value;
-	}
+	public void setDefaultManhours(double value) { defaultManhours=value; }
 
-	public ProductionFunctionType getProductionFunction() {
-		return pft;
-	}
+	public ProductionFunctionType getProductionFunction() { return pft; }
 
-	public void setProductionFunction(ProductionFunctionType value) {
-		pft=value;
-	}
+	public void setProductionFunction(ProductionFunctionType value) { pft=value; }
 
-	public Good getMachine() {
-		return machine;
-	}
+	public Good getMachine() { return machine; }
 
-	public void setMachine(Good value) {
-		machine=value;
-	}
-	
-	public Time getDepreciationTime() {
-		return depreciationTime;
-	}
-
-	public void setDepreciationTime(Time value) {
-		depreciationTime=value;
-	}
-
+	public void setMachine(Good value) { machine=value; }
 
 	/**
-	 * Calculates the the output based on the production function and its
-	 * alpha parameters as defined in the precursor set, no additional effects are taken into account.
+	 * Calculates the the output based on the production function and its alpha
+	 * parameters as defined in the precursor set, no additional effects are taken
+	 * into account.
 	 * 
-	 * @param good the good being produced
-	 * @param input the amounts of input factors with their position corresponding to the precursor 
-	 * set (first input defines amount of first precursor)
+	 * @param good  the good being produced
+	 * @param input the amounts of input factors with their position corresponding
+	 *              to the precursor set (first input defines amount of first
+	 *              precursor)
 	 * @return output of the good after the production process
 	 */
 	public double calcDefaultOutput(Good good, int[] input) {
