@@ -16,10 +16,10 @@ import java.util.Set;
 import org.simnation.agents.firm.trader.TraderDBS;
 import org.simnation.agents.household.HouseholdDBS;
 import org.simnation.context.geography.Region;
-import org.simnation.context.needs.Need;
-import org.simnation.context.needs.Need.DURATION;
-import org.simnation.context.needs.Need.INCIDENCE;
-import org.simnation.context.needs.Need.URGENCY;
+import org.simnation.context.needs.NeedDefinition;
+import org.simnation.context.needs.NeedDefinition.DURATION;
+import org.simnation.context.needs.NeedDefinition.INCIDENCE;
+import org.simnation.context.needs.NeedDefinition.URGENCY;
 import org.simnation.context.population.Citizen;
 import org.simnation.context.technology.Good;
 import org.simnation.persistence.DataAccessObject;
@@ -30,14 +30,14 @@ import org.simplesim.core.scheduling.Time;
  */
 public class InitDatabase {
 
-	private final Set<Need> needs=new HashSet<>();
+	private final Set<NeedDefinition> needs=new HashSet<>();
 	private final Set<Good> goods=new HashSet<>();
 	private final Set<Region> regions=new HashSet<>();
 	private final Set<HouseholdDBS> households=new HashSet<>();
 	private final Set<TraderDBS> traders=new HashSet<>();
 
 	private Good pizza;
-	private Need nutrition;
+	private NeedDefinition nutrition;
 	private Region domain;
 
 	public static void main(String[] args) {
@@ -69,8 +69,8 @@ public class InitDatabase {
 	private HouseholdDBS generateHousehold() {
 		HouseholdDBS hh=new HouseholdDBS();
 		hh.setRegion(domain);
-		hh.getFamily().add(Citizen.generateRandom());
-		hh.getFamily().add(Citizen.generateRandom());
+		hh.setAdults(2);
+		hh.setChildren(3);
 		hh.setCash(10000);
 		int stock[]=new int[1];
 		stock[0]=34;
@@ -126,13 +126,12 @@ public class InitDatabase {
 	 * @return
 	 */
 	private void populateNeedSet() {
-		nutrition=new Need();
+		nutrition=new NeedDefinition();
 		nutrition.setName("Nutrition");
-		nutrition.setUnit("kJ");
-		nutrition.setActivationTime(Time.DAY);
-		nutrition.setFrustrationTime(new Time(3*Time.TICKS_PER_DAY));
-		nutrition.setSaturation(2400);
-		nutrition.setConsumption(9200);
+		nutrition.setActivationDays(7);
+		nutrition.setDailyConsumptionAdult(2);
+		nutrition.setDailyConsumptionChild(1);		
+		nutrition.setFrustrationDays(3);
 		nutrition.setIncidence(INCIDENCE.CONTINUOUSLY);
 		nutrition.setUrgency(URGENCY.EXISTENTIAL);
 		nutrition.setDuration(DURATION.INSTANTLY);

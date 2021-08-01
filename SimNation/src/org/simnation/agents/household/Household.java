@@ -10,24 +10,20 @@
  */
 package org.simnation.agents.household;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.common.Batch;
-import org.simnation.context.needs.Need;
-import org.simnation.context.needs.Need.URGENCY;
+import org.simnation.context.needs.NeedDefinition;
+import org.simnation.context.needs.NeedDefinition.URGENCY;
 import org.simnation.context.technology.Good;
 import org.simnation.model.Domain;
-import org.simnation.model.Limits;
 import org.simnation.model.Model;
 import org.simplesim.core.messaging.RoutedMessage;
 import org.simplesim.core.scheduling.Time;
@@ -39,37 +35,15 @@ import org.simplesim.core.scheduling.Time;
 public final class Household extends AbstractBasicAgent<HouseholdState, Household.EVENT> {
 
 	private final HouseholdStrategy strategy;
-
-	private static final String AGENT_NAME="Household";
+	private final Map<EVENT, NeedState> mapEvent2NeedState=new EnumMap<>(EVENT.class);
 
 	public Household(HouseholdDBS dbs) {
 		super(dbs.convertToState());
 		strategy=new HouseholdStrategy(this);
-
-		enqueueEvent(EVENT.testEvent,new Time(0,8,0));
-
-		/*
-		 * ToDo (0. Set need events according to stock) 0. Set revolving events 1. get
-		 * firm sending pre-defined batches to market 2. get household to send
-		 * pre-defined demands 3. evaluate market functionality
-		 * 
-		 * 
-		 */
-
-		/*
-		 * for (final NeedDefinition nd : Root.getInstance().getNeedSet().asList()) { /*
-		 * // calculate need base of family and save it to the agent's state final Need
-		 * need=nd.calculateNeed(family,getState().getTime());
-		 * getState().setNeed(nd,need); // set initial events base on the previously
-		 * calculated needs
-		 * addEvent(getActivationEvent(nd),need.getActivationTime(dbs.getNeedLevel(nd)))
-		 * ;
-		 * addEvent(getFrustrationEvent(nd),need.getFrustrationTime(dbs.getNeedLevel(nd)
-		 * ));
-		 * 
-		 * }
-		 */
-
+		for (NeedDefinition nd : Model.getInstance().getNeedSet()) {
+			if (nd.isInstantNeed()) mapEvent2NeedState.put(getEvent(nd),new InstantNeed());
+			else mapEvent2NeedState.put(getEvent(nd),new PeriodicalNeed());
+		}
 	}
 
 	/*
@@ -77,21 +51,20 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	 */
 	@Override
 	protected void handleEvent(EVENT event, Time time) {
-		if (isActivationEvent(event)) processNeedActivation(getNeedDefinition(event));
-		else if (isFrustrationEvent(event)) processNeedFrustration(getNeedDefinition(event));
-		else switch (event) { // all other events are handled here...
-		case testEvent:
-			log("\t send demand event");
-			sendDemand();
-			enqueueEvent(EVENT.testEvent,time.add(Time.DAY));
-			break;
+		if (isNeedActivationEvent(event)) processNeedActivationEvent(event,time);
+
 		/*
-		 * case START_PERIOD: planBudget();
-		 * addEvent(EVENT.START_PERIOD,EVENT.START_PERIOD.period()); break; case
-		 * START_DAY: processMessages();
-		 * addEvent(EVENT.START_DAY,EVENT.START_DAY.period()); break; case JOB_SEARCH:
-		 * jobSearch(); break;
+		 * on activation event: - issue market demand - use time reserve - if there is
+		 * no reserve, set frustration event on supply - recalculate new time reserve on
+		 * frustration event: - check for new time reserve - calculate new price limit -
+		 * trigger regression
+		 * 
 		 */
+		else switch (event) { // all other events are handled here...
+		case planBudget:
+			log("\t plan budget");
+			enqueueEvent(EVENT.planBudget,time.add(Time.months(1)));
+			break;
 		default: // error: event type not known - this should never happen!
 			throw new UnhandledEventType(event,this);
 		}
@@ -100,40 +73,41 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	/**
 	 * @param i
 	 */
-	private void sendDemand() { 
+	private void sendDemand() {
 		Good good=Model.getInstance().getNeedSet().iterator().next().getSatisfier();
 		int q=(int) (Math.random()*200);
-			Demand<Good> demand=new Demand<>(this.getAddress(),good,q,10.5f,0,getState().getMoney().split(1000));
-			RoutedMessage msg=new RoutedMessage(this.getAddress(),((Domain) getParent()).getGoodsMarket().getAddress(),demand); 
-			sendMessage(msg);
-			log("\t send demand to market: "+demand.toString());
-		
-	}
-
-	/**
-	 * @param needDefinition
-	 */
-	private void processNeedFrustration(Need needDefinition) {
-		// TODO Auto-generated method stub
+		Demand<Good> demand=new Demand<>(getAddress(),good,q,10.5f,0,getState().getMoney().split(1000));
+		RoutedMessage msg=new RoutedMessage(getAddress(),((Domain) getParent()).getGoodsMarket().getAddress(),demand);
+		sendMessage(msg);
+		log("\t send demand to market: "+demand.toString());
 
 	}
 
 	/**
 	 * @param needDefinition
 	 */
-	private void processNeedActivation(Need needDefinition) {
-		// TODO Auto-generated method stub
-
+	private void processNeedActivationEvent(EVENT event, Time time) {
+		NeedDefinition nd=getNeedDefinition(event);
+		NeedState ns=getNeedState(event);
+		if (ns.isActivated(time)) strategy.buySatisfier(nd);
+		else if (ns.isFrustrated(time,nd)) log(nd.getName()+" is frustrated.");
+		enqueueEvent(event,ns.getActivationTime());
 	}
 
 	@Override
 	protected void handleMessage(RoutedMessage msg) {
 		if (msg.getContent().getClass()==Demand.class) {
+			/*
+			 * TASK: refill saturation level of corresponding need, take back change money
+			 */
 			Demand<Good> demand=msg.getContent();
 			Batch batch=(Batch) demand.getItem();
 			if (batch!=null) {
-				// getState().getInventory().get(batch.getType()).merge(batch);
 				log("\t received batch: "+batch.toString()+" and "+demand.getMoney().toString());
+				final EVENT key=getEvent(batch.getType());
+				NeedDefinition nd=getNeedDefinition(key);
+				NeedState need=getNeedState(key);
+				need.satisfice(nd,getState(),batch);
 			} else log("\t received no supply "+demand.getMoney().toString());
 			getState().getMoney().merge(demand.getMoney());
 			log("\t total money: "+getState().getMoney().toString());
@@ -264,78 +238,78 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	private HouseholdStrategy getStrategy() { return strategy; }
 
 	@Override
-	public String getName() { return AGENT_NAME; }
+	public String getName() { return "Household"; }
 
 	/*
 	 * static section
 	 */
 	enum EVENT {
-		/*
-		 * 21 needs altogether, do not change without changing Limits.MAX_NEEDSET_SIZE
-		 */
 		// activation events
 		activateNeed_00, activateNeed_01, activateNeed_02, activateNeed_03, activateNeed_04, activateNeed_05,
 		activateNeed_06, activateNeed_07, activateNeed_08, activateNeed_09, activateNeed_10, activateNeed_11,
-		activateNeed_12, activateNeed_13, activateNeed_14, activateNeed_15, activateNeed_16, activateNeed_17,
-		activateNeed_18, activateNeed_19, activateNeed_20,
-		// frustration events
-		frustrateNeed_00, frustrateNeed_01, frustrateNeed_02, frustrateNeed_03, frustrateNeed_04, frustrateNeed_05,
-		frustrateNeed_06, frustrateNeed_07, frustrateNeed_08, frustrateNeed_09, frustrateNeed_10, frustrateNeed_11,
-		frustrateNeed_12, frustrateNeed_13, frustrateNeed_14, frustrateNeed_15, frustrateNeed_16, frustrateNeed_17,
-		frustrateNeed_18, frustrateNeed_19, frustrateNeed_20,
+
+		activation_event_limit, // marker event, do not change position or delete!
+
 		// other events
-		testEvent, startPeriod(), START_DAY(), JOB_SEARCH();
+		planBudget, startPeriod(), START_DAY(), JOB_SEARCH();
 
 	}
 
-	/* maps each urgency level to its corresponding subset of need definitions */
-	private static final EnumMap<URGENCY, Set<Need>> urgencyMap=new EnumMap<>(URGENCY.class);
+	public static final int MAX_NEEDS=EVENT.activation_event_limit.ordinal();
 
-	/* maps each event to its specific need definition */
-	private static final Map<EVENT, Need> mapEvent2Need=new EnumMap<>(EVENT.class);
-	private static final Map<Need, EVENT> mapNeed2ActivationEvent=new IdentityHashMap<>();
-	private static final Map<Need, EVENT> mapNeed2FrustrationEvent=new IdentityHashMap<>();
+	/* map each urgency level to its corresponding subset of need definitions */
+	private static final EnumMap<URGENCY, Set<NeedDefinition>> mapUrgency=new EnumMap<>(URGENCY.class);
 
-	public static void initNeedMap(Collection<Need> needSet) {
-		urgencyMap.clear();
-		mapEvent2Need.clear();
-		mapNeed2ActivationEvent.clear();
-		mapNeed2FrustrationEvent.clear();
-		for (URGENCY u : URGENCY.values()) urgencyMap.put(u,new HashSet<Need>());
+	/* bi-map activation event to need definition */
+	private static final Map<EVENT, NeedDefinition> mapEvent2NeedDefinition=new EnumMap<>(EVENT.class);
+	private static final Map<NeedDefinition, EVENT> mapNeedDefinition2Event=new IdentityHashMap<>();
+
+	/* map satisficing good to corresponding need activation event */
+	private static final Map<Good, EVENT> mapSatisfier2Event=new IdentityHashMap<>();
+
+	public static void initNeedMap(Collection<NeedDefinition> needSet) {
+		mapUrgency.clear();
+		mapEvent2NeedDefinition.clear();
+		mapNeedDefinition2Event.clear();
+		mapSatisfier2Event.clear();
+		for (URGENCY u : URGENCY.values()) mapUrgency.put(u,new HashSet<NeedDefinition>());
 		int index=0; // init mappings
-		for (Need nd : needSet) {
-			// map activation events
-			final EVENT activation=EVENT.values()[index];
-			mapEvent2Need.put(activation,nd);
-			mapNeed2ActivationEvent.put(nd,activation);
-			// map frustration events
-			final EVENT frustration=EVENT.values()[index+Limits.MAX_NEEDSET_SIZE];
-			mapEvent2Need.put(frustration,nd);
-			mapNeed2FrustrationEvent.put(nd,frustration);
-			// map need urgency levels
-			urgencyMap.get(nd.getUrgency()).add(nd);
+		for (NeedDefinition nd : needSet) {
+			// map need urgency level
+			mapUrgency.get(nd.getUrgency()).add(nd);
+			// bi-map activation event to need definition
+			EVENT activation=EVENT.values()[index];
+			mapEvent2NeedDefinition.put(activation,nd);
+			mapNeedDefinition2Event.put(nd,activation);
+			// map consumable to activation event
+			Good satisfier=nd.getSatisfier();
+			if (mapSatisfier2Event.containsKey(satisfier)) throw new UniqueConstraintViolationException(
+					satisfier.getName()+" is satfisfier for more than one need!");
+			mapSatisfier2Event.put(satisfier,activation);
 			index++;
+			if (index>=MAX_NEEDS) throw new IndexOutOfBoundsException("Need set contains too many need definitions!");
 		}
 	}
 
-	private static EVENT getActivationEvent(Need nd) {
-		return mapNeed2ActivationEvent.get(nd);
+	private NeedState getNeedState(EVENT event) {
+		return mapEvent2NeedState.get(event);
+
 	}
 
-	private static EVENT getFrustrationEvent(Need nd) {
-		return mapNeed2FrustrationEvent.get(nd);
+	private static EVENT getEvent(Good satisfier) {
+		return mapSatisfier2Event.get(satisfier);
 	}
 
-	private static Need getNeedDefinition(EVENT event) {
-		return mapEvent2Need.get(event);
+	private static EVENT getEvent(NeedDefinition nd) {
+		return mapNeedDefinition2Event.get(nd);
 	}
 
-	private static boolean isActivationEvent(EVENT event) {
-		return event.ordinal()<Limits.MAX_NEEDSET_SIZE;
+	private static NeedDefinition getNeedDefinition(EVENT event) {
+		return mapEvent2NeedDefinition.get(event);
 	}
 
-	private static boolean isFrustrationEvent(EVENT event) {
-		return event.ordinal()>=Limits.MAX_NEEDSET_SIZE&&event.ordinal()<2*Limits.MAX_NEEDSET_SIZE;
+	private static boolean isNeedActivationEvent(EVENT event) {
+		return event.ordinal()<MAX_NEEDS;
 	}
 
 }

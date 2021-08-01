@@ -44,7 +44,6 @@ public final class Limits {
 
 	
 	// Limits of good and need context
-	public static final int MAX_NEEDSET_SIZE=3*7; // should be divisible by 3, MAY NOT CHANGED WITHOUT CHANGING EVENTS IN HOUSEHOLD!!!
 	public static final int MAX_RESOURCESET_SIZE=3*7; // should be divisible by 3
 	public static final int MAX_GOODSET_SIZE=50;	// to limit complexity of value chain
 	public static final int MAX_PRODUCTION_DEPTH=6; // to limit complexity of value chain

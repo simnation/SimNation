@@ -20,7 +20,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.simnation.context.needs.Need;
+import org.simnation.context.needs.NeedDefinition;
 import org.simnation.context.technology.ProductionTechnology.IProductionFunction;
 import org.simnation.model.Limits;
 import org.simnation.zzz_old.GoodSet;
@@ -39,7 +39,7 @@ import org.simplesim.core.scheduling.Time;
  * <p>
  * Goods are made from precursors (production as transformation process). A good
  * that has no precursors is a <b>resource</b>. A good that satisfies a
- * {@link Need} is a <b>consumable</b>. Thus, the value chain resembles a
+ * {@link NeedDefinition} is a <b>consumable</b>. Thus, the value chain resembles a
  * production network with resources as <i>source</i> and consumables as
  * <i>sink</i> of the network.
  * <p>

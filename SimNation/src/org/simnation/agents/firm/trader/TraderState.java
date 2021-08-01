@@ -10,13 +10,8 @@
  */
 package org.simnation.agents.firm.trader;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import org.simnation.agents.business.Money;
-import org.simnation.agents.firm.common.WarehouseStatistics;
 import org.simnation.agents.firm.common.Storage;
-import org.simnation.agents.market.GoodsMarketB2C;
 import org.simnation.context.technology.Good;
 import org.simplesim.model.State;
 
@@ -45,6 +40,6 @@ public final class TraderState implements State {
 
 	public float getServiceLevel() { return serviceLevel; }
 
-	public void setServiceLevel(float serviceLevel) { this.serviceLevel=serviceLevel; }
+	public void setServiceLevel(float value) { serviceLevel=value; }
 
 }

@@ -26,8 +26,8 @@ import org.simplesim.core.messaging.RoutedMessage;
 import org.simplesim.core.scheduling.Time;
 
 /**
- * Represents an enterprise that buy a single product at the B2B-market and
- * sells it to the local B2C-markets. So, it has an important logistic and
+ * Represents an enterprise that buys a single product at the B2B-market and
+ * sells it to the local B2C-markets. Traders fulfill an important logistic and
  * allocation function.
  *
  */

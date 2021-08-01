@@ -11,6 +11,7 @@
 package org.simnation.agents.household;
 
 import org.simnation.agents.AgentStrategy;
+import org.simnation.context.needs.NeedDefinition;
 import org.simplesim.core.scheduling.Time;
 
 /**
@@ -42,5 +43,12 @@ public final class HouseholdStrategy implements AgentStrategy {
 	private HouseholdState getState() {
 		return household.getState();
 	}
+
+
+	/**
+	 * @param nd
+	 */
+	public void buySatisfier(NeedDefinition nd) { // TODO Auto-generated method stub
+	 }
 	
 }

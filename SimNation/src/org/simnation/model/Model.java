@@ -15,7 +15,7 @@ import org.simnation.agents.household.Household;
 import org.simnation.agents.household.HouseholdDBS;
 import org.simnation.agents.market.GoodsMarketB2C;
 import org.simnation.context.geography.Region;
-import org.simnation.context.needs.Need;
+import org.simnation.context.needs.NeedDefinition;
 import org.simnation.context.technology.Good;
 import org.simnation.persistence.DataAccessObject;
 import org.simnation.persistence.Persistable;
@@ -59,7 +59,7 @@ public final class Model extends RoutingDomain implements Persistable {
 	private Set<Good> consumables=Collections.emptySet();
 
 	/** set of all needs */
-	private Set<Need> needs=Collections.emptySet();
+	private Set<NeedDefinition> needs=Collections.emptySet();
 
 	private final Set<GoodsMarketB2C> b2c=new HashSet<>();
 
@@ -75,7 +75,7 @@ public final class Model extends RoutingDomain implements Persistable {
 
 	public Set<Good> getGoodSet() { return goods; }
 
-	public Set<Need> getNeedSet() { return needs; }
+	public Set<NeedDefinition> getNeedSet() { return needs; }
 
 	public Set<Good> getConsumableSet() { return consumables; }
 
@@ -89,14 +89,14 @@ public final class Model extends RoutingDomain implements Persistable {
 	public void load(DataAccessObject dao) throws Exception {
 		regions=Collections.unmodifiableSet(new HashSet<>(dao.load(Region.class))); // load regions
 		goods=Collections.unmodifiableSet(new HashSet<>(dao.load(Good.class))); // load goods, set up value chain
-		needs=Collections.unmodifiableSet(new HashSet<>(dao.load(Need.class))); // load needs
+		needs=Collections.unmodifiableSet(new HashSet<>(dao.load(NeedDefinition.class))); // load needs
 		// sort out resource as source of value chain
 		Set<Good> temp=new HashSet<>();
 		for (Good good : getGoodSet()) if (good.isResource()) temp.add(good);
 		resources=Collections.unmodifiableSet(temp);
 		// sort out consumables as sink of value chain
 		temp=new HashSet<>();
-		for (Need need : getNeedSet()) temp.add(need.getSatisfier());
+		for (NeedDefinition need : getNeedSet()) temp.add(need.getSatisfier());
 		consumables=Collections.unmodifiableSet(temp);
 		// init household's need hierarchy and event tables
 		Household.initNeedMap(getNeedSet());
