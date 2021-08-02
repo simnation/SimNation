@@ -1,0 +1,2 @@
+# SimNation
+SimNation is an agent-based simulation of a nation's economic system. It uses JSimpleSim as simulation framework and JDO for persistence. 
