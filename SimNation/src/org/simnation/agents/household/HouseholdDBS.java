@@ -14,11 +14,11 @@ import javax.jdo.annotations.Column;
 import javax.jdo.annotations.DatastoreIdentity;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Serialized;
 
 import org.simnation.agents.business.Money;
 import org.simnation.agents.common.DatabaseState;
 import org.simnation.context.geography.Region;
+import org.simnation.model.Model;
 
 /**
  * Saves the {@link HouseholdState} in a form that can directly be made
@@ -32,30 +32,11 @@ import org.simnation.context.geography.Region;
 public class HouseholdDBS implements DatabaseState<HouseholdState> {
 
 	@Column(name="REGION_FK")
-	private Region region=null; // the households parent region
+	private Region region=null; // the household's parent region
 	private int adults, children;
 	private long cash;
 
-	@Serialized
-	private int stock[]; // grade of initial need satisfaction
-
-	public Money getMoney() { return new Money(cash); }
-
-	public long getCash() { return cash; }
-
-	public void setCash(long cash) { this.cash=cash; }
-
-	public void setStock(int index, int amount) {
-		stock[index]=amount;
-	}
-
-	public void setStock(int value[]) { stock=value; }
-
-	public int[] getStock() { return stock; }
-
-	public Region getRegion() { return region; }
-
-	public void setRegion(Region region) { this.region=region; }
+	private int needSatisfaction[]; // grade of initial need satisfaction
 
 	@Override
 	public void convertToDBS(HouseholdState state) { // TODO Auto-generated method stub
@@ -63,12 +44,35 @@ public class HouseholdDBS implements DatabaseState<HouseholdState> {
 
 	@Override
 	public HouseholdState convertToState() {
-		final HouseholdState state=new HouseholdState();
+		return convertToState(new HouseholdState(Model.getInstance().getNeedSet()));
+	}
+
+	@Override
+	public HouseholdState convertToState(HouseholdState state) {
 		state.adults=getAdults();
 		state.children=getChildren();
+		state.urgencyLevel=0;
 		state.money=new Money(getCash());
 		return state;
 	}
+
+	public Money getMoney() { return new Money(cash); }
+
+	public long getCash() { return cash; }
+
+	public void setCash(long cash) { this.cash=cash; }
+
+	public void setNeedSatisfaction(int[] value) { needSatisfaction=value; }
+
+	public void setNeedSatisfaction(int index, int value) { needSatisfaction[index]=value; }
+
+	public int[] getNeedSatisfaction() { return needSatisfaction; }
+
+	public int getNeedSatisfaction(int index) { return needSatisfaction[index]; }
+
+	public Region getRegion() { return region; }
+
+	public void setRegion(Region region) { this.region=region; }
 
 	public int getAdults() { return adults; }
 

@@ -20,7 +20,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.simnation.context.needs.NeedDefinition;
+import org.simnation.agents.household.NeedDefinition;
 import org.simnation.context.technology.ProductionTechnology.IProductionFunction;
 import org.simnation.model.Limits;
 import org.simnation.zzz_old.GoodSet;
@@ -128,6 +128,9 @@ public class Good {
 
 	@NotPersistent
 	private final List<Good> successorList=new ArrayList<>(); // links to the successors
+	
+	@NotPersistent
+	int hash=0; // caching the hash value
 
 	public void addPrecursor(Good good, double value) {
 		assert getPrecursorCount()<Limits.MAX_PRECURSORS;
@@ -253,7 +256,7 @@ public class Good {
 
 	public void setDepreciationTime(Time depreciationTime) { this.depreciationTime=depreciationTime; }
 
-	public void setName(String value) { name=value; }
+	public void setName(String value) { name=value; hash=name.hashCode(); }
 
 	public void setPrecursor(int index, Precursor value) {
 		getPrecursors().set(index,value);
@@ -285,7 +288,7 @@ public class Good {
 
 	@Override
 	public int hashCode() {
-		return name.hashCode();
+		return hash;
 	}
 
 	@Override
@@ -295,9 +298,10 @@ public class Good {
 
 	@Override
 	public boolean equals(Object that) {
-		if (this==that) return true;
+		return this==that;
+		/*if (this==that) return true;
 		if (that==null||!(that instanceof Good)) return false;
-		return name.equals(((Good) that).name);
+		return name.equals(((Good) that).name);*/
 	}
 
 }

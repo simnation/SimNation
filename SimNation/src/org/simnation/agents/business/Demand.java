@@ -19,7 +19,7 @@ import org.simnation.context.technology.Good;
  * @see Good
  * @see Batch
  */
-public final class Demand<T> implements Comparable<Demand<T>> {
+public final class Demand<T> implements Comparable<Demand<?>> {
 
 	private final int[] addr;
 	private final T marketSegment; // market segment
@@ -103,7 +103,7 @@ public final class Demand<T> implements Comparable<Demand<T>> {
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override
-	public int compareTo(Demand<T> other) {
+	public int compareTo(Demand<?> other) {
 		if (this.getMaxPrice()<other.getMaxPrice()) return -1;
 		else if (this.getMaxPrice()>other.getMaxPrice()) return 1;
 		return 0;

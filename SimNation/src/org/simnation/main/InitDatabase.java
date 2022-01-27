@@ -15,15 +15,13 @@ import java.util.Set;
 
 import org.simnation.agents.firm.trader.TraderDBS;
 import org.simnation.agents.household.HouseholdDBS;
+import org.simnation.agents.household.NeedDefinition;
+import org.simnation.agents.household.NeedDefinition.DURATION;
+import org.simnation.agents.household.NeedDefinition.INCIDENCE;
+import org.simnation.agents.household.NeedDefinition.URGENCY;
 import org.simnation.context.geography.Region;
-import org.simnation.context.needs.NeedDefinition;
-import org.simnation.context.needs.NeedDefinition.DURATION;
-import org.simnation.context.needs.NeedDefinition.INCIDENCE;
-import org.simnation.context.needs.NeedDefinition.URGENCY;
-import org.simnation.context.population.Citizen;
 import org.simnation.context.technology.Good;
 import org.simnation.persistence.DataAccessObject;
-import org.simplesim.core.scheduling.Time;
 
 /**
  * Class to set up new database structure using the JDO data model.
@@ -72,9 +70,7 @@ public class InitDatabase {
 		hh.setAdults(2);
 		hh.setChildren(3);
 		hh.setCash(10000);
-		int stock[]=new int[1];
-		stock[0]=34;
-		hh.setStock(stock);
+		hh.setNeedSatisfaction(new int[1]);
 		return hh;
 	}
 
@@ -130,8 +126,8 @@ public class InitDatabase {
 		nutrition.setName("Nutrition");
 		nutrition.setActivationDays(7);
 		nutrition.setDailyConsumptionAdult(2);
-		nutrition.setDailyConsumptionChild(1);		
-		nutrition.setFrustrationDays(3);
+		nutrition.setDailyConsumptionChild(1);
+		nutrition.setFrustrationDays(10);
 		nutrition.setIncidence(INCIDENCE.CONTINUOUSLY);
 		nutrition.setUrgency(URGENCY.EXISTENTIAL);
 		nutrition.setDuration(DURATION.INSTANTLY);

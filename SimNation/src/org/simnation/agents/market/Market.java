@@ -6,7 +6,9 @@
 package org.simnation.agents.market;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
@@ -31,17 +33,21 @@ public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Marke
 		MARKET_CLEARING
 	}
 
-	private MarketStrategy<T> strategy; // market clearing strategy
-	private final Set<T> marketSegments; // set of market segment selectors
+	private final MarketStrategy<T> strategy; // market clearing strategy
+	private final Map<T, MarketStatistics> statistics=new ConcurrentHashMap<>(); // enables concurrent access from agents
 	private final Time period; // how often market is cleared
 
 	public Market(Set<T> segSet, Time offset, Time p, MarketStrategy<T> strat) {
 		super(new MarketState<>(segSet));
-		marketSegments=segSet;
+		for (T item : segSet) statistics.put(item,null);
 		strategy=strat;
 		period=p;
 		enqueueEvent(Event.MARKET_CLEARING,offset);
 	}
+
+	public Set<T> getMarketSegments() { return statistics.keySet(); }
+	
+	public MarketStatistics getMarketStatistics(T segment) { return statistics.get(segment); }
 
 	/*
 	 * (non-Javadoc)
@@ -79,11 +85,11 @@ public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Marke
 	}
 
 	private void doMarketClearing() {
-		for (T segment : marketSegments) {
+		for (T segment : getMarketSegments()) {
 			List<Demand<T>> demandList=getState().getDemandList(segment);
 			List<Supply<T>> supplyList=getState().getSupplyList(segment);
-			getStrategy().doMarketClearing(this,demandList,supplyList);
-
+			final MarketStatistics ms=strategy.doMarketClearing(this,demandList,supplyList);
+			if (ms!=null) statistics.put(segment,ms); // update statistics, keep old value if there was no trading
 			for (Supply<T> item : supplyList) sendMessage(getAddress(),item.getAddr(),item);
 			supplyList.clear();
 			for (Demand<T> item : demandList) sendMessage(getAddress(),item.getAddr(),item);
@@ -102,13 +108,14 @@ public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Marke
 	/**
 	 * Does the actual exchange of item vs. money, called by the strategy.
 	 * <p>
-	 * This method only does the actual trading operation taking the specifics of <T> into account.
-	 * Amount and price have to be matched to budget (available money) BEFORE!
+	 * This method only does the actual trading operation taking the specifics of
+	 * <T> into account. Amount and price have to be matched to budget (available
+	 * money) BEFORE!
+	 * 
+	 * @return the actual trading volume (may be less than amount)
 	 */
-	abstract void trade(Demand<T> d, Supply<T> s, long amount, double price);
+	abstract long trade(Demand<T> d, Supply<T> s, long amount, double price);
 
 	public MarketStrategy<T> getStrategy() { return strategy; }
-
-	public void setStrategy(MarketStrategy<T> value) { strategy=value; }
 
 }

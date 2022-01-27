@@ -8,10 +8,10 @@
  * Contributors: - Rene Kuhlemann - development and initial implementation
  *
  */
-package org.simnation.agents.household;
+package org.simnation.zzz_old;
 
 import org.simnation.agents.common.Batch;
-import org.simnation.context.needs.NeedDefinition;
+import org.simnation.agents.household.NeedDefinition;
 import org.simplesim.core.scheduling.Time;
 
 /**
@@ -45,10 +45,8 @@ public final class InstantNeed implements NeedState {
 	}
 
 	@Override
-	public void satisfice(NeedDefinition nd, HouseholdState state, Batch batch) {
-		long consumption=nd.getDailyConsumptionAdult()*state.getAdults()
-				+nd.getDailyConsumptionChild()*state.getChildren();
-		long deltaT=(batch.consume()*Time.TICKS_PER_DAY)/consumption;
+	public void satisfice(NeedDefinition nd, long dailyConsumption, Batch batch) {
+		long deltaT=(batch.consume()*Time.TICKS_PER_DAY)/dailyConsumption;
 		activationTime=activationTime.add(deltaT);
 	}
 

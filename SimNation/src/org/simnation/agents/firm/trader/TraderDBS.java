@@ -38,7 +38,11 @@ public class TraderDBS implements DatabaseState<TraderState> {
 
 	@Override
 	public TraderState convertToState() {
-		final TraderState state=new TraderState(getGood(),new Money(getCash()));
+		return convertToState(new TraderState(getGood(),new Money(getCash())));		
+	}
+
+	@Override
+	public TraderState convertToState(TraderState state) { 
 		final Batch batch=new Batch(getGood(),getStock(),getValue(),getQuality());
 		state.getStorage().addToStock(batch);
 		state.setMargin(1.2f); // 20% margin

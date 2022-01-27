@@ -42,7 +42,7 @@ public final class GoodsMarketB2C extends Market<Good> {
 	 * org.simnation.simulation.business.Demand, int, float)
 	 */
 	@Override
-	void trade(Demand<Good> demand, Supply<Good> supply, long amount, double price) {
+	long trade(Demand<Good> demand, Supply<Good> supply, long amount, double price) {
 		long cost=Math.round(price*amount);
 		long quantity=amount;
 		if (cost>demand.getMoney().getValue()) { // insufficient funds
@@ -55,6 +55,7 @@ public final class GoodsMarketB2C extends Market<Good> {
 		if (demand.getItem()==null) demand.setItem(batch);
 		else((Batch) demand.getItem()).merge(batch);
 		supply.getMoney().merge(demand.getMoney().split(cost));
+		return quantity;
 	}
 	
 	public String getName() {

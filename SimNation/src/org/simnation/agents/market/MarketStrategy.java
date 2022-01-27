@@ -27,6 +27,6 @@ public interface MarketStrategy<T> {
 	 * @param demand
 	 * @param supply
 	 */
-	void doMarketClearing(Market<T> market, List<Demand<T>> demand, List<Supply<T>> supply);
+	MarketStatistics doMarketClearing(Market<T> market, List<Demand<T>> demand, List<Supply<T>> supply);
 
 }

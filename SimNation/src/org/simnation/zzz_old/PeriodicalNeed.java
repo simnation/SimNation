@@ -8,10 +8,10 @@
  * Contributors: - Rene Kuhlemann - development and initial implementation
  *
  */
-package org.simnation.agents.household;
+package org.simnation.zzz_old;
 
 import org.simnation.agents.common.Batch;
-import org.simnation.context.needs.NeedDefinition;
+import org.simnation.agents.household.NeedDefinition;
 import org.simplesim.core.scheduling.Time;
 
 /**
@@ -44,10 +44,8 @@ public final class PeriodicalNeed implements NeedState {
 	}
 
 	@Override
-	public void satisfice(NeedDefinition nd, HouseholdState state, Batch batch) {
-		long consumption=nd.getDailyConsumptionAdult()*state.getAdults()
-				+nd.getDailyConsumptionChild()*state.getChildren();
-		satisfaction=(float) batch.consume()/consumption;
+	public void satisfice(NeedDefinition nd, long dailyConsumption, Batch batch) {
+		satisfaction=(float) batch.consume()/dailyConsumption;
 		activationTime=activationTime.add(nd.getActivationDays()*Time.TICKS_PER_DAY);
 	}
 

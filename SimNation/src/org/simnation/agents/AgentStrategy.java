@@ -18,6 +18,5 @@ import org.simplesim.core.scheduling.Time;
  */
 public interface AgentStrategy {
 	
-	void execute(Time time);
-
+	
 }

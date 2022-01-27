@@ -13,7 +13,7 @@ package org.simnation.agents.business;
  * Note: Implementations of the parameter T have to be singletons, so {@code IdentityHashMap} can be used.
  * <p>
  */
-public final class Supply<T> implements Comparable<Supply<T>> {
+public final class Supply<T> implements Comparable<Supply<?>> {
 
 	private final int[] supplier;
 	private final double price; // actual selling price = batch price + margin
@@ -73,8 +73,10 @@ public final class Supply<T> implements Comparable<Supply<T>> {
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
 	@Override
-	public int compareTo(Supply<T> other) {
-		return getItem().compareTo(other.getItem());
+	public int compareTo(Supply<?> other) {
+		if (this.getPrice()<other.getPrice()) return -1;
+		else if (this.getPrice()>other.getPrice()) return 1;
+		return 0;
 	}
 
 }

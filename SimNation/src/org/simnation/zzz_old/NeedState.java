@@ -8,10 +8,10 @@
  * 	- Rene Kuhlemann - development and initial implementation
  * 
  */
-package org.simnation.agents.household;
+package org.simnation.zzz_old;
 
 import org.simnation.agents.common.Batch;
-import org.simnation.context.needs.NeedDefinition;
+import org.simnation.agents.household.NeedDefinition;
 import org.simplesim.core.scheduling.Time;
 
 /**
@@ -25,11 +25,11 @@ public interface NeedState {
 	 * Recalculates frustration time and satisfaction
 	 * 
 	 * @param nd the need's definition
-	 * @param state the household's state
+	 * @param dc the household's daily consumption of the need's satisfier
 	 * @param batch the batch to consume 
 	 */
-	void satisfice(NeedDefinition nd, HouseholdState state, Batch batch);
-
+	public void satisfice(NeedDefinition nd, long dc, Batch batch);
+		
 	/**
 	 * @return
 	 */

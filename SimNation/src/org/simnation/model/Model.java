@@ -13,9 +13,9 @@ import org.simnation.agents.firm.trader.Trader;
 import org.simnation.agents.firm.trader.TraderDBS;
 import org.simnation.agents.household.Household;
 import org.simnation.agents.household.HouseholdDBS;
+import org.simnation.agents.household.NeedDefinition;
 import org.simnation.agents.market.GoodsMarketB2C;
 import org.simnation.context.geography.Region;
-import org.simnation.context.needs.NeedDefinition;
 import org.simnation.context.technology.Good;
 import org.simnation.persistence.DataAccessObject;
 import org.simnation.persistence.Persistable;
@@ -61,8 +61,6 @@ public final class Model extends RoutingDomain implements Persistable {
 	/** set of all needs */
 	private Set<NeedDefinition> needs=Collections.emptySet();
 
-	private final Set<GoodsMarketB2C> b2c=new HashSet<>();
-
 	// Singleton
 	private Model() {
 		setAsRootDomain();
@@ -83,7 +81,15 @@ public final class Model extends RoutingDomain implements Persistable {
 
 	public Set<Region> getRegionSet() { return regions; }
 
-	public Set<GoodsMarketB2C> getConsumableMarket() { return b2c; }
+	public int getGoodCount() { return goods.size(); }
+	
+	public int getNeedCount() { return needs.size(); }
+	
+	public int getConsumableCount() { return consumables.size(); }
+	
+	public int getResourceCount() { return resources.size(); }
+	
+	public int getRegionCount() { return regions.size(); }
 
 	@Override
 	public void load(DataAccessObject dao) throws Exception {
@@ -102,14 +108,12 @@ public final class Model extends RoutingDomain implements Persistable {
 		Household.initNeedMap(getNeedSet());
 		
 		for (Region region : getRegionSet()) {
-			Domain domain=addEntity(new Domain(region)); // also inits regional markets
-			domain.addEntity(domain.getGoodsMarket()); // has to be added externally
-			b2c.add(domain.getGoodsMarket());
-			
-			// add labor market here as well....
-
+			final GoodsMarketB2C gm=new GoodsMarketB2C(getConsumableSet());
+			// final LaborMarket lm=new LaborMarket(SkillSet.values());
+			final Domain domain=new Domain(region,gm); // adding market entities  
+			addEntity(domain);
+			// adding households and companies externally
 			for (HouseholdDBS dbs : dao.load(HouseholdDBS.class,region)) domain.addEntity(new Household(dbs));
-
 			for (TraderDBS dbs : dao.load(TraderDBS.class,region)) domain.addEntity(new Trader(dbs));
 		}
 		

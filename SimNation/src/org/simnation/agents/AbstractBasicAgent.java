@@ -105,6 +105,8 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 		getEventQueue().enqueue(event,time);
 	}
 	
+	public Domain getDomain() { return (Domain) getParent(); }
+	
 	/**
 	 * Returns the index of this agent's domain.
 	 * 

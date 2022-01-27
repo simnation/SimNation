@@ -31,19 +31,17 @@ import org.simplesim.model.RoutingDomain;
 public final class Domain extends RoutingDomain {
 
 	private final Region region; // the region represented by this domain
-	private final GoodsMarketB2C gm;
+	private final GoodsMarketB2C goodsMarket;
 	//private final LaborMarket lm;
 	
-	public Domain(Region r) {
+	public Domain(Region r,GoodsMarketB2C gm) {
 		super();
 		region=r;
-		gm=new GoodsMarketB2C(Model.getInstance().getConsumableSet());
+		goodsMarket=addEntity(gm);
 		// add labor market here
 	}
 
-	public GoodsMarketB2C getGoodsMarket() {
-		return gm;
-	}
+	public GoodsMarketB2C getGoodsMarket() { return goodsMarket; }
 
 	public Region getRegion() { return region; }
 	

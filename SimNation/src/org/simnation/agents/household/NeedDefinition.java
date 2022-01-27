@@ -8,13 +8,13 @@
  * Contributors: - Rene Kuhlemann - development and initial implementation
  *
  */
-package org.simnation.context.needs;
+package org.simnation.agents.household;
 
 import javax.jdo.annotations.Column;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.PrimaryKey;
 
-import org.simnation.agents.household.InstantNeed;
 import org.simnation.context.technology.Good;
 import org.simnation.zzz_old.NeedSet;
 
@@ -93,7 +93,7 @@ public class NeedDefinition {
 
 	@PrimaryKey
 	private String name;
-
+	
 	/** link to good that can satisfy this need */
 	@Column(name="GOOD_FK")
 	private Good satisfier=null;
@@ -102,11 +102,10 @@ public class NeedDefinition {
 	private int activationDays; // equals the need's planning period
 
 	/**
-	 * when does the household enters resignation process? Must be longer than
+	 * when does the household enter the resignation process? Must be longer than
 	 * activation time!
 	 */
-	//@Persistent(converter=org.simnation.persistence.JDOTimeConverter.class)
-	private int frustrationDays; // days after which time the agent resigns from follow up the need?
+	private int frustrationDays; // days after which the agent enters regression
 	// each day one try!
 
 	/**
@@ -125,10 +124,27 @@ public class NeedDefinition {
 
 	/** duration of this need */
 	private DURATION duration;
+	
+	/** the need event assigned to this need - this is a (1:1) relation */
+	@NotPersistent
+	private Household.EVENT event;
+	
+	/** caching the hash code */
+	@NotPersistent
+	private int hash=0;
+	
+	
+	public int getIndex() {return event.ordinal(); }
+	
+	void setEvent(Household.EVENT value) { event=value; }
+	
+	public Household.EVENT getEvent() { return event; }
 
 	public int getActivationDays() { return activationDays; }
 
 	public int getDailyConsumptionAdult() { return dailyConsumptionAdult; }
+
+	public int getDailyConsumptionChild() { return dailyConsumptionChild; }
 
 	public DURATION getDuration() { return duration; }
 
@@ -148,13 +164,15 @@ public class NeedDefinition {
 
 	public void setDailyConsumptionAdult(int value) { dailyConsumptionAdult=value; }
 
+	public void setDailyConsumptionChild(int dailyConsumptionChild) { this.dailyConsumptionChild = dailyConsumptionChild; }
+
 	public void setDuration(DURATION value) { duration=value; }
 
 	public void setFrustrationDays(int value) { frustrationDays=value; }
 
 	public void setIncidence(INCIDENCE value) { incidence=value; }
 
-	public void setName(String value) { name=value; }
+	public void setName(String value) { name=value; hash=name.hashCode(); }
 
 	public void setSatisfier(Good value) { satisfier=value; }
 
@@ -167,16 +185,12 @@ public class NeedDefinition {
 
 	@Override
 	public int hashCode() {
-		return getName().hashCode();
+		return hash;
 	}
 
 	@Override
 	public String toString() {
 		return getName();
 	}
-
-	public int getDailyConsumptionChild() { return dailyConsumptionChild; }
-
-	public void setDailyConsumptionChild(int dailyConsumptionChild) { this.dailyConsumptionChild = dailyConsumptionChild; }
 
 }
