@@ -14,6 +14,7 @@ import org.simnation.agents.AgentStrategy;
 import org.simnation.agents.household.NeedDefinition.URGENCY;
 import org.simnation.agents.market.MarketStatistics;
 import org.simnation.model.Model;
+import org.simplesim.core.scheduling.Time;
 
 /**
  * Strategy of a household
@@ -23,22 +24,18 @@ import org.simnation.model.Model;
 public final class HouseholdStrategy implements AgentStrategy {
 
 	private final Household household;
+	private Time startBudgetPeriod;
 
 	public HouseholdStrategy(Household parent) {
 		household=parent;
 
 	}
 
-	public float calcPricing() {
-		return 2.5f;
-	}
-
-	private HouseholdState getState() { return household.getState(); }
-
 	/**
-	 * 
+	 * Plans budget for a one month period
 	 */
-	public void planBudget() {
+	public void planBudget(Time time) {
+		startBudgetPeriod=time;
 		long total=getState().getMoney().getValue();
 		getState().setTotalBudget(total);
 		for (URGENCY urgency : URGENCY.values()) { // traverse need hierarchy from bottom to top
@@ -47,8 +44,8 @@ public final class HouseholdStrategy implements AgentStrategy {
 					int budget;
 					final MarketStatistics ms=household.getDomain().getGoodsMarket()
 							.getMarketStatistics(nd.getSatisfier());
-					if (ms!=null) budget=(int) (ms.getPrice()*household.getDailyConsumption(nd));
-					else budget=(int) (getState().getTotalBudget()/Model.getInstance().getConsumableSet().size());
+					if (ms!=null) budget=(int) (ms.getPrice()*household.getDailyConsumption(nd)*Time.DAYS_PER_MONTH);
+					else budget=(int) (getState().getTotalBudget()/Model.getInstance().getNeedCount());
 					if (total<budget) budget=(int) total; // adjust if out of budget 
 					total-=budget;
 					getState().setBudget(nd,budget);
@@ -57,6 +54,27 @@ public final class HouseholdStrategy implements AgentStrategy {
 			}
 		}
 	}
+
+	public float calcPricing(NeedDefinition nd, Time time) {
+		// calc expected price as monthly budget divided by monthly consumption 
+		final double monthlyConsumption=household.getDailyConsumption(nd)*Time.DAYS_PER_MONTH;
+		final double expectedPrice=getState().getBudget(nd)/monthlyConsumption;
+		// calc urgency factor as missing consumption divided by consumption per activation period 
+		final double consumption=household.getDailyConsumption(nd)*nd.getActivationDays();
+		final double eUrg=(consumption-getState().getSaturation(nd))/consumption;
+		// calc internal security factor as ratio of remaining money vs. remaining time  
+		final double moneyRatio=((double) getState().getMoney().getValue()/getState().getTotalBudget());
+		final double timeRatio=(Time.TICKS_PER_MONTH-(time.getTicks()-startBudgetPeriod.getTicks()))/(double) Time.TICKS_PER_MONTH;
+		final double eInt=moneyRatio/timeRatio;
+		// set external security factor as economic growth forecast
+		final double eExt=1d;
+		// set personal security factor to an individual constant representing the agent's personality trait
+		final double ePers=1d;
+		// calc modifying factor as geometric mean of the four factors above
+		return (float) (expectedPrice*Math.pow(eUrg*eInt*eExt*ePers,4));
+	}
+
+	private HouseholdState getState() { return household.getState(); }
 
 	// calculates budgets for all needs; budget is always >= 0
 	/*
