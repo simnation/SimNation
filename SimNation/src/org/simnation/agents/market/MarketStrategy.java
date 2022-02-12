@@ -16,17 +16,33 @@ import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
 
 /**
- * 
- *
+ * Strategy interface for various market clearing algorithms.
  */
-public interface MarketStrategy<T> {
+interface MarketStrategy<T> {
+	
+	static class PriceVolumeDataPoint { 
+		
+		final private double price;
+		private long volume=0;
+		
+		PriceVolumeDataPoint(double p) { price=p; }
+		
+		void addVolume(long value) { volume+=value; }
+
+		double getPrice() { return price; }
+
+		long getVolume() { return volume; }
+		
+	}
 	
 	/**
+	 * Settles demand and supply, calculating market price and traded volume.
 	 * 
 	 * @param market
 	 * @param demand
 	 * @param supply
+	 * @param statistics
 	 */
-	MarketStatistics doMarketClearing(Market<T> market, List<Demand<T>> demand, List<Supply<T>> supply);
+	PriceVolumeDataPoint doMarketClearing(Market<T> market, List<Demand<T>> demand, List<Supply<T>> supply);
 
 }

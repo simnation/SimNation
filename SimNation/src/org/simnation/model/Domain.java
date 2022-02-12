@@ -37,7 +37,7 @@ public final class Domain extends RoutingDomain {
 	public Domain(Region r,GoodsMarketB2C gm) {
 		super();
 		region=r;
-		goodsMarket=addEntity(gm);
+		goodsMarket=gm;
 		// add labor market here
 	}
 

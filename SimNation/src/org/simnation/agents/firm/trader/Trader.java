@@ -10,6 +10,7 @@
  */
 package org.simnation.agents.firm.trader;
 
+import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -47,10 +48,9 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 	private final Map<int[],WarehouseStatistics> marketStatistics=new IdentityHashMap<>();
 	
 	public Trader(TraderDBS dbs) {
-		super(dbs.convertToState());
-		for (Market<?> market : Model.getInstance().getConsumableMarket()) 
-			marketStatistics.put(market.getAddress(),new WarehouseStatistics());
-		enqueueEvent(EVENT.supplyMarket,new Time(0,6,0));
+		super(new TraderState());
+		dbs.convertToState(getState());
+		enqueueEvent(EVENT.supplyMarket,new Time(0,3,0));
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 			//long amount=getState().getStorage().calcReorderVolume(0.95f);
 			// place order or schedule production
 			log("\t reorder event");
-			enqueueEvent(EVENT.orderStock,Time.MONTH);
+			enqueueEvent(EVENT.orderStock,time.add(Time.MONTH));
 			break;
 		case supplyMarket:
 			log("\t supply market event");
@@ -92,20 +92,23 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 
 	private void sendSupplyToMarket() { 
 		// send trading good to all markets
-		for (GoodsMarketB2C market : Model.getInstance().getConsumableMarket()) {
+		for (GoodsMarketB2C market : Model.getInstance().getB2CMarketSet()) {
 			// estimate delivery volume based recent statistics
-			WarehouseStatistics stat=marketStatistics.get(market.getAddress());
-			long marketQuantity=stat.forecastDelivery(getState().getServiceLevel());
+			final WarehouseStatistics stat=marketStatistics.get(market.getAddress());
+			long marketQuantity=0;
+			
+			if (stat!=null) marketQuantity=stat.forecastDelivery(getState().getServiceLevel());
+			
 			// if there are no statistics yet, deliver an equal share of the current stock to each market
-			if (marketQuantity==0) marketQuantity=getState().getStorage().getStockLevel()/marketStatistics.size();
-			Batch batch=getState().getStorage().removeFromStock(marketQuantity);
+			if (marketQuantity==0) marketQuantity=getState().getStorage().getStockLevel()/Model.getInstance().getRegionCount();
+			final Batch batch=getState().getStorage().removeFromStock(marketQuantity);
 			// supply price is the actual value plus a margin (cost plus approach)
-			double price=batch.getPrice()*getState().getMargin();
+			final double price=batch.getPrice()*getState().getMargin();
 			// send supply to market
-			Supply<Good> supply=new Supply<>(getAddress(),batch,price);
-			RoutedMessage msg=new RoutedMessage(getAddress(),market.getAddress(),supply);
+			final Supply<Good> supply=new Supply<>(getAddress(),batch,price);
+			final RoutedMessage msg=new RoutedMessage(getAddress(),market.getAddress(),supply);
 			sendMessage(msg);
-			log("\t"+stat.toString());
+			//log("\t"+stat.toString());
 			log("\t send supply to market: "+supply.toString());
 		}
 	 }

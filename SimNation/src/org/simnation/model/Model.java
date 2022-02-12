@@ -60,6 +60,10 @@ public final class Model extends RoutingDomain implements Persistable {
 
 	/** set of all needs */
 	private Set<NeedDefinition> needs=Collections.emptySet();
+	
+	/** set of all needs */
+	private Set<GoodsMarketB2C> b2cMarkets=Collections.emptySet();
+	
 
 	// Singleton
 	private Model() {
@@ -80,6 +84,8 @@ public final class Model extends RoutingDomain implements Persistable {
 	public Set<Good> getResourceSet() { return resources; }
 
 	public Set<Region> getRegionSet() { return regions; }
+	
+	public Set<GoodsMarketB2C> getB2CMarketSet() { return b2cMarkets; }
 
 	public int getGoodCount() { return goods.size(); }
 	
@@ -97,25 +103,34 @@ public final class Model extends RoutingDomain implements Persistable {
 		goods=Collections.unmodifiableSet(new HashSet<>(dao.load(Good.class))); // load goods, set up value chain
 		needs=Collections.unmodifiableSet(new HashSet<>(dao.load(NeedDefinition.class))); // load needs
 		// sort out resource as source of value chain
-		Set<Good> temp=new HashSet<>();
-		for (Good good : getGoodSet()) if (good.isResource()) temp.add(good);
-		resources=Collections.unmodifiableSet(temp);
+		final Set<Good> resourceSet=new HashSet<>();
+		for (Good good : getGoodSet()) if (good.isResource()) resourceSet.add(good);
+		resources=Collections.unmodifiableSet(resourceSet);
 		// sort out consumables as sink of value chain
-		temp=new HashSet<>();
-		for (NeedDefinition need : getNeedSet()) temp.add(need.getSatisfier());
-		consumables=Collections.unmodifiableSet(temp);
+		final Set<Good> consumableSet=new HashSet<>();
+		for (NeedDefinition nd : getNeedSet()) {
+			System.out.println(nd.toString());
+			consumableSet.add(nd.getSatisfier());
+		}
+		consumables=Collections.unmodifiableSet(consumableSet);
+		System.out.println(getConsumableSet().toString());
+		
 		// init household's need hierarchy and event tables
 		Household.initNeedMap(getNeedSet());
-		
+		final Set<GoodsMarketB2C> b2c=new HashSet<>();
+		//Set<LaborMarket> lm=new HashSet<>();
 		for (Region region : getRegionSet()) {
 			final GoodsMarketB2C gm=new GoodsMarketB2C(getConsumableSet());
+			b2c.add(gm);
 			// final LaborMarket lm=new LaborMarket(SkillSet.values());
 			final Domain domain=new Domain(region,gm); // adding market entities  
 			addEntity(domain);
+			domain.addEntity(gm);
 			// adding households and companies externally
 			for (HouseholdDBS dbs : dao.load(HouseholdDBS.class,region)) domain.addEntity(new Household(dbs));
 			for (TraderDBS dbs : dao.load(TraderDBS.class,region)) domain.addEntity(new Trader(dbs));
 		}
+		b2cMarkets=Collections.unmodifiableSet(b2c);
 		
 	}
 

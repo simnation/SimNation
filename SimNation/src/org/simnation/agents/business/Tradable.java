@@ -59,7 +59,7 @@ public interface Tradable<T> extends Comparable<Tradable<T>> {
 	 */
 	default double getPrice() {
 		if (getValue()==0) return Double.NaN;  // avoid division by zero
-		return ((double) getQuantity())/((double) getValue());	
+		return ((double) getValue())/getQuantity();	
 	}
 	
 	/**

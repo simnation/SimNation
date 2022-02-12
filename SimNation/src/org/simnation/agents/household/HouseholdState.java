@@ -17,14 +17,18 @@ import java.util.Set;
 import org.simnation.agents.business.Money;
 import org.simnation.agents.common.Batch;
 import org.simnation.context.technology.Good;
+import org.simplesim.core.scheduling.Time;
 import org.simplesim.model.State;
 
 public class HouseholdState implements State {
 
+	// set during initialization
 	int adults, children;
 	int urgencyLevel;
 	Money money;
 
+	// set at any time
+	private Time startBudgetPeriod;
 	private long totalBudget;
 	private final int budget[];
 	private final int saturationLevel[];
@@ -69,5 +73,9 @@ public class HouseholdState implements State {
 	public void setSaturation(NeedDefinition nd, int value) { saturationLevel[nd.getIndex()]=value; }
 
 	public void addToSaturation(NeedDefinition nd, int value) { saturationLevel[nd.getIndex()]+=value; }
+
+	public Time getStartBudgetPeriod() { return startBudgetPeriod; }
+
+	public void setStartBudgetPeriod(Time startBudgetPeriod) { this.startBudgetPeriod = startBudgetPeriod; }
 
 }

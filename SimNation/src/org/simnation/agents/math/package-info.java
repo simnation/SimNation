@@ -8,15 +8,7 @@
  * 	- Rene Kuhlemann - development and initial implementation
  * 
  */
-package org.simnation.agents;
-
-import org.simplesim.core.scheduling.Time;
-
 /**
- * 
- *
+ * Contains math routines used by various agents.
  */
-public interface AgentStrategy {
-	
-	
-}
+package org.simnation.agents.math;

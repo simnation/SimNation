@@ -33,7 +33,7 @@ public final class GoodsMarketB2C extends Market<Good> {
 	 * @param p
 	 */
 	public GoodsMarketB2C(Set<Good> segments) {
-		super(segments,MARKET_OFFSET,MARKET_PERIOD,new SimpleDoubleAuctionStrategy<>());
+		super(segments,new SimpleDoubleAuctionStrategy<>(),MARKET_OFFSET,MARKET_PERIOD);
 	}
 
 	/*

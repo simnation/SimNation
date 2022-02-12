@@ -12,7 +12,6 @@ package org.simnation.agents.firm.trader;
 
 import org.simnation.agents.business.Money;
 import org.simnation.agents.firm.common.Storage;
-import org.simnation.context.technology.Good;
 import org.simplesim.model.State;
 
 /**
@@ -20,15 +19,13 @@ import org.simplesim.model.State;
  */
 public final class TraderState implements State {
 
-	private final Storage storage;
-	private final Money money;
+	// set during initialization
+	Storage storage;
+	Money money;
+
+	// set at any time
 	private float margin; // price mark-up factor, always >1.0f
 	private float serviceLevel; // service level for inventory management 0.5<sl<1.0
-
-	public TraderState(Good good, Money m) {
-		storage=new Storage(good);
-		money=m;
-	}
 
 	public Storage getStorage() { return storage; }
 

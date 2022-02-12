@@ -8,6 +8,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import org.simnation.agents.business.Money;
 import org.simnation.agents.common.Batch;
 import org.simnation.agents.common.DatabaseState;
+import org.simnation.agents.firm.common.Storage;
 import org.simnation.context.geography.Region;
 import org.simnation.context.technology.Good;
 
@@ -37,14 +38,10 @@ public class TraderDBS implements DatabaseState<TraderState> {
 	}
 
 	@Override
-	public TraderState convertToState() {
-		return convertToState(new TraderState(getGood(),new Money(getCash())));		
-	}
-
-	@Override
-	public TraderState convertToState(TraderState state) { 
-		final Batch batch=new Batch(getGood(),getStock(),getValue(),getQuality());
-		state.getStorage().addToStock(batch);
+	public TraderState convertToState(TraderState state) {
+		state.money=new Money(getCash());
+		state.storage=new Storage(getGood());
+		state.getStorage().addToStock(new Batch(getGood(),getStock(),getValue(),getQuality()));
 		state.setMargin(1.2f); // 20% margin
 		state.setServiceLevel(0.95f); // 95% service level
 		return state;

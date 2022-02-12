@@ -43,11 +43,6 @@ public class HouseholdDBS implements DatabaseState<HouseholdState> {
 	}
 
 	@Override
-	public HouseholdState convertToState() {
-		return convertToState(new HouseholdState(Model.getInstance().getNeedSet()));
-	}
-
-	@Override
 	public HouseholdState convertToState(HouseholdState state) {
 		state.adults=getAdults();
 		state.children=getChildren();

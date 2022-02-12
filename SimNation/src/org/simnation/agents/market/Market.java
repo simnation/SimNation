@@ -5,14 +5,18 @@
  */
 package org.simnation.agents.market;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
+import org.simnation.agents.market.MarketStrategy.PriceVolumeDataPoint;
+import org.simnation.agents.math.ExponentialSmoothingStatistics;
+import org.simnation.agents.math.Statistics;
 import org.simplesim.core.messaging.RoutedMessage;
 import org.simplesim.core.scheduling.Time;
 
@@ -30,24 +34,35 @@ import org.simplesim.core.scheduling.Time;
 public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Market.Event> {
 
 	protected enum Event {
-		MARKET_CLEARING
+		clearMarket
 	}
 
 	private final MarketStrategy<T> strategy; // market clearing strategy
-	private final Map<T, MarketStatistics> statistics=new ConcurrentHashMap<>(); // enables concurrent access from agents
-	private final Time period; // how often market is cleared
+	private final Map<T, Statistics> priceForcast=new HashMap<>(); 	// price statistics
+	private final Map<T, Statistics> volumeForcast=new HashMap<>(); // volume statistics
+	private final Time period; // how often this market is cleared
 
-	public Market(Set<T> segSet, Time offset, Time p, MarketStrategy<T> strat) {
+	public Market(Set<T> segSet, MarketStrategy<T> strat, Time offset, Time p) {
 		super(new MarketState<>(segSet));
-		for (T item : segSet) statistics.put(item,null);
+		for (T marketSegment : segSet) {
+			priceForcast.put(marketSegment,new ExponentialSmoothingStatistics());
+			volumeForcast.put(marketSegment,new ExponentialSmoothingStatistics());
+		}
 		strategy=strat;
 		period=p;
-		enqueueEvent(Event.MARKET_CLEARING,offset);
+		enqueueEvent(Event.clearMarket,offset);
 	}
 
-	public Set<T> getMarketSegments() { return statistics.keySet(); }
+	public Set<T> getMarketSegments() { return Collections.unmodifiableSet(priceForcast.keySet()); }
 	
-	public MarketStatistics getMarketStatistics(T segment) { return statistics.get(segment); }
+	public double getPriceAverage(T segment) { return priceForcast.get(segment).getAverage(); }
+	
+	public double getPriceVariance(T segment) { return priceForcast.get(segment).getVariance(); }
+	
+	public double getVolumeAverage(T segment) { return volumeForcast.get(segment).getAverage(); }
+		
+	public double getVolumeVariance(T segment) { return volumeForcast.get(segment).getVariance(); }
+	
 
 	/*
 	 * (non-Javadoc)
@@ -73,10 +88,10 @@ public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Marke
 	@Override
 	protected void handleEvent(Event event, Time time) {
 		switch (event) { // all other events are handled here...
-		case MARKET_CLEARING:
+		case clearMarket:
 			log("\t market clearing event");
 			doMarketClearing();
-			enqueueEvent(Event.MARKET_CLEARING,time.add(period));
+			enqueueEvent(Event.clearMarket,time.add(period));
 			break;
 		default: // error: event type not known - this should never happen!
 			throw new UnhandledEventType(event,this);
@@ -86,14 +101,21 @@ public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Marke
 
 	private void doMarketClearing() {
 		for (T segment : getMarketSegments()) {
-			List<Demand<T>> demandList=getState().getDemandList(segment);
-			List<Supply<T>> supplyList=getState().getSupplyList(segment);
-			final MarketStatistics ms=strategy.doMarketClearing(this,demandList,supplyList);
-			if (ms!=null) statistics.put(segment,ms); // update statistics, keep old value if there was no trading
+			final List<Demand<T>> demandList=getState().getDemandList(segment);
+			final List<Supply<T>> supplyList=getState().getSupplyList(segment);
+			final PriceVolumeDataPoint pvdp=strategy.doMarketClearing(this,demandList,supplyList);
+			// return unmatched demand and supply to agents
 			for (Supply<T> item : supplyList) sendMessage(getAddress(),item.getAddr(),item);
-			supplyList.clear();
 			for (Demand<T> item : demandList) sendMessage(getAddress(),item.getAddr(),item);
+			supplyList.clear();
 			demandList.clear();
+			// update market statistics
+			// maintain old price with a volume of 0 if demand and supply did not match.
+			if (pvdp==null) volumeForcast.get(segment).update(0); 
+			else { // add new data point to time series. 
+				volumeForcast.get(segment).update(pvdp.getVolume());
+				priceForcast.get(segment).update(pvdp.getPrice());
+			}
 		}
 	}
 

@@ -15,12 +15,9 @@ package org.simnation.agents.market;
  */
 public final class MarketStatistics {
 	
-	private final double price;
+	private double price=Double.NaN;
 	private long volume=0;
 	
-	MarketStatistics(double p) {
-		price=p;
-	}
 	
 	public double getPrice() { return price; }
 	
@@ -29,5 +26,12 @@ public final class MarketStatistics {
 	public long getTurnover() { return Math.round(getPrice()*getVolume()); }
 	
 	public void addVolume(long value) { volume+=value; }
+	
+	public void reset(double p) {
+		price=p;
+		volume=0;
+	}
+	
+	public boolean isActive() { return price!=Double.NaN; }
 
 }

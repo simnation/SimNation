@@ -190,7 +190,7 @@ public class NeedDefinition {
 
 	@Override
 	public String toString() {
-		return getName();
+		return getName()+" "+getSatisfier().toString();
 	}
 
 }
