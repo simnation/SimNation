@@ -40,7 +40,7 @@ public class Main {
 		// start simulation
 		final ForwardingStrategy fs=new RoutedMessageForwarding(Model.getInstance());
 		final Simulator simulator=new SequentialDESimulator(Model.getInstance(),fs);
-		simulator.runSimulation(Time.months(1));
+		simulator.runSimulation(Time.MONTH);
 	}
 
 }

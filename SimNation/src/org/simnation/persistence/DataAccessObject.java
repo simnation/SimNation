@@ -13,7 +13,6 @@ import org.simnation.context.geography.Region;
  * database. Uses DataNucleus as JDO implementation and is used in the editor
  * (store) and simulator (load) likewise.
  *
- *
  */
 public final class DataAccessObject {
 
@@ -23,7 +22,6 @@ public final class DataAccessObject {
 		pm=value;
 		pm.getFetchPlan().setFetchSize(javax.jdo.FetchPlan.FETCH_SIZE_OPTIMAL);
 		pm.getFetchPlan().setMaxFetchDepth(-1);
-		
 	}
 
 	public DataAccessObject(String pmfName) {

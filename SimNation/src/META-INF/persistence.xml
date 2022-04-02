@@ -7,18 +7,21 @@
 
 	<persistence-unit name="Simulation">
 		<class>org.simnation.context.geography.Region</class>
-		<class>org.simnation.context.technology.Good</class>
 		<class>org.simnation.context.technology.Good$Precursor</class>
+		<class>org.simnation.context.technology.Good</class>
 		<class>org.simnation.agents.household.NeedDefinition</class>
 		<class>org.simnation.agents.household.HouseholdDBS</class>
 		<class>org.simnation.agents.firm.trader.TraderDBS</class>
 		<exclude-unlisted-classes />
 		<properties>
-			<property name="javax.jdo.option.ConnectionURL" value="jdbc:h2:file:d://test" />
+			<property name="javax.jdo.option.ConnectionURL" value="jdbc:h2:file:d://test" />		
 			<property name="datanucleus.schema.autoCreateAll" value="true" />
-		</properties>
+			<!-- 
+			<property name="javax.jdo.option.ConnectionURL" value="jdbc:sqlserver://localhost:1433;DatabaseName=simnation;user=simnation;Password=simulation;integratedSecurity=true;encrypt=true;trustServerCertificate=true" />			
+			-->
+			</properties>
 	</persistence-unit>
-	
+		
 	<persistence-unit name="Scenario">
 		<class>org.simnation.context.geography.Region</class>
 		<class>org.simnation.context.technology.Good</class>
@@ -29,30 +32,11 @@
 		<exclude-unlisted-classes />
 		<properties>
 			<property name="javax.jdo.option.ConnectionURL" value="jdbc:h2:file:d://test" />
-			<property name="datanucleus.schema.autoCreateAll" value="true" />
 			<property name="datanucleus.generateSchema.database.mode" value="drop-and-create" />
+			<property name="datanucleus.schema.autoCreateAll" value="true" />
 		</properties>
 	</persistence-unit>
 	
-			
-		<!--
-		<property name="javax.jdo.option.ConnectionURL" value="jdbc:h2:file:d://test" />
-			
-		<property name="datanucleus.generateSchema.database.mode" value="drop-and-create"/>
-			
-		
-		<property name="javax.jdo.option.ConnectionURL" value="odf:file:myfile.ods" />
-		 
-		<class>org.simnation.model.technology.ProductionTechnology$ProductionFunctionSet</class>
-		
-		<class>org.simnation.model.persistence.HouseholdDBS</class> <class>org.simnation.model.persistence.EnterpriseDBS</class> 
-			<class>org.simnation.model.persistence.ManufacturerDBS</class> <class>org.simnation.model.needs.Need$ValueTableEntry</class> 
-			<class>org.simnation.model.technology.Resource</class> <class>org.simnation.model.technology.AbstractProductionFunction</class> 
-			<class>org.simnation.core.Address</class> <property name="datanucleus.generateSchema.database.mode" 
-			value="drop-and-create" /> <property name="datanucleus.generateSchema.scripts.mode" 
-			value="create" /> <property name="datanucleus.generateSchema.scripts.create.target" 
-			value="e:\\git\\simnation\\scenario\\createDLL.txt" /> <property name="datanucleus.validateSchema" 
-			value="false" /> -->
 	
 	<!-- <persistence-unit name="Scenario"> <class>org.simnation.model.Time</class> 
 		<class>org.simnation.model.needs.Need</class> <class>org.simnation.model.needs.Need$ValueEntry</class> 

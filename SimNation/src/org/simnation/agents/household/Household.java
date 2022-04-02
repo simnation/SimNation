@@ -45,7 +45,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		enqueueEvent(EVENT.planBudget,Time.ZERO);
 		for (NeedDefinition nd : Model.getInstance().getNeedSet()) {
 			getState().setSaturation(nd,0);
-			enqueueEvent(nd.getEvent(),new Time(6*Time.TICKS_PER_HOUR));
+			enqueueEvent(nd.getEvent(),new Time(Time.hours(6)));
 		}
 	}
 
@@ -56,11 +56,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	protected void handleEvent(EVENT event, Time time) {
 		if (isNeedActivationEvent(event)) processNeedActivationEvent(event,time);
 		else switch (event) { // all other events are handled here...
-		case planBudget:
-			log("\t plan budget");
-			planBudget(time);
-			enqueueEvent(EVENT.planBudget,time.add(Time.months(1)));
-			break;
+		case planBudget: planBudget(time); break;
 		case applyForJob:
 			break;
 		default: // error: event type not known - this should never happen!
@@ -85,28 +81,26 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	private void processNeedActivationEvent(EVENT event, Time time) {
 		final NeedDefinition nd=getNeedDefinition(event);
 		final long dailyConsumption=getDailyConsumption(nd);
-		final Batch stock=getState().getStock(nd);
-
-		int saturation=getState().getSaturation(nd)+(int) stock.consume();
+		log("\t need activation: "+nd.getName());
+		int saturation=getState().getSaturation(nd)+(int) getState().getStock(nd).consume();
 		if (saturation>=0) {
 			saturation-=nd.getActivationDays()*dailyConsumption;
 			getState().setSaturation(nd,saturation);
-			if (saturation<0) sendDemand(nd,-saturation,calcPricing(nd,time));
-			enqueueEvent(nd.getEvent(),time.add(nd.getActivationDays()*Time.TICKS_PER_DAY));
+			enqueueEvent(nd.getEvent(),time.add(Time.days(nd.getActivationDays())));
 		} else { // saturation is negative 
 			saturation-=dailyConsumption;
 			getState().setSaturation(nd,saturation);
-			enqueueEvent(nd.getEvent(),time.add(Time.TICKS_PER_DAY));
-			if (-saturation/dailyConsumption>=nd.getFrustrationDays()) startRegression(nd);
+			enqueueEvent(nd.getEvent(),time.add(Time.DAY));
 		}
-		// issue order here, skip on regression
+		if (-saturation/dailyConsumption>=nd.getFrustrationDays()) startRegression(nd);
+		else sendDemand(nd,-saturation,calcPricing(nd,time));
 	}
 
 	/**
 	 * @param nd
 	 */
 	private void startRegression(NeedDefinition nd) { // TODO Auto-generated method stub
-		log("Regression called.");
+		log("\t Regression called.");
 		/*
 		 * existential: death basic: regression to existential luxury: regression to
 		 * basic
@@ -120,45 +114,32 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		if (msg.getContent().getClass()==Demand.class) {
 			final Demand<Good> demand=msg.getContent();
 			final Batch batch=(Batch) demand.getItem();
-			getState().addToStock(batch.getType(),batch); // add delivery to stock
+			if (batch!=null) getState().addToStock(batch.getType(),batch); // add delivery to stock
 			getState().getMoney().merge(demand.getMoney()); // take back change money
 			demand.setItem(null); 							// item used, prevent memory leak
 		} else throw new UnhandledMessageType(msg,this);
 	}
 
 	/**
-	 * Plans budget for a one month period
+	 * Calculates the current demand price taking into account following influences:
+	 * - the need's current urgency (i.e. stock depletion)
+	 * - remaining time and money of the budget period
+	 * - internal security factor (i.e. household's readiness to assume risk)
+	 * - external security factor (i.e. national economy forecast)
+	 * 
+	 * @return the current demand price
 	 */
-	private void planBudget(Time time) {
-		getState().setStartBudgetPeriod(time);
-		long total=getState().getMoney().getValue();
-		getState().setTotalBudget(total);
-		for (URGENCY urgency : URGENCY.values()) { // traverse need hierarchy from bottom to top
-			for (NeedDefinition nd : getUrgencySet(urgency)) { // traverse all needs of a level
-				if (total>0) {
-					int budget;
-					final double price=getDomain().getGoodsMarket().getPriceAverage(nd.getSatisfier());
-					if (price>0) budget=(int) (price*getDailyConsumption(nd)*Time.DAYS_PER_MONTH);
-					else budget=(int) (getState().getTotalBudget()/Model.getInstance().getNeedCount());
-					if (total<budget) budget=(int) total; // adjust if out of budget 
-					total-=budget;
-					getState().setBudget(nd,budget);
-				} else getState().setBudget(nd,0);
-			}
-		}
-	}
-
 	private float calcPricing(NeedDefinition nd, Time time) {
 		// calc expected price as monthly budget divided by monthly consumption
-		final double monthlyConsumption=getDailyConsumption(nd)*Time.DAYS_PER_MONTH;
+		final double monthlyConsumption=getMonthlyConsumption(nd);
 		final double expectedPrice=getState().getBudget(nd)/monthlyConsumption;
 		// calc urgency factor as missing consumption divided by consumption per activation period
 		final double consumption=getDailyConsumption(nd)*nd.getActivationDays();
 		final double eUrg=(consumption-getState().getSaturation(nd))/consumption;
 		// calc internal security factor as ratio of remaining money vs. remaining time
-		final double moneyRatio=(double) getState().getMoney().getValue()/getState().getTotalBudget();
-		final double timeRatio=(Time.TICKS_PER_MONTH-(time.getTicks()-getState().getStartBudgetPeriod().getTicks()))
-				/(double) Time.TICKS_PER_MONTH;
+		final double moneyRatio=getState().getMoney().getValue()/(double) getState().getTotalBudget();
+		final double timeRatio=(Time.MONTH.getTicks()-(time.getTicks()-getState().getStartBudgetPeriod().getTicks()))
+				/(double) Time.MONTH.getTicks();
 		final double eInt=moneyRatio/timeRatio;
 		// set external security factor as economic growth forecast
 		final double eExt=1d;
@@ -167,6 +148,32 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		// calc modifying factor as geometric mean of the four factors above
 		final double modifier=Math.sqrt(Math.sqrt(eUrg*eInt*eExt*ePers)); //x^0.25=(x^0.5)^0.5
 		return (float) (expectedPrice*modifier);
+	}
+
+	/**
+	 * Plans budget for a one month period
+	 */
+	private void planBudget(Time time) {
+		log("\t plan budget");
+		getState().setStartBudgetPeriod(time);
+		long total=getState().getMoney().getValue();
+		getState().setTotalBudget(total);
+		for (URGENCY urgency : URGENCY.values()) { // traverse need hierarchy from bottom to top
+			for (NeedDefinition nd : getUrgencySet(urgency)) { // traverse all needs of a level
+				if (total>0) {
+					int budget;
+					// calc with local market pricing
+					final double price=getDomain().getGoodsMarket().getLastPrice(nd.getSatisfier());
+					if (price>0) budget=(int) (price*getMonthlyConsumption(nd));
+					// fall back: without a market price calc with equal budgets per need 
+					else budget=(int) (getState().getTotalBudget()/Model.getInstance().getNeedCount());
+					if (total<budget) budget=(int) total; // adjust if out of budget 
+					total-=budget;
+					getState().setBudget(nd,budget);
+				} else getState().setBudget(nd,0);
+			}
+		}
+		enqueueEvent(EVENT.planBudget,time.add(Time.MONTH));
 	}
 
 	private URGENCY getUrgency() { return URGENCY.values()[getState().getUrgencyLevel()]; }
@@ -179,6 +186,11 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		return nd.getDailyConsumptionAdult()*getState().getAdults()
 				+nd.getDailyConsumptionChild()*getState().getChildren();
 	}
+	
+	private long getMonthlyConsumption(NeedDefinition nd) {
+		return getDailyConsumption(nd)*Time.DAYS_PER_MONTH;
+	}
+		
 
 	@Override
 	public String getName() { return "Household"; }

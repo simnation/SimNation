@@ -104,20 +104,20 @@ public final class Model extends RoutingDomain implements Persistable {
 		needs=Collections.unmodifiableSet(new HashSet<>(dao.load(NeedDefinition.class))); // load needs
 		// sort out resource as source of value chain
 		final Set<Good> resourceSet=new HashSet<>();
-		for (Good good : getGoodSet()) if (good.isResource()) resourceSet.add(good);
 		resources=Collections.unmodifiableSet(resourceSet);
+		for (Good good : getGoodSet()) if (good.isResource()) resourceSet.add(good);
 		// sort out consumables as sink of value chain
 		final Set<Good> consumableSet=new HashSet<>();
+		consumables=Collections.unmodifiableSet(consumableSet);
 		for (NeedDefinition nd : getNeedSet()) {
 			System.out.println(nd.toString());
 			consumableSet.add(nd.getSatisfier());
 		}
-		consumables=Collections.unmodifiableSet(consumableSet);
 		System.out.println(getConsumableSet().toString());
-		
 		// init household's need hierarchy and event tables
 		Household.initNeedMap(getNeedSet());
 		final Set<GoodsMarketB2C> b2c=new HashSet<>();
+		b2cMarkets=Collections.unmodifiableSet(b2c);
 		//Set<LaborMarket> lm=new HashSet<>();
 		for (Region region : getRegionSet()) {
 			final GoodsMarketB2C gm=new GoodsMarketB2C(getConsumableSet());
@@ -130,7 +130,6 @@ public final class Model extends RoutingDomain implements Persistable {
 			for (HouseholdDBS dbs : dao.load(HouseholdDBS.class,region)) domain.addEntity(new Household(dbs));
 			for (TraderDBS dbs : dao.load(TraderDBS.class,region)) domain.addEntity(new Trader(dbs));
 		}
-		b2cMarkets=Collections.unmodifiableSet(b2c);
 		
 	}
 

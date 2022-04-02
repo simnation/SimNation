@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
+import org.simnation.agents.market.Market.PriceVolumeDataPoint;
 
 /**
  * Implementation of a simple double auction strategy only considering pricing.

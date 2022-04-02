@@ -10,17 +10,16 @@
  */
 package org.simnation.agents.firm.trader;
 
-import java.util.Arrays;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
 import org.simnation.agents.common.Batch;
-import org.simnation.agents.firm.common.WarehouseStatistics;
 import org.simnation.agents.market.GoodsMarketB2C;
-import org.simnation.agents.market.Market;
+import org.simnation.agents.math.ExponentialSmoothingStatistics;
+import org.simnation.agents.math.Statistics;
 import org.simnation.context.technology.Good;
 import org.simnation.model.Model;
 import org.simplesim.core.messaging.RoutedMessage;
@@ -45,11 +44,16 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 	 * ACCOUNTING_PERIOD_ENDED, MACHINE_LIFETIME_ENDED;
 	 */
 
-	private final Map<int[],WarehouseStatistics> marketStatistics=new IdentityHashMap<>();
-	
+	private final Map<int[], Statistics> salesVolume=new HashMap<>();
+	private final Map<int[], Statistics> salesTurnover=new HashMap<>();
+
 	public Trader(TraderDBS dbs) {
 		super(new TraderState());
 		dbs.convertToState(getState());
+		for (GoodsMarketB2C market : Model.getInstance().getB2CMarketSet()) {
+			salesVolume.put(market.getAddress(),new ExponentialSmoothingStatistics());
+			salesTurnover.put(market.getAddress(),new ExponentialSmoothingStatistics());
+		}
 		enqueueEvent(EVENT.supplyMarket,new Time(0,3,0));
 	}
 
@@ -74,34 +78,30 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 	}
 
 	@Override
-	protected void handleMessage(RoutedMessage msg) { 
+	protected void handleMessage(RoutedMessage msg) {
 		if (msg.getContent().getClass()==Demand.class) {
-			
+
 		} else if (msg.getContent().getClass()==Supply.class) {
-			int[] market=msg.getSource();
-			Supply<?> supply=(Supply<?>) msg.getContent();
+			final int[] market=msg.getSource();
+			final Supply<?> supply=(Supply<?>) msg.getContent();
 			log("\t received returned supply of "+supply.toString());
-			if (supply.getQuantity()!=0) { // some items returned
-				marketStatistics.get(market).update(supply.getQuantitySold(),false);
-				getState().getStorage().addToStock((Batch) supply.getItem());
-			} else marketStatistics.get(market).update(supply.getQuantitySold(),true); // sold out
+			salesVolume.get(market).update(supply.getQuantitySold());
+			getState().getStorage().addToStock((Batch) supply.getItem());
+			salesTurnover.get(market).update(supply.getMoney().getValue());
 			getState().getMoney().merge(supply.getMoney());
 			log("\t money is now at "+getState().getMoney().toString());
 		} else throw new UnhandledMessageType(msg,this);
 	}
 
-	private void sendSupplyToMarket() { 
+	private void sendSupplyToMarket() {
 		// send trading good to all markets
 		for (GoodsMarketB2C market : Model.getInstance().getB2CMarketSet()) {
-			// estimate delivery volume based recent statistics
-			final WarehouseStatistics stat=marketStatistics.get(market.getAddress());
-			long marketQuantity=0;
-			
-			if (stat!=null) marketQuantity=stat.forecastDelivery(getState().getServiceLevel());
-			
+			final Statistics statistics=salesVolume.get(market.getAddress());
+			// estimate delivery volume as average sales volume plus standard deviation
+			double quantity=statistics.getAverage()+Math.sqrt(statistics.getVariance());
 			// if there are no statistics yet, deliver an equal share of the current stock to each market
-			if (marketQuantity==0) marketQuantity=getState().getStorage().getStockLevel()/Model.getInstance().getRegionCount();
-			final Batch batch=getState().getStorage().removeFromStock(marketQuantity);
+			if (quantity==0) quantity=getState().getStorage().getStockLevel()/Model.getInstance().getRegionCount();
+			final Batch batch=getState().getStorage().removeFromStock((long) quantity);
 			// supply price is the actual value plus a margin (cost plus approach)
 			final double price=batch.getPrice()*getState().getMargin();
 			// send supply to market
@@ -111,10 +111,9 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 			//log("\t"+stat.toString());
 			log("\t send supply to market: "+supply.toString());
 		}
-	 }
-
-	public String getName() {
-		return "Trader";
 	}
+
+	@Override
+	public String getName() { return "Trader"; }
 
 }

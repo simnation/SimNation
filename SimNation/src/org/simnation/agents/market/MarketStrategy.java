@@ -14,27 +14,13 @@ import java.util.List;
 
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
+import org.simnation.agents.market.Market.PriceVolumeDataPoint;
 
 /**
  * Strategy interface for various market clearing algorithms.
  */
 interface MarketStrategy<T> {
-	
-	static class PriceVolumeDataPoint { 
 		
-		final private double price;
-		private long volume=0;
-		
-		PriceVolumeDataPoint(double p) { price=p; }
-		
-		void addVolume(long value) { volume+=value; }
-
-		double getPrice() { return price; }
-
-		long getVolume() { return volume; }
-		
-	}
-	
 	/**
 	 * Settles demand and supply, calculating market price and traded volume.
 	 * 

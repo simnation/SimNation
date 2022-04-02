@@ -38,10 +38,11 @@ public class InitDatabase {
 	private NeedDefinition nutrition;
 	private Region domain;
 
-	public static void main(String[] args) {
-		DataAccessObject dao=new DataAccessObject("Scenario");
-		InitDatabase id=new InitDatabase();
+	public static void main(String[] args) throws Exception {
+		final DataAccessObject dao=new DataAccessObject("Scenario");
+		final InitDatabase id=new InitDatabase();	
 		try {
+			//Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 			id.populateRegionSet();
 			dao.store(id.regions);
 
@@ -55,13 +56,13 @@ public class InitDatabase {
 			dao.store(id.households);
 			id.traders.add(id.generateTrader());
 			dao.store(id.traders);
-
+			System.out.println("done.");
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
+		} 
+		finally {
 			dao.close();
 		}
-
 	}
 
 	private HouseholdDBS generateHousehold() {
