@@ -10,13 +10,14 @@
  */
 package org.simnation.agents.household;
 
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.NotPersistent;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.PrimaryKey;
-
 import org.simnation.context.technology.Good;
 import org.simnation.zzz_old.NeedSet;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 
 /**
  * Main class to define the need system of the model.
@@ -54,7 +55,7 @@ import org.simnation.zzz_old.NeedSet;
  * @see Good
  * @see InstantNeed
  */
-@PersistenceCapable
+@Entity
 public class NeedDefinition {
 
 	/**
@@ -91,11 +92,12 @@ public class NeedDefinition {
 		EXISTENTIAL, BASIC, CONVENIENCE, LUXURY;
 	}
 
-	@PrimaryKey
+	@Id
 	private String name;
 	
 	/** link to good that can satisfy this need */
-	@Column(name="GOOD_FK")
+	@OneToOne
+    @JoinColumn(name="GOOD_FK")
 	private Good satisfier=null;
 
 	/** the household's buy-ahead period */
@@ -126,11 +128,11 @@ public class NeedDefinition {
 	private DURATION duration;
 	
 	/** the need event assigned to this need - this is a (1:1) relation */
-	@NotPersistent
+	@Transient
 	private Household.EVENT event;
 	
 	/** caching the hash code */
-	@NotPersistent
+	@Transient
 	private int hash=0;
 	
 	

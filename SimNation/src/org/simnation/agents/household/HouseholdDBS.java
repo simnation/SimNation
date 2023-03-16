@@ -10,15 +10,17 @@
  */
 package org.simnation.agents.household;
 
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.DatastoreIdentity;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.PersistenceCapable;
-
 import org.simnation.agents.business.Money;
 import org.simnation.agents.common.DatabaseState;
 import org.simnation.context.geography.Region;
 import org.simnation.model.Model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
 /**
  * Saves the {@link HouseholdState} in a form that can directly be made
@@ -27,14 +29,19 @@ import org.simnation.model.Model;
  * events)
  *
  */
-@PersistenceCapable
-@DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY)
+@Entity
 public class HouseholdDBS implements DatabaseState<HouseholdState> {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
+	private int index;
 
-	@Column(name="REGION_FK")
+	@OneToOne
+	@JoinColumn(name="REGION_FK")
 	private Region region=null; // the household's parent region
 	private int adults, children;
 	private long cash;
+	private float extraversion; // the households affinity to risk, [safe;risky] --> [0;1]
 
 	private int needSatisfaction[]; // grade of initial need satisfaction
 
@@ -48,6 +55,7 @@ public class HouseholdDBS implements DatabaseState<HouseholdState> {
 		state.children=getChildren();
 		state.urgencyLevel=0;
 		state.money=new Money(getCash());
+		state.extraversion=getExtraversion();
 		return state;
 	}
 
@@ -76,5 +84,14 @@ public class HouseholdDBS implements DatabaseState<HouseholdState> {
 	public int getChildren() { return children; }
 
 	public void setChildren(int children) { this.children=children; }
+	
+	public int getIndex() { return index; }
+
+	public void setIndex(int index) { this.index=index; }
+	
+	public float getExtraversion() { return extraversion; }
+
+	public void setExtraversion(float extraversion) { this.extraversion=extraversion; }
+
 
 }

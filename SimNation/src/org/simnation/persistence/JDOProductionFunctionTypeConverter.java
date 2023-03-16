@@ -10,19 +10,22 @@
  */
 package org.simnation.persistence;
 
-import javax.jdo.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 
 import org.simnation.context.technology.ProductionTechnology.ProductionFunctionType;
 
+import jakarta.persistence.Converter;
+
+@Converter
 public final class JDOProductionFunctionTypeConverter implements AttributeConverter<ProductionFunctionType, String> {
 
 	@Override
-	public String convertToDatastore(ProductionFunctionType pfd) {
+	public String convertToDatabaseColumn(ProductionFunctionType pfd) {
 		return pfd.toString();
 	}
 
 	@Override
-	public ProductionFunctionType convertToAttribute(String name) {
+	public ProductionFunctionType convertToEntityAttribute(String name) {
 		for (final ProductionFunctionType element : ProductionFunctionType.values())
 			if (element.toString().equals(name)) return element;
 		return null;

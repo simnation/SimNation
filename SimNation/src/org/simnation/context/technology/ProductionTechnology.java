@@ -10,15 +10,15 @@
  */
 package org.simnation.context.technology;
 
-import javax.jdo.annotations.Convert;
-import javax.jdo.annotations.EmbeddedOnly;
-import javax.jdo.annotations.PersistenceCapable;
-
-import org.simnation.context.technology.Good.Precursor;
+import org.simnation.context.technology.Precursor;
 import org.simplesim.core.scheduling.Time;
 
-@PersistenceCapable
-@EmbeddedOnly
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Convert;
+
+@Entity
+@Embeddable
 public class ProductionTechnology {
 
 	public interface IProductionFunction {
@@ -90,10 +90,10 @@ public class ProductionTechnology {
 
 	private Good machine=null; // which machine is used for this technology?
 	private int defaultCapacity; // output capacity of good PER UNIT of this good's machine
-	@Convert(org.simnation.persistence.JDOTimeConverter.class)
+	@Convert(converter=org.simnation.persistence.JDOTimeConverter.class)
 	private Time defaultMakespan; // how long does it take to make a unit?
 	private double defaultManhours; // how many manhours of labor does one unit need?
-	@Convert(org.simnation.persistence.JDOProductionFunctionTypeConverter.class)
+	@Convert(converter=org.simnation.persistence.JDOProductionFunctionTypeConverter.class)
 	private ProductionFunctionType pft;
 
 	public int getDefaultCapacity() { return defaultCapacity; }

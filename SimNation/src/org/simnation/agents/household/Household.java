@@ -26,7 +26,7 @@ import org.simnation.agents.market.MarketStatistics;
 import org.simnation.context.technology.Good;
 import org.simnation.model.Domain;
 import org.simnation.model.Model;
-import org.simplesim.core.messaging.RoutedMessage;
+import org.simplesim.core.messaging.RoutingMessage;
 import org.simplesim.core.scheduling.Time;
 
 /**
@@ -35,6 +35,10 @@ import org.simplesim.core.scheduling.Time;
  */
 public final class Household extends AbstractBasicAgent<HouseholdState, Household.EVENT> {
 
+	private static final Time BUDGET_OFFSET=new Time(3); // be the third agent to start
+	private static final Time BUDGET_PERIOD=Time.MONTH;	 // monthly budget planning
+	
+	
 	public Household(HouseholdDBS dbs) {
 		super(new HouseholdState(Model.getInstance().getNeedSet()));
 		dbs.convertToState(getState());
@@ -42,11 +46,11 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		// Time.ZERO may be substituted by deterministic RNG
 		// saving initial saturation values in database may be omitted by RNG
 		// a need not queued here will never be called!
-		enqueueEvent(EVENT.planBudget,Time.ZERO);
 		for (NeedDefinition nd : Model.getInstance().getNeedSet()) {
 			getState().setSaturation(nd,0);
 			enqueueEvent(nd.getEvent(),new Time(Time.hours(6)));
 		}
+		enqueueEvent(EVENT.planBudget,BUDGET_OFFSET);
 	}
 
 	/*
@@ -67,11 +71,11 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	/**
 	 * @param i
 	 */
-	private void sendDemand(NeedDefinition nd, int amount, float price) {
+	private void sendDemand(NeedDefinition nd, int amount, double price) {
 		final float quality=getState().getStock(nd).getQuality();
 		final Money money=getState().getMoney().split((long) (amount*price)+1); // round up
 		final Demand<Good> demand=new Demand<>(getAddress(),nd.getSatisfier(),amount,price,quality,money);
-		sendMessage(new RoutedMessage(getAddress(),((Domain) getParent()).getGoodsMarket().getAddress(),demand));
+		sendMessage(new RoutingMessage(getAddress(),((Domain) getParent()).getGoodsMarket().getAddress(),demand));
 		log("\t send demand to market: "+demand.toString());
 	}
 
@@ -110,10 +114,11 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	}
 
 	@Override
-	protected void handleMessage(RoutedMessage msg) {
+	protected void handleMessage(RoutingMessage msg) {
 		if (msg.getContent().getClass()==Demand.class) {
 			final Demand<Good> demand=msg.getContent();
 			final Batch batch=(Batch) demand.getItem();
+			if (batch!=null) log("got "+batch.getQuantity()+" U of "+batch.getType().getName());
 			if (batch!=null) getState().addToStock(batch.getType(),batch); // add delivery to stock
 			getState().getMoney().merge(demand.getMoney()); // take back change money
 			demand.setItem(null); 							// item used, prevent memory leak
@@ -122,14 +127,14 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 
 	/**
 	 * Calculates the current demand price taking into account following influences:
-	 * - the need's current urgency (i.e. stock depletion)
-	 * - remaining time and money of the budget period
+	 * - the need's current urgency (as relative stock depletion)
+	 * - remaining time and money of the budget period (as relative cash depletion)
 	 * - internal security factor (i.e. household's readiness to assume risk)
 	 * - external security factor (i.e. national economy forecast)
 	 * 
 	 * @return the current demand price
 	 */
-	private float calcPricing(NeedDefinition nd, Time time) {
+	private double calcPricing(NeedDefinition nd, Time time) {
 		// calc expected price as monthly budget divided by monthly consumption
 		final double monthlyConsumption=getMonthlyConsumption(nd);
 		final double expectedPrice=getState().getBudget(nd)/monthlyConsumption;
@@ -142,12 +147,12 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 				/(double) Time.MONTH.getTicks();
 		final double eInt=moneyRatio/timeRatio;
 		// set external security factor as economic growth forecast
-		final double eExt=1d;
+		final double eExt=1;
 		// set personal security factor to an individual constant representing the agent's personality trait
-		final double ePers=1d;
+		final double ePers=getState().getExtraversion()+0.5d; // [0;1] --> [0.5;1.5]
 		// calc modifying factor as geometric mean of the four factors above
 		final double modifier=Math.sqrt(Math.sqrt(eUrg*eInt*eExt*ePers)); //x^0.25=(x^0.5)^0.5
-		return (float) (expectedPrice*modifier);
+		return expectedPrice*modifier;
 	}
 
 	/**
@@ -164,6 +169,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 					int budget;
 					// calc with local market pricing
 					final double price=getDomain().getGoodsMarket().getLastPrice(nd.getSatisfier());
+					log("Price="+price+" for "+nd.getSatisfier().getName());
 					if (price>0) budget=(int) (price*getMonthlyConsumption(nd));
 					// fall back: without a market price calc with equal budgets per need 
 					else budget=(int) (getState().getTotalBudget()/Model.getInstance().getNeedCount());
@@ -173,7 +179,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 				} else getState().setBudget(nd,0);
 			}
 		}
-		enqueueEvent(EVENT.planBudget,time.add(Time.MONTH));
+		enqueueEvent(EVENT.planBudget,time.add(BUDGET_PERIOD));
 	}
 
 	private URGENCY getUrgency() { return URGENCY.values()[getState().getUrgencyLevel()]; }

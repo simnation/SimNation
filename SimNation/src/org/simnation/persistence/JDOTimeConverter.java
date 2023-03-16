@@ -10,26 +10,28 @@
  */
 package org.simnation.persistence;
 
-import javax.jdo.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 
 import org.simplesim.core.scheduling.Time;
 
 /**
  *  Converter class used by JDO to persist {@code Time} class in database
  */
+@Converter
 public class JDOTimeConverter implements AttributeConverter<Time,Long> {
 
 	/**
 	 *  {@inheritDoc}
 	 */
-	public Long convertToDatastore(Time time) {
+	public Long convertToDatabaseColumn(Time time) {
 		return time.getTicks();
 	}
 
 	/**
 	 *  {@inheritDoc}
 	 */
-	public Time convertToAttribute(Long value) {
+	public Time convertToEntityAttribute(Long value) {
 		return new Time(value);
 	}
 

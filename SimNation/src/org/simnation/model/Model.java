@@ -124,11 +124,11 @@ public final class Model extends RoutingDomain implements Persistable {
 			b2c.add(gm);
 			// final LaborMarket lm=new LaborMarket(SkillSet.values());
 			final Domain domain=new Domain(region,gm); // adding market entities  
-			addEntity(domain);
-			domain.addEntity(gm);
+			domain.addToDomain(Model.getInstance()); // add domain to model
+			gm.addToDomain(domain);
 			// adding households and companies externally
-			for (HouseholdDBS dbs : dao.load(HouseholdDBS.class,region)) domain.addEntity(new Household(dbs));
-			for (TraderDBS dbs : dao.load(TraderDBS.class,region)) domain.addEntity(new Trader(dbs));
+			for (HouseholdDBS dbs : dao.load(HouseholdDBS.class,region)) new Household(dbs).addToDomain(domain);
+			for (TraderDBS dbs : dao.load(TraderDBS.class,region)) new Trader(dbs).addToDomain(domain);
 		}
 		
 	}

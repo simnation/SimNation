@@ -12,9 +12,13 @@ package org.simnation.main;
 
 import org.simnation.model.Model;
 import org.simnation.persistence.DataAccessObject;
-import org.simplesim.core.messaging.ForwardingStrategy;
-import org.simplesim.core.messaging.RoutedMessageForwarding;
+import org.simplesim.core.messaging.MessageForwardingStrategy;
+import org.simplesim.core.messaging.RecursiveMessageForwarding;
+import org.simplesim.core.messaging.RoutingMessageForwarding;
+import org.simplesim.core.scheduling.EventQueue;
+import org.simplesim.core.scheduling.HeapEventQueue;
 import org.simplesim.core.scheduling.Time;
+import org.simplesim.model.Agent;
 import org.simplesim.simulator.SequentialDESimulator;
 import org.simplesim.simulator.Simulator;
 
@@ -38,8 +42,9 @@ public class Main {
 			System.exit(3);
 		}
 		// start simulation
-		final ForwardingStrategy fs=new RoutedMessageForwarding(Model.getInstance());
-		final Simulator simulator=new SequentialDESimulator(Model.getInstance(),fs);
+		final MessageForwardingStrategy fs=new RecursiveMessageForwarding();
+		final EventQueue<Agent> eq=new HeapEventQueue<>();
+		final Simulator simulator=new SequentialDESimulator(Model.getInstance(),eq,fs);
 		simulator.runSimulation(Time.MONTH);
 	}
 

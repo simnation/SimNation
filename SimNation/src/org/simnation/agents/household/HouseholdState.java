@@ -26,6 +26,7 @@ public class HouseholdState implements State {
 	int adults, children;
 	int urgencyLevel;
 	Money money;
+	float extraversion;
 
 	// set at any time
 	private Time startBudgetPeriod;
@@ -51,6 +52,8 @@ public class HouseholdState implements State {
 	public int getAdults() { return adults; }
 
 	public int getChildren() { return children; }
+	
+	public double getExtraversion() { return extraversion; }
 
 	public int getUrgencyLevel() { return urgencyLevel; }
 

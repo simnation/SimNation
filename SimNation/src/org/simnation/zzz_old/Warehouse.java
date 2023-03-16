@@ -76,7 +76,7 @@ public final class Warehouse {
 	 * Removes the passed number of packages of required good from stock. If there are not enough product on stock the
 	 * returning value will contain the maximum quantity of the stored product and leave an empty shelf.
 	 *
-	 * @param good
+	 * @param data.good
 	 * @param quantity
 	 * @return Product containing number of removed items.
 	 */

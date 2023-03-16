@@ -22,7 +22,7 @@ import org.simnation.agents.math.ExponentialSmoothingStatistics;
 import org.simnation.agents.math.Statistics;
 import org.simnation.context.technology.Good;
 import org.simnation.model.Model;
-import org.simplesim.core.messaging.RoutedMessage;
+import org.simplesim.core.messaging.RoutingMessage;
 import org.simplesim.core.scheduling.Time;
 
 /**
@@ -33,6 +33,9 @@ import org.simplesim.core.scheduling.Time;
  */
 
 public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> {
+
+	private static final Time TRADER_OFFSET=new Time(1); // be the first agent to start
+	private static final Time TRADER_PERIOD=Time.DAY;  // deliver daily to market
 
 	enum EVENT {
 		supplyMarket, orderStock
@@ -54,7 +57,7 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 			salesVolume.put(market.getAddress(),new ExponentialSmoothingStatistics());
 			salesTurnover.put(market.getAddress(),new ExponentialSmoothingStatistics());
 		}
-		enqueueEvent(EVENT.supplyMarket,new Time(0,3,0));
+		enqueueEvent(EVENT.supplyMarket,TRADER_OFFSET); // start simulation with posting offers to market
 	}
 
 	@Override
@@ -69,7 +72,7 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 		case supplyMarket:
 			log("\t supply market event");
 			sendSupplyToMarket();
-			enqueueEvent(EVENT.supplyMarket,time.add(Time.DAY));
+			enqueueEvent(EVENT.supplyMarket,time.add(TRADER_PERIOD));
 			break;
 		default:
 			throw new UnhandledEventType(event,this);
@@ -78,7 +81,7 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 	}
 
 	@Override
-	protected void handleMessage(RoutedMessage msg) {
+	protected void handleMessage(RoutingMessage msg) {
 		if (msg.getContent().getClass()==Demand.class) {
 
 		} else if (msg.getContent().getClass()==Supply.class) {
@@ -106,7 +109,7 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 			final double price=batch.getPrice()*getState().getMargin();
 			// send supply to market
 			final Supply<Good> supply=new Supply<>(getAddress(),batch,price);
-			final RoutedMessage msg=new RoutedMessage(getAddress(),market.getAddress(),supply);
+			final RoutingMessage msg=new RoutingMessage(getAddress(),market.getAddress(),supply);
 			sendMessage(msg);
 			//log("\t"+stat.toString());
 			log("\t send supply to market: "+supply.toString());

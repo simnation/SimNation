@@ -14,17 +14,25 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.jdo.annotations.Join;
-import javax.jdo.annotations.NotPersistent;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-
 import org.simnation.agents.household.NeedDefinition;
 import org.simnation.context.technology.ProductionTechnology.IProductionFunction;
 import org.simnation.model.Limits;
 import org.simnation.zzz_old.GoodSet;
 import org.simplesim.core.scheduling.Time;
+
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Convert;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 
 /**
  * A good is a node of a value chain and contains all its characteristics,
@@ -39,9 +47,9 @@ import org.simplesim.core.scheduling.Time;
  * <p>
  * Goods are made from precursors (production as transformation process). A good
  * that has no precursors is a <b>resource</b>. A good that satisfies a
- * {@link NeedDefinition} is a <b>consumable</b>. Thus, the value chain resembles a
- * production network with resources as <i>source</i> and consumables as
- * <i>sink</i> of the network.
+ * {@link NeedDefinition} is a <b>consumable</b>. Thus, the value chain
+ * resembles a production network with resources as <i>source</i> and
+ * consumables as <i>sink</i> of the network.
  * <p>
  * A {@link Machine} is a special good to transform other goods. Thus, a machine
  * to produce other machines introduces a self-replicating element into the
@@ -58,61 +66,30 @@ import org.simplesim.core.scheduling.Time;
  * </ul>
  *
  */
-@PersistenceCapable
-//@Inheritance(strategy=InheritanceStrategy.SUBCLASS_TABLE)
+@Entity
 public class Good {
 
-	/**
-	 * Represents a precursor as part of a value chain.
-	 * <p>
-	 * Any good may have one or more precursors its production depends on.
-	 * Precursors are goods coupled with a parameter (alpha). This parameter is used
-	 * to characterize the production function further.
-	 * 
-	 * @see IProductionFunction
-	 * @see ProductionTechnology
-	 *
-	 */
-	@PersistenceCapable(embeddedOnly="true")
-	public static class Precursor {
-
-		@Persistent(column="precursor")
-		private Good good;
-		private double alpha;
-
-		Precursor(Good p, double a) {
-			good=p;
-			alpha=a;
-		}
-
-		public Good getGood() { return good; }
-
-		public double getAlpha() { return alpha; }
-
-		public void setGood(Good precursor) { good=precursor; }
-
-		public void setAlpha(double value) { alpha=value; }
-
-	}
 
 	public enum ResourceType {
 		INFINITE, LIMITED, POPULATION;
 	}
 
-	@PrimaryKey
+	@Id
 	private String name; // name as primary key
 	private String unit;
 	private boolean service; // is it a service?
-	@Persistent(converter=org.simnation.persistence.JDOTimeConverter.class)
+	@Convert(converter=org.simnation.persistence.JDOTimeConverter.class)
 	private Time depreciationTime=Time.ZERO; // depreciation or service availability time
 
+	@OneToMany(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
+	@JoinColumn(name="PRECURSOR_FK")
+	//@ElementCollection
+	private List<Precursor> precursors=new ArrayList<>();
+	
 	//@Persistent(embeddedElement="true",defaultFetchGroup="true")
-	@NotPersistent
+	@Transient
 	private ProductionTechnology technology; // contains all technical specifications of this good
 
-	@Persistent(embeddedElement="true", defaultFetchGroup="true")
-	@Join(column="good")
-	private List<Precursor> precursors=new ArrayList<>();
 
 	// raw material
 	// private RESOURCE_TYPE resourceType;
@@ -121,15 +98,15 @@ public class Good {
 
 	// general --> calculated values, not in scenario description!
 	// values serve as initial values to start the simulation
-	@NotPersistent
-	private double output; // inital global amount
-	@NotPersistent
-	private double value; // initial price
+	@Transient
+	private double initialOutput; // inital global amount
+	@Transient
+	private double initialValue; // initial price
 
-	@NotPersistent
+	@Transient
 	private final List<Good> successorList=new ArrayList<>(); // links to the successors
-	
-	@NotPersistent
+
+	@Transient
 	int hash=0; // caching the hash value
 
 	public void addPrecursor(Good good, double value) {
@@ -197,9 +174,9 @@ public class Good {
 		 * add margin --> "cost plus" approach }
 		 */
 
-	public double getDailyOutput() { return output; }
+	public double getDailyOutput() { return initialOutput; }
 
-	public double getOutput() { return output; }
+	public double getOutput() { return initialOutput; }
 
 	public ProductionTechnology getTechology() { return technology; }
 
@@ -240,7 +217,7 @@ public class Good {
 
 	public String getUnit() { return unit; }
 
-	public double getValue() { return value; }
+	public double getValue() { return initialValue; }
 
 	public boolean hasPrecursors() {
 		return !getPrecursors().isEmpty();
@@ -252,7 +229,7 @@ public class Good {
 
 	public boolean isService() { return service; }
 
-	void setDailyOutput(double value) { output=value; }
+	void setDailyOutput(double value) { initialOutput=value; }
 
 	public void setDepreciationTime(Time depreciationTime) { this.depreciationTime=depreciationTime; }
 
@@ -272,7 +249,7 @@ public class Good {
 
 	public void setPrecursors(List<Precursor> precursors) { this.precursors=precursors; }
 
-	void setOutputValue(double v) { value=v; }
+	void setOutputValue(double v) { initialValue=v; }
 
 	public void setProductionTechnology(ProductionTechnology value) { technology=value; }
 
@@ -299,9 +276,10 @@ public class Good {
 	@Override
 	public boolean equals(Object that) {
 		return this==that;
-		/*if (this==that) return true;
-		if (that==null||!(that instanceof Good)) return false;
-		return name.equals(((Good) that).name);*/
+		/*
+		 * if (this==that) return true; if (that==null||!(that instanceof Good)) return
+		 * false; return name.equals(((Good) that).name);
+		 */
 	}
 
 }

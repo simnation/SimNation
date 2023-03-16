@@ -1,9 +1,5 @@
 package org.simnation.agents.firm.trader;
 
-import javax.jdo.annotations.Column;
-import javax.jdo.annotations.DatastoreIdentity;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.PersistenceCapable;
 
 import org.simnation.agents.business.Money;
 import org.simnation.agents.common.Batch;
@@ -12,17 +8,31 @@ import org.simnation.agents.firm.common.Storage;
 import org.simnation.context.geography.Region;
 import org.simnation.context.technology.Good;
 
-@PersistenceCapable
-@DatastoreIdentity(strategy=IdGeneratorStrategy.IDENTITY)
-public class TraderDBS implements DatabaseState<TraderState> {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 
-	@Column(name="Region_FK")
+@Entity
+public class TraderDBS implements DatabaseState<TraderState> {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
+	private int index;
+
+	@OneToOne
+	@JoinColumn(name="Region_FK")
 	private Region region;
-	@Column(name="Good_FK")
+	
+	@OneToOne
+	@JoinColumn(name="Good_FK")
 	private Good good;
-	private long value;
-	private float quality;
-	private long stock;
+	
+	private long stockValue;
+	private float stockQuality;
+	private long stockQuantity;
 	private long cash;
 
 	public Region getRegion() { return region; }
@@ -47,20 +57,24 @@ public class TraderDBS implements DatabaseState<TraderState> {
 		return state;
 	}
 
-	public long getStock() { return stock; }
+	public long getStock() { return stockQuantity; }
 
-	public void setStock(long stock) { this.stock=stock; }
+	public void setStock(long stock) { this.stockQuantity=stock; }
 
 	public Good getGood() { return good; }
 
 	public void setGood(Good good) { this.good=good; }
 
-	public float getQuality() { return quality; }
+	public float getQuality() { return stockQuality; }
 
-	public void setQuality(float quality) { this.quality=quality; }
+	public void setQuality(float quality) { this.stockQuality=quality; }
 
-	public long getValue() { return value; }
+	public long getValue() { return stockValue; }
 
-	public void setValue(long value) { this.value=value; }
+	public void setValue(long value) { this.stockValue=value; }
+	
+	public int getIndex() { return index; }
+
+	public void setIndex(int index) { this.index=index; }
 
 }

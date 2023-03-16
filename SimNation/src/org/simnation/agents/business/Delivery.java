@@ -11,9 +11,9 @@
 package org.simnation.agents.business;
 
 import org.simnation.agents.common.Batch;
-import org.simplesim.core.messaging.RoutedMessage;
+import org.simplesim.core.messaging.RoutingMessage;
 
-public final class Delivery extends RoutedMessage {
+public final class Delivery extends RoutingMessage {
 
 	private final Money money;
 	private final Batch batch;

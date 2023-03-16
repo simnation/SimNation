@@ -9,13 +9,13 @@ package org.simplesim.examples.kybernetica.game;
 import org.simplesim.core.messaging.MultiPort;
 import org.simplesim.core.messaging.SinglePort;
 import org.simplesim.core.scheduling.Time;
-import org.simplesim.model.AbstractAgent;
+import org.simplesim.model.BasicAgent;
 
 /**
  * 
  *
  */
-public class Environment extends AbstractAgent<EnvironmentState, Environment.EVENT> {
+public class Environment extends BasicAgent<EnvironmentState, Environment.EVENT> {
 	
 	
 	/**
@@ -34,7 +34,7 @@ public class Environment extends AbstractAgent<EnvironmentState, Environment.EVE
 	 */
 	@Override
 	protected Time doEvent(Time time) {
-		if (!hasExternalInput()||getState().finished()) return null;
+		if (!hasInput()||getState().finished()) return null;
 		GameMove gm=getInport().poll().getContent();
 		getState().technology+=gm.getTechnology();
 		getState().production+=gm.getProduction();

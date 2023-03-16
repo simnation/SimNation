@@ -6,7 +6,7 @@
 package org.simnation.agents;
 
 import org.simnation.model.Domain;
-import org.simplesim.core.messaging.RoutedMessage;
+import org.simplesim.core.messaging.RoutingMessage;
 import org.simplesim.core.scheduling.HeapEventQueue;
 import org.simplesim.core.scheduling.Time;
 import org.simplesim.model.RoutingAgent;
@@ -37,7 +37,7 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 	 */
 	@SuppressWarnings("serial")
 	protected static class UnhandledMessageType extends RuntimeException {
-		public UnhandledMessageType(RoutedMessage msg, AbstractBasicAgent<?, ?> agent) {
+		public UnhandledMessageType(RoutingMessage msg, AbstractBasicAgent<?, ?> agent) {
 			super("Message content of type "+msg.getContent().getClass().getName()+" could not be handled by "
 					+agent.getFullName());
 		}
@@ -48,7 +48,7 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 	}
 
 	@Override
-	protected Time doEvent(Time time) {
+	public Time doEvent(Time time) {
 		log(time,"doEvent started");
 		// process messages
 		while (getInport().hasMessages()) handleMessage(getInport().poll());
@@ -65,7 +65,7 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 	 *
 	 * @param msg the next message to be handled by the agent
 	 */
-	protected abstract void handleMessage(RoutedMessage msg);
+	protected abstract void handleMessage(RoutingMessage msg);
 
 	/**
 	 * Handles a due event.
@@ -85,7 +85,7 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 	 *
 	 * @param msg the message
 	 */
-	protected final void sendMessage(RoutedMessage msg) {
+	protected final void sendMessage(RoutingMessage msg) {
 		getOutport().write(msg);
 	}
 
@@ -98,7 +98,7 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 	 * 
 	 */
 	protected final void sendMessage(int[] src, int[] dst, Object content) {
-		sendMessage(new RoutedMessage(src,dst,content));
+		sendMessage(new RoutingMessage(src,dst,content));
 	}
 
 	public void enqueueEvent(E event, Time time) {

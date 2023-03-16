@@ -39,7 +39,7 @@ public final class Demand<T> implements Comparable<Demand<?>> {
 	 * @param qual   - minQuality
 	 * @param cash   - payment, should at least be equal amount by price, can be {@code null}.
 	 */
-	public Demand(int[] addr, T ms, int amount, float p, float qual, Money cash) {
+	public Demand(int[] addr, T ms, int amount, double p, float qual, Money cash) {
 		this.addr=addr;
 		marketSegment=ms;
 		minQuantity=amount;

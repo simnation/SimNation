@@ -2,11 +2,13 @@ package org.simnation.persistence;
 
 import java.util.Collection;
 
-import javax.jdo.JDOHelper;
-import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
-
 import org.simnation.context.geography.Region;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Persistence;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 /**
  * Data Access Object serving as bridge to store the simulation scenario in a
@@ -16,23 +18,24 @@ import org.simnation.context.geography.Region;
  */
 public final class DataAccessObject {
 
-	private final PersistenceManager pm;
+	private final EntityManager pm;
 
-	public DataAccessObject(PersistenceManager value) {
+	public DataAccessObject(EntityManager value) {
 		pm=value;
-		pm.getFetchPlan().setFetchSize(javax.jdo.FetchPlan.FETCH_SIZE_OPTIMAL);
-		pm.getFetchPlan().setMaxFetchDepth(-1);
+
+		//pm.getFetchPlan().setFetchSize(javax.jdo.FetchPlan.FETCH_SIZE_OPTIMAL);
+		//pm.getFetchPlan().setMaxFetchDepth(-1);
 	}
 
 	public DataAccessObject(String pmfName) {
-		this(JDOHelper.getPersistenceManagerFactory(pmfName).getPersistenceManager());
+		this(Persistence.createEntityManagerFactory(pmfName).createEntityManager());
 	}
 
 	/**
 	 * Closes the database connection and all queries.
 	 */
 	public void close() {
-		if (pm.currentTransaction().isActive()) pm.currentTransaction().rollback();
+		if (pm.getTransaction().isActive()) pm.getTransaction().rollback();
 		pm.close();
 	}
 
@@ -46,11 +49,11 @@ public final class DataAccessObject {
 	 * @param clazz  class type
 	 * @param region index of the assigned region
 	 * @return collection of class objects from persistence store
-	 * @throws Exception JDO or IO exception
+	 * @throws Exception JPA or IO exception
 	 */
-	@SuppressWarnings("unchecked")
 	public <T> Collection<T> load(Class<T> clazz) throws Exception {
-		return (Collection<T>) pm.newQuery(clazz).execute();
+		final CriteriaQuery<T> cq=pm.getCriteriaBuilder().createQuery(clazz);
+		return pm.createQuery(cq.select(cq.from(clazz))).getResultList();
 	}
 
 	/**
@@ -63,20 +66,20 @@ public final class DataAccessObject {
 	 * @param clazz  class type
 	 * @param region index of the assigned region
 	 * @return collection of class objects from persistence store
-	 * @throws Exception JDO or IO exception
+	 * @throws Exception JPA or IO exception
 	 */
-	@SuppressWarnings("unchecked")
 	public <T> Collection<T> load(Class<T> clazz, Region region) throws Exception {
-		final Query<T> query=pm.newQuery(clazz);
-		query.setFilter("this.region==regionSelector");
-		query.declareParameters(Region.class.getName()+" regionSelector");
-		return (Collection<T>) query.execute(region);
+		final CriteriaBuilder cb=pm.getCriteriaBuilder();
+		final CriteriaQuery<T> cq=cb.createQuery(clazz);
+		final Root<T> root=cq.from(clazz);
+		cq.select(root).where(cb.equal(root.get("region"),region));
+		return pm.createQuery(cq).getResultList();
 	}
 
-	public void store(Collection<?> item) throws Exception {
-		pm.currentTransaction().begin();
-		pm.makePersistentAll(item);
-		pm.currentTransaction().commit();
+	public <T> void store(Collection<T> set) throws Exception {
+		pm.getTransaction().begin();
+		for (T item : set) pm.persist(item);
+		pm.getTransaction().commit();
 	}
 
 }

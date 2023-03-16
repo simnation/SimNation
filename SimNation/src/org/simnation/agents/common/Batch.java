@@ -44,8 +44,8 @@ public class Batch implements Tradable<Good>, Mergable<Batch> {
 
 	@Override
 	public Batch split(long amount) {
-		if (amount<0||amount>getQuantity())
-			throw new IllegalArgumentException("Batch.split(): value too large or negative!");
+		if (amount<=0||amount>getQuantity())
+			throw new IllegalArgumentException("Batch.split(): value too large, zero or negative!");
 		final long otherValue=amount*getValue()/getQuantity(); // integer division
 		value-=otherValue; // ensure sum equals the old value, i.e. there is no arithmetic loss 
 		quantity-=amount;

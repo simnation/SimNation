@@ -35,7 +35,7 @@ public final class ExponentialSmoothingStatistics implements Statistics {
 		final double diff=value-average;
 		final double incr=alpha*diff;
 		average=average+incr; // update average
-		variance=(1-alpha)*(variance+diff*incr); // recursive calculation based on Welford's method
+		variance=(1.0f-alpha)*(variance+diff*incr); // recursive calculation based on Welford's Online Algorithm
 		return value;
 	}
 
@@ -61,7 +61,7 @@ public final class ExponentialSmoothingStatistics implements Statistics {
 	/**
 	 * Sets the factor used for exponential smoothing.
 	 * 
-	 * @param alpha the smoothing factor, must be between 0 and 1 
+	 * @param data.alpha the smoothing factor, must be between 0 and 1 
 	 **/
 	public void setSmoothingFactor(float value) { alpha=value; }
 

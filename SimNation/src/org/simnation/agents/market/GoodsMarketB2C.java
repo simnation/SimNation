@@ -5,26 +5,18 @@
  */
 package org.simnation.agents.market;
 
-import java.util.List;
 import java.util.Set;
 
 import org.simnation.agents.business.Demand;
-import org.simnation.agents.business.Money;
 import org.simnation.agents.business.Supply;
 import org.simnation.agents.common.Batch;
 import org.simnation.context.technology.Good;
-import org.simplesim.core.scheduling.Time;
 
 /**
  *
  *
  */
 public final class GoodsMarketB2C extends Market<Good> {
-	
-
-
-	public static final Time MARKET_OFFSET=new Time(0,12,0);
-	public static final Time MARKET_PERIOD=Time.DAY;
 
 	/**
 	 * @param strat
@@ -33,13 +25,15 @@ public final class GoodsMarketB2C extends Market<Good> {
 	 * @param p
 	 */
 	public GoodsMarketB2C(Set<Good> segments) {
-		super(segments,new SimpleDoubleAuctionStrategy<>(),MARKET_OFFSET,MARKET_PERIOD);
+		super(segments,new SimpleDoubleAuctionStrategy<>());
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.simnation.simulation.agents.market.Market#trade(org.simnation.simulation.business.Supply,
-	 * org.simnation.simulation.business.Demand, int, float)
+	 *
+	 * @see
+	 * org.simnation.simulation.agents.market.Market#trade(org.simnation.simulation.
+	 * business.Supply, org.simnation.simulation.business.Demand, int, float)
 	 */
 	@Override
 	long trade(Demand<Good> demand, Supply<Good> supply, long amount, double price) {
@@ -57,9 +51,8 @@ public final class GoodsMarketB2C extends Market<Good> {
 		supply.getMoney().merge(demand.getMoney().split(cost));
 		return quantity;
 	}
-	
-	public String getName() {
-		return "GoodsMarketB2C";
-	}
+
+	@Override
+	public String getName() { return "GoodsMarketB2C"; }
 
 }

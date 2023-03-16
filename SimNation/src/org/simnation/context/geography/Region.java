@@ -3,16 +3,17 @@ package org.simnation.context.geography;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jdo.annotations.Extension;
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.NotPersistent;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
-@PersistenceCapable
+@Entity
 public class Region {
 
-	@Persistent(primaryKey="true", valueStrategy=IdGeneratorStrategy.IDENTITY)
+	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private int index;
 
 	private String name="Berlin";
@@ -24,11 +25,11 @@ public class Region {
 	static final double NOT_INITIALIZED=-1.0;
 	private static final double EARTH_RADIUS=6371.0;
 
-	@NotPersistent
+	@Transient
 	private int population=1000;
-	@NotPersistent
+	@Transient
 	private final List<Region> neighbor_list=new ArrayList<>();
-	@NotPersistent
+	@Transient
 	private final List<Double> distance_list=new ArrayList<>();
 
 	public void addNeighbor(Region dest) {

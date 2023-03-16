@@ -42,7 +42,6 @@ public class InitDatabase {
 		final DataAccessObject dao=new DataAccessObject("Scenario");
 		final InitDatabase id=new InitDatabase();	
 		try {
-			//Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 			id.populateRegionSet();
 			dao.store(id.regions);
 
@@ -71,6 +70,7 @@ public class InitDatabase {
 		hh.setAdults(2);
 		hh.setChildren(3);
 		hh.setCash(10000);
+		hh.setExtraversion(1.0f);
 		hh.setNeedSatisfaction(new int[1]);
 		return hh;
 	}
