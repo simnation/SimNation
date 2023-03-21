@@ -29,7 +29,7 @@ public class HouseholdState implements State {
 	float extraversion;
 
 	// set at any time
-	private Time startBudgetPeriod;
+	private Time budgetPeriodStart;
 	private long totalBudget;
 	private final int budget[];
 	private final int saturationLevel[];
@@ -77,8 +77,8 @@ public class HouseholdState implements State {
 
 	public void addToSaturation(NeedDefinition nd, int value) { saturationLevel[nd.getIndex()]+=value; }
 
-	public Time getStartBudgetPeriod() { return startBudgetPeriod; }
+	public Time getBudgetPeriodStart() { return budgetPeriodStart; }
 
-	public void setStartBudgetPeriod(Time startBudgetPeriod) { this.startBudgetPeriod = startBudgetPeriod; }
+	public void setBudgetPeriodStart(Time value) { budgetPeriodStart = value; }
 
 }

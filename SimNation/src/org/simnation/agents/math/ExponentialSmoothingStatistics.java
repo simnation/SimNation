@@ -11,49 +11,46 @@
 package org.simnation.agents.math;
 
 /**
- * Calculates average and variance by exponential smoothing.
+ * Calculates mean and variance by exponential smoothing.
+ * 
+ * Uses EWAM and EWVM (Exponentially Weighted Average/Variance Method) to calculate mean and variance of a time series. 
+ * The exponential smoothing factor determines the elasticity to changes. The higher the factor, the higher the impact of new
+ * values. The method is implemented as efficient online algorithm.
+ * 
  * 
  * @see <a href="https://fanf2.user.srcf.net/hermes/doc/antiforgery/stats.pdf">
- *      Reference for exponentially-weighted mean and variance</a>
+ *       <i>Incremental calculation of weighted mean and variance</i> by Tony Finch (2009)</a>
  * 
  */
 public final class ExponentialSmoothingStatistics implements Statistics {
 
-	private double average=0;	// demand average 
-	private double variance=0;	// demand variance
-	private float alpha;		// exponential smoothing factor
+	private double average=0;	// weighted average 
+	private double variance=0;	// weighted variance
+	private float alpha;		// exponential smoothing factor, has to be between 0 and 1.
 
 	
 	public ExponentialSmoothingStatistics(float esf) { alpha=esf; }
 	
 	public ExponentialSmoothingStatistics() { this(0.2f); }
 	
-	/**
-	 * {@inheritDoc}
-	 */
+	@Override
 	public double update(double value) {
 		final double diff=value-average;
 		final double incr=alpha*diff;
-		average=average+incr; // update average
-		variance=(1.0f-alpha)*(variance+diff*incr); // recursive calculation based on Welford's Online Algorithm
+		average+=incr; // update average
+		variance=(1.0f-alpha)*(variance+diff*incr); // calculation according to the above paper
 		return value;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 **/
+	@Override
 	public void reset() {
 		average=variance=0;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 **/
+	@Override
 	public double getAverage() { return average; }
 
-	/**
-	 * {@inheritDoc}
-	 **/
+	@Override
 	public double getVariance() { return variance; }
 
 	public float getSmoothingFactor() { return alpha; }

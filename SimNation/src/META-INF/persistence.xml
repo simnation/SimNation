@@ -17,16 +17,31 @@
 		<properties>
 			<property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver" />
 		  	<property name="jakarta.persistence.jdbc.url" value="jdbc:h2:file:d://test" />
-		  	<!-- 
-		  	<property name="jakarta.persistence.jdbc.user" value="sa" />
+		    <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+		  	<property name="hibernate.hbm2ddl.auto" value="update" />
+			<!-- 		    
+		    <property name="jakarta.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmebeddedDriver" />
+		  	<property name="jakarta.persistence.jdbc.url" value="jdbc:derby:file:d://test;create=true" />
+		    <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+		    
+		    <property name="jakarta.persistence.jdbc.driver" value="org.h2.jdbc.JDBCDriver" />
+		  	<property name="jakarta.persistence.jdbc.url" value="jdbc:h2:file:d://test" />
+		    <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+		  	
+		    <property name="jakarta.persistence.jdbc.driver" value="org.hsqldb.jdbc.JDBCDriver" />
+		  	<property name="jakarta.persistence.jdbc.url" value="jdbc:hsqldb:file:d://test" />
+		    <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+		  	
+          	<property name="jakarta.persistence.jdbc.user" value="sa" />
             <property name="jakarta.persistence.jdbc.password" value="" />
-            -->
-            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
-            <property name="hibernate.show_sql" value="false" />
-            <property name="hibernate.hbm2ddl.auto" value="create" />
+        
             <property name="hibernate.temp.use_jdbc_metadata_defaults" value="false"/>
-            <property name="hibernate.format_sql" value="true"/>
-            <property name="hibernate.use_sql_comments" value="true"/>
+        <property name="hibernate.format_sql" value="true"/>
+        <property name="hibernate.use_sql_comments" value="true"/>
+            <property name="hibernate.show_sql" value="false" />
+          
+            -->
+            
 		</properties>
 	</persistence-unit>
 		

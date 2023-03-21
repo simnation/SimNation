@@ -78,7 +78,7 @@ public class Good {
 	private String name; // name as primary key
 	private String unit;
 	private boolean service; // is it a service?
-	@Convert(converter=org.simnation.persistence.JDOTimeConverter.class)
+	@Convert(converter=org.simnation.persistence.JPATimeConverter.class)
 	private Time depreciationTime=Time.ZERO; // depreciation or service availability time
 
 	@OneToMany(fetch=FetchType.EAGER,cascade=CascadeType.ALL)

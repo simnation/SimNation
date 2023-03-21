@@ -21,8 +21,8 @@ public class TestStatistics {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		 final Statistics stat=new SimpleMovingAverageStatistics();
-		//final Statistics stat=new ExponentialSmoothingStatistics();
+		// final Statistics stat=new SimpleMovingAverageStatistics();
+		final Statistics stat=new ExponentialSmoothingStatistics();
 		
 		
 		for (double value : ts) {

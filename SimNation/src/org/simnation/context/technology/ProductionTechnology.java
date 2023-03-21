@@ -90,10 +90,10 @@ public class ProductionTechnology {
 
 	private Good machine=null; // which machine is used for this technology?
 	private int defaultCapacity; // output capacity of good PER UNIT of this good's machine
-	@Convert(converter=org.simnation.persistence.JDOTimeConverter.class)
+	@Convert(converter=org.simnation.persistence.JPATimeConverter.class)
 	private Time defaultMakespan; // how long does it take to make a unit?
 	private double defaultManhours; // how many manhours of labor does one unit need?
-	@Convert(converter=org.simnation.persistence.JDOProductionFunctionTypeConverter.class)
+	@Convert(converter=org.simnation.persistence.JPAProductionFunctionTypeConverter.class)
 	private ProductionFunctionType pft;
 
 	public int getDefaultCapacity() { return defaultCapacity; }

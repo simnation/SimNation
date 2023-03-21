@@ -19,18 +19,14 @@ import org.simplesim.core.scheduling.Time;
  *  Converter class used by JDO to persist {@code Time} class in database
  */
 @Converter
-public class JDOTimeConverter implements AttributeConverter<Time,Long> {
+public class JPATimeConverter implements AttributeConverter<Time,Long> {
 
-	/**
-	 *  {@inheritDoc}
-	 */
+	@Override
 	public Long convertToDatabaseColumn(Time time) {
 		return time.getTicks();
 	}
 
-	/**
-	 *  {@inheritDoc}
-	 */
+	@Override
 	public Time convertToEntityAttribute(Long value) {
 		return new Time(value);
 	}

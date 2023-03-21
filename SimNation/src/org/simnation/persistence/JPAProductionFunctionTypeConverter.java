@@ -17,7 +17,7 @@ import org.simnation.context.technology.ProductionTechnology.ProductionFunctionT
 import jakarta.persistence.Converter;
 
 @Converter
-public final class JDOProductionFunctionTypeConverter implements AttributeConverter<ProductionFunctionType, String> {
+public final class JPAProductionFunctionTypeConverter implements AttributeConverter<ProductionFunctionType, String> {
 
 	@Override
 	public String convertToDatabaseColumn(ProductionFunctionType pfd) {

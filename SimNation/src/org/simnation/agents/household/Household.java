@@ -135,21 +135,21 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	 * @return the current demand price
 	 */
 	private double calcPricing(NeedDefinition nd, Time time) {
+		final double dailyConsumption=getDailyConsumption(nd);
 		// calc expected price as monthly budget divided by monthly consumption
-		final double monthlyConsumption=getMonthlyConsumption(nd);
-		final double expectedPrice=getState().getBudget(nd)/monthlyConsumption;
-		// calc urgency factor as missing consumption divided by consumption per activation period
-		final double consumption=getDailyConsumption(nd)*nd.getActivationDays();
+		final double expectedPrice=getState().getBudget(nd)/(dailyConsumption*Time.DAYS_PER_MONTH);
+		// calc urgency factor as remaining consumption divided by consumption per activation period
+		final double consumption=dailyConsumption*nd.getActivationDays();
 		final double eUrg=(consumption-getState().getSaturation(nd))/consumption;
 		// calc internal security factor as ratio of remaining money vs. remaining time
-		final double moneyRatio=getState().getMoney().getValue()/(double) getState().getTotalBudget();
-		final double timeRatio=(Time.MONTH.getTicks()-(time.getTicks()-getState().getStartBudgetPeriod().getTicks()))
-				/(double) Time.MONTH.getTicks();
+		final double moneyRatio=((double) getState().getMoney().getValue())/getState().getTotalBudget();
+		final double remainingTicks=(getState().getBudgetPeriodStart().getTicks()+Time.TICKS_PER_MONTH-time.getTicks());
+		final double timeRatio=remainingTicks/Time.TICKS_PER_MONTH;
 		final double eInt=moneyRatio/timeRatio;
 		// set external security factor as economic growth forecast
 		final double eExt=1;
 		// set personal security factor to an individual constant representing the agent's personality trait
-		final double ePers=getState().getExtraversion()+0.5d; // [0;1] --> [0.5;1.5]
+		final double ePers=getState().getExtraversion(); // [0.5;1.5]
 		// calc modifying factor as geometric mean of the four factors above
 		final double modifier=Math.sqrt(Math.sqrt(eUrg*eInt*eExt*ePers)); //x^0.25=(x^0.5)^0.5
 		return expectedPrice*modifier;
@@ -160,7 +160,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	 */
 	private void planBudget(Time time) {
 		log("\t plan budget");
-		getState().setStartBudgetPeriod(time);
+		getState().setBudgetPeriodStart(time);
 		long total=getState().getMoney().getValue();
 		getState().setTotalBudget(total);
 		for (URGENCY urgency : URGENCY.values()) { // traverse need hierarchy from bottom to top
@@ -171,7 +171,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 					final double price=getDomain().getGoodsMarket().getLastPrice(nd.getSatisfier());
 					log("Price="+price+" for "+nd.getSatisfier().getName());
 					if (price>0) budget=(int) (price*getMonthlyConsumption(nd));
-					// fall back: without a market price calc with equal budgets per need 
+					// fall back: without a market price calc with equal budgets for all needs 
 					else budget=(int) (getState().getTotalBudget()/Model.getInstance().getNeedCount());
 					if (total<budget) budget=(int) total; // adjust if out of budget 
 					total-=budget;
@@ -188,12 +188,12 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 
 	private void disableNeed(NeedDefinition nd) { getState().setBudget(nd,NEED_DISABLED); }
 
-	private long getDailyConsumption(NeedDefinition nd) {
+	private int getDailyConsumption(NeedDefinition nd) {
 		return nd.getDailyConsumptionAdult()*getState().getAdults()
 				+nd.getDailyConsumptionChild()*getState().getChildren();
 	}
 	
-	private long getMonthlyConsumption(NeedDefinition nd) {
+	private int getMonthlyConsumption(NeedDefinition nd) {
 		return getDailyConsumption(nd)*Time.DAYS_PER_MONTH;
 	}
 		
