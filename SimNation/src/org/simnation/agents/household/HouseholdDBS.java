@@ -10,6 +10,8 @@
  */
 package org.simnation.agents.household;
 
+import java.util.Random;
+
 import org.simnation.agents.business.Money;
 import org.simnation.agents.common.DatabaseState;
 import org.simnation.context.geography.Region;
@@ -41,9 +43,9 @@ public class HouseholdDBS implements DatabaseState<HouseholdState> {
 	private Region region=null; // the household's parent region
 	private int adults, children;
 	private long cash;
-	private float extraversion; // the households affinity to risk, [safe;risky] --> [0;1]
+	private float extraversion; // the households affinity to risk, [safe;risky] --> [0.5;1.5]
 
-	private int needSatisfaction[]; // grade of initial need satisfaction
+	private int needSatisfaction[]; // initial need satisfaction
 
 	@Override
 	public void convertToDBS(HouseholdState state) { // TODO Auto-generated method stub
@@ -58,6 +60,23 @@ public class HouseholdDBS implements DatabaseState<HouseholdState> {
 		state.extraversion=getExtraversion();
 		return state;
 	}
+	
+	@Override
+	public void generateDBS(Region reg, Random rng) { 
+		region=reg;
+		extraversion=rng.nextFloat()+0.5f; // [0.5; 1.5]
+		adults=1;
+		if (rng.nextBoolean()) adults++; // [1; 2]
+		children=rng.nextInt(5);
+		cash=10000+rng.nextInt(10000);
+		int index=0;
+		needSatisfaction=new int[Model.getInstance().getNeedCount()];
+		for (NeedDefinition nd : Model.getInstance().getNeedSet()) {
+			int c=nd.getDailyConsumptionAdult()*adults+nd.getDailyConsumptionChild()*children;
+			needSatisfaction[index]=rng.nextInt(c*nd.getActivationDays());
+			index++;
+		}
+	 }
 
 	public Money getMoney() { return new Money(cash); }
 
@@ -92,6 +111,5 @@ public class HouseholdDBS implements DatabaseState<HouseholdState> {
 	public float getExtraversion() { return extraversion; }
 
 	public void setExtraversion(float extraversion) { this.extraversion=extraversion; }
-
 
 }

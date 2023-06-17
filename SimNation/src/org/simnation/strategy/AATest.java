@@ -6,91 +6,91 @@
  */
 package org.simnation.strategy;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.simnation.strategy.AspirationAdaptation.Action;
 import org.simnation.strategy.AspirationAdaptation.GoalVariable;
-import org.simnation.strategy.AspirationAdaptation.INFLUENCE;
 
 /**
- *
+ * Testing the aspiration adaptation strategy by a three-parameter optimization
+ * of a two-objective problem.
+ * <p>
+ * The Fonseca-Fleming Problem is a two-objective problem that can be used with
+ * a variable number of parameters.
+ * 
+ * @see <a href=
+ *      "http://www.mathlayer.com/support/benchmark-problems-fonseca-fleming.html">Fonseca-Fleming
+ *      Problem </a>
  */
 public class AATest {
-	
-	private int round=0;
-	private final AspirationAdaptation aat;
 
+	private static final NumberFormat nf2=NumberFormat.getInstance();
+	private static final NumberFormat nf6=NumberFormat.getInstance();
+	private static final int dim=2; // number of objectives
+	private static final double a=1/Math.sqrt(3);
+	
+	private final AspirationAdaptation aat;	
+	private final GoalVariable g[]=new GoalVariable[dim]; // vector of goal variables
+	double x[]=new double[3]; // parameter vector
 	
 	public AATest() {
-		List<GoalVariable> goals= new ArrayList<>();
-		goals.add(new GoalVariable() {
-			// goal (r)eturn
-			public float getMin() { return -1; }
-			public float getMax() { return Float.POSITIVE_INFINITY; }
-			public float getStep() { return 0.01f; }
-			public float getLimit() { return 0.06f;	}
-			public double getValue() { 
-				if (round==0) return 0.068; else return 0.065;
-			}
-		});
-		goals.add(new GoalVariable() {
-			// goal (e)quity
+		g[0]=new GoalVariable() {
 			public float getMin() { return 0; }
 			public float getMax() { return 1; }
-			public float getStep() { return 0.1f; }
-			public float getLimit() { return 0.3f;	}
-			public double getValue() { 
-				if (round==0) return 0.24; else return 0.27;
-			}
-		});
-		goals.add(new GoalVariable() {
-			// goal (m)arket share
+			public float getStep() { return 0.0001f; }
+			public float getLimit() { return 0.995f; }
+			public double getValue() { return Math.exp(-Math.pow(x[0]-a,2)-Math.pow(x[1]-a,2)-Math.pow(x[2]-a,2)); }
+			public String toString() { return "f1="+nf6.format(getValue()); }
+		};
+		g[1]=new GoalVariable() {
 			public float getMin() { return 0; }
 			public float getMax() { return 1; }
-			public float getStep() { return 0.05f; }
-			public float getLimit() { return 0.7f;	}
-			public double getValue() { 
-				if (round==0) return 0.17; else return 0.16;
-			}
-		});
-		
-		aat=new AspirationAdaptation(goals);
-		aat.addAction(new Action() {
-			public void doAction() { System.out.println("Action 1: Price decrease"); }
-		}, new INFLUENCE[] {INFLUENCE.negative, INFLUENCE.none, INFLUENCE.positive });
-		aat.addAction(new Action() {
-			public void doAction() { System.out.println("Action 2: Price increase"); }
-		}, new INFLUENCE[] {INFLUENCE.positive, INFLUENCE.none, INFLUENCE.negative });
-		aat.addAction(new Action() {
-			public void doAction() { System.out.println("Action 3: Cost reduction"); }
-		}, new INFLUENCE[] {INFLUENCE.positive, INFLUENCE.negative , INFLUENCE.none});
-		aat.addAction(new Action() {
-			public void doAction() { System.out.println("Action 4: Broadening product line"); }
-		}, new INFLUENCE[] {INFLUENCE.negative, INFLUENCE.negative , INFLUENCE.positive});
-		aat.addAction(new Action() {
-			public void doAction() { System.out.println("Action 5: Narrowing product line"); }
-		}, new INFLUENCE[] {INFLUENCE.positive, INFLUENCE.positive  , INFLUENCE.negative});
-		aat.addAction(new Action() {
-			public void doAction() { System.out.println("Action 6: Easier customer credit"); }
-		}, new INFLUENCE[] {INFLUENCE.negative, INFLUENCE.none , INFLUENCE.positive});
-		aat.addAction(new Action() {
-			public void doAction() { System.out.println("Action 7: Harder customer credit"); }
-		}, new INFLUENCE[] {INFLUENCE.positive,  INFLUENCE.none , INFLUENCE.negative});	
-	}
-	
-	private void run() {
-		aat.decideAction().doAction();
-		round++;
-		aat.decideAction().doAction();
-	}
-	
+			public float getStep() { return 0.00001f; }
+			public float getLimit() { return 0.995f; }
+			public double getValue() { return Math.exp(-Math.pow(x[0]+a,2)-Math.pow(x[1]+a,2)-Math.pow(x[2]+a,2)); }
+			public String toString() { return "f2="+nf6.format(getValue()); }
+		};
 
-	/**
-	 * @param args
-	 */
+		final List<Action> actionList= new ArrayList<>();
+		actionList.add(() -> x[0]+=0.1d);
+		actionList.add(() -> x[0]-=0.1d);
+		actionList.add(() -> x[1]+=0.1d);
+		actionList.add(() -> x[1]-=0.1d);
+		actionList.add(() -> x[2]+=0.1d);
+		actionList.add(() -> x[2]-=0.1d);
+		
+		aat=new AspirationAdaptation(g);
+		
+		x[0]=2d; x[1]=-1.3d; x[2]=-0.7d;
+		
+		final double oldG[]=new double[dim];	// old goal values
+		for (int i=0; i<dim; i++) oldG[i]=g[i].getValue();
+		
+		for (Action action : actionList) {
+			final float influence[]=new float[dim];
+			final double oldX[]=x.clone();	// save old parameters
+			action.doAction();
+			for (int i=0; i<dim; i++) influence[i]=(float) (g[i].getValue()-oldG[i]);
+			aat.addAction(action,influence);
+			x=oldX;
+		}
+	}
+
+	private void run() {
+		for (int i=0; i<100; i++) {
+			aat.decideAction().doAction();
+			System.out.println("x="+nf2.format(x[0])+"  "+"y="+nf2.format(x[1])+"  "+"z="+nf2.format(x[2])+"  "+g[0].toString()+"   "+g[1].toString());
+		}
+	}
+
 	public static void main(String[] args) {
-		AATest test = new AATest();
+		nf2.setMaximumFractionDigits(2);
+		nf2.setMinimumFractionDigits(2);
+		nf6.setMaximumFractionDigits(6);
+		nf6.setMinimumFractionDigits(6);
+		final AATest test=new AATest();
 		test.run();
 	}
 

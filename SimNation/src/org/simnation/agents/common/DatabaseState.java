@@ -10,6 +10,9 @@
  */
 package org.simnation.agents.common;
 
+import java.util.Random;
+
+import org.simnation.context.geography.Region;
 import org.simplesim.model.State;
 
 /**
@@ -22,7 +25,7 @@ public interface DatabaseState<X extends State> {
 	 * @param state
 	 */
 	void convertToDBS(X state);
-	
+		
 	/**
 	 * Converts the database state into the the actual agent state using the provided state.
 	 * 
@@ -31,5 +34,14 @@ public interface DatabaseState<X extends State> {
 	 * @return the agent state
 	 */
 	X convertToState(X state);
+	
+	/**
+	 * Generates a new database state based on a given random number generator.
+	 * 
+	 * @param region the parent region of the agent with this state
+	 * @param rnd a random number generator implementing the java.util.Random interface
+	 */
+	void generateDBS(Region region, Random rnd);
+	
 	
 }

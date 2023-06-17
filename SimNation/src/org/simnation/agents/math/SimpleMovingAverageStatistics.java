@@ -34,9 +34,6 @@ public final class SimpleMovingAverageStatistics implements Statistics {
 
 	public SimpleMovingAverageStatistics() { this(5); }
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public double update(double value) {
 		final double oldAvg=average;
@@ -48,31 +45,21 @@ public final class SimpleMovingAverageStatistics implements Statistics {
 			final double oldVal=removeFromTail();
 			final double diff=value-oldVal;
 			average+=diff/sampleSize;
-			sumVar+=diff*(value-average+oldVal-oldAvg);
-			
+			sumVar+=diff*(value-average+oldVal-oldAvg);		
 		}
 		addToHead(value);
 		return value;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 **/
 	@Override
 	public void reset() {
 		head=tail=0;
 		average=sumVar=0;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 **/
 	@Override
 	public double getAverage() { return average; }
 
-	/**
-	 * {@inheritDoc}
-	 **/
 	@Override
 	public double getVariance() { return sumVar/size(); }
 	

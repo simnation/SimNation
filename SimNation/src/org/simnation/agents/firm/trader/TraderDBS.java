@@ -1,6 +1,8 @@
 package org.simnation.agents.firm.trader;
 
 
+import java.util.Random;
+
 import org.simnation.agents.business.Money;
 import org.simnation.agents.common.Batch;
 import org.simnation.agents.common.DatabaseState;
@@ -76,5 +78,9 @@ public class TraderDBS implements DatabaseState<TraderState> {
 	public int getIndex() { return index; }
 
 	public void setIndex(int index) { this.index=index; }
+
+	@Override
+	public void generateDBS(Region region, Random rnd) { // TODO Auto-generated method stub
+	 }
 
 }

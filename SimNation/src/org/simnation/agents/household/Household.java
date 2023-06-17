@@ -151,8 +151,10 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		// set personal security factor to an individual constant representing the agent's personality trait
 		final double ePers=getState().getExtraversion(); // [0.5;1.5]
 		// calc modifying factor as geometric mean of the four factors above
-		final double modifier=Math.sqrt(Math.sqrt(eUrg*eInt*eExt*ePers)); //x^0.25=(x^0.5)^0.5
-		return expectedPrice*modifier;
+		//final double modifier=Math.sqrt(Math.sqrt(eUrg*eInt*eExt*ePers)); //x^0.25=(x^0.5)^0.5 
+		
+		// do not need a geometric mean, but chained percental change modifiers
+		return expectedPrice*eUrg*eInt*eExt*ePers; // price multiplied with percental change modifiers
 	}
 
 	/**

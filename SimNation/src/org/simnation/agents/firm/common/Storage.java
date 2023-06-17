@@ -37,10 +37,10 @@ import org.simnation.context.technology.Good;
 public class Storage {
 
 	private final Batch batch;	// stored items
+	private final Statistics stat=new ExponentialSmoothingStatistics(); // statistics
 	private int orderCount=0;	// total requests
 	private int missCount=0; 	// out-of-stock requests
-	private final Statistics stat=new ExponentialSmoothingStatistics();
-
+	
 	public Storage(Good good) {
 		batch=new Batch(good);
 	}
@@ -97,7 +97,7 @@ public class Storage {
 	 * <p>
 	 * Calculation is done for a full order cycle. Deviating from usual SCM
 	 * formulas, period length refers to number of orders, not time. Presuming there
-	 * is an equal amount of orders per period, this comes out to the same.
+	 * is an equal amount of orders per period, this results to the same.
 	 * <p>
 	 * Note: Reset statistics to synchronize with order cycle
 	 * 
@@ -126,7 +126,7 @@ public class Storage {
 	 */
 	public float getReliability() {
 		if (orderCount==0) return Float.NaN;
-		return (float) (orderCount-missCount)/orderCount;
+		return (orderCount-missCount)/((float) orderCount);
 	}
 
 	public Good getGood() { return batch.getType(); }
@@ -155,11 +155,12 @@ public class Storage {
 	 * Inverse of the standardized normal distribution from 51% to 100% (equals
 	 * NORMSINVERS from LibreOffice)
 	 */
-	private static final float[] SAFETY_FACTOR= { 0.025069f, 0.050154f, 0.075270f, 0.100434f, 0.125661f, 0.150969f,
-			0.176374f, 0.201893f, 0.227545f, 0.253347f, 0.279319f, 0.305481f, 0.331853f, 0.358459f, 0.385320f,
-			0.412463f, 0.439913f, 0.467699f, 0.495850f, 0.524401f, 0.553385f, 0.582842f, 0.612813f, 0.643345f,
-			0.674490f, 0.706303f, 0.738847f, 0.772193f, 0.806421f, 0.841621f, 0.877896f, 0.915365f, 0.954165f,
-			0.994458f, 1.036433f, 1.080319f, 1.126391f, 1.174987f, 1.226528f, 1.281552f, 1.340755f, 1.405072f,
-			1.475791f, 1.554774f, 1.644854f, 1.750686f, 1.880794f, 2.053749f, 2.326348f, 2.575829f };
+	private static final float[] SAFETY_FACTOR= { 
+		0.025069f, 0.050154f, 0.075270f, 0.100434f, 0.125661f, 0.150969f, 0.176374f, 0.201893f, 0.227545f, 0.253347f,
+		0.279319f, 0.305481f, 0.331853f, 0.358459f, 0.385320f, 0.412463f, 0.439913f, 0.467699f, 0.495850f, 0.524401f, 
+		0.553385f, 0.582842f, 0.612813f, 0.643345f, 0.674490f, 0.706303f, 0.738847f, 0.772193f, 0.806421f, 0.841621f, 
+		0.877896f, 0.915365f, 0.954165f, 0.994458f, 1.036433f, 1.080319f, 1.126391f, 1.174987f, 1.226528f, 1.281552f, 
+		1.340755f, 1.405072f, 1.475791f, 1.554774f, 1.644854f, 1.750686f, 1.880794f, 2.053749f, 2.326348f, 2.575829f 
+	};
 
 }
