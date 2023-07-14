@@ -146,7 +146,7 @@ public class Storage {
 		if (sl<0.51f) return 0; // default value for service level below 51%
 		if (sl>=1.00f) return MAX_SAFETY_FACTOR; // for sl>=100% return max safety factor 
 		final int index=(int) ((sl-0.51f)*100.0f);
-		return SAFETY_FACTOR[index]; // return lookup value form table for 51%<=sl<100%
+		return SAFETY_FACTOR[index]; // return lookup value from table for 51%<=sl<100%
 	}
 
 	private static final float MAX_SAFETY_FACTOR=3.5f;

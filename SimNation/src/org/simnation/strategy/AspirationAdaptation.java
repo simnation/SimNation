@@ -7,7 +7,10 @@
 package org.simnation.strategy;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +87,7 @@ public class AspirationAdaptation {
 	 * percent of the limit does an action change?
 	 */
 	private final Map<Action, int[]> influenceScheme=new IdentityHashMap<>();
+	private final Deque<Action> history=new ArrayDeque<>();
 
 	private final int[] urgencyOrder; // permutation vector
 	private final double[] g0; // vector of last goal variable values, g0=g(t-1)
@@ -138,29 +142,43 @@ public class AspirationAdaptation {
 
 	public Action decideAction() {
 		if (lastAction!=null) updateInfluenceScheme();
+		else history.addAll(influenceScheme.keySet()); // first call --> init history deque
 		updateUrgencyOrder();
 		lastAction=findBestAction(); // find best action according to selected strategy
 		return lastAction;
 	}
 
 	private Action findBestAction() {
-		final List<Action> list=createCandiateList();
 		Action result=null;
+		final List<Action> list=createCandiateList();
 		if (!list.isEmpty()) switch (strategy) {
-		case SUM:
+		// if we get here, there is at least one action . 
+		// From the list of actions with positive influence on the prioritized goal select...
+		case SUM: // ...the action with the highest sum of influence over all goals (positive influence the prioritized goal is guaranteed)
 			result=selectBestSum(list);
 			break;
-		case PRIO:
+		case PRIO: // ...the action with highest influence on the prioritized goal
 			result=selectBestPrio(list);
 			break;
-		case RANDOM:
+		case RANDOM: // ...a random action from the list
 			result=list.get(ThreadLocalRandom.current().nextInt(list.size()));
 			break;
-		case OVERALL: // use fallback
+		case OVERALL: // ...highest sum over all goals of all actions (includes actions with negative influence on the prioritized goal)
 			break;
 		}
-		// fallback: select least bad action according to the sum of influences
-		if (result==null) result=selectBestSum(influenceScheme.keySet());
+		// fallback: action with best sum over all influences
+		// if result==null, this equals the least bad action (the sum of influences is negative in this case)
+/*		if (result==null) result=history.peekLast();
+		history.remove(result);
+		history.addFirst(result);
+	*/	
+//		if (result==null) result=selectBestSum(influenceScheme.keySet());
+
+		if (result==null) {
+			final List<Action> shuffle=new ArrayList<>(influenceScheme.keySet());
+			result=shuffle.get(ThreadLocalRandom.current().nextInt(shuffle.size()));
+		}
+		
 		return result;
 	}
 
