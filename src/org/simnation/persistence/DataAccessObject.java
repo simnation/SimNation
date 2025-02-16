@@ -1,6 +1,8 @@
 package org.simnation.persistence;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.simnation.context.geography.Region;
 
@@ -12,8 +14,8 @@ import jakarta.persistence.criteria.Root;
 
 /**
  * Data Access Object serving as bridge to store the simulation scenario in a
- * database. Uses DataNucleus as JDO implementation and is used in the editor
- * (store) and simulator (load) likewise.
+ * database. Uses EclpiseLink as JPA implementation and is used in the editor
+ * (save) and simulator (load) likewise.
  *
  */
 public final class DataAccessObject {
@@ -22,9 +24,6 @@ public final class DataAccessObject {
 
 	public DataAccessObject(EntityManager value) {
 		pm=value;
-
-		//pm.getFetchPlan().setFetchSize(javax.jdo.FetchPlan.FETCH_SIZE_OPTIMAL);
-		//pm.getFetchPlan().setMaxFetchDepth(-1);
 	}
 
 	public DataAccessObject(String pmfName) {
@@ -51,7 +50,7 @@ public final class DataAccessObject {
 	 * @return collection of class objects from persistence store
 	 * @throws Exception JPA or IO exception
 	 */
-	public <T> Collection<T> load(Class<T> clazz) throws Exception {
+	public <T> List<T> load(Class<T> clazz) throws Exception {
 		final CriteriaQuery<T> cq=pm.getCriteriaBuilder().createQuery(clazz);
 		return pm.createQuery(cq.select(cq.from(clazz))).getResultList();
 	}
@@ -59,16 +58,13 @@ public final class DataAccessObject {
 	/**
 	 * Loads a set of class objects filtered by the assigned region.
 	 * <p>
-	 * The returned {@code Collection} is a <i>attached</i> to the database, the
-	 * caller has to clone it for further usage!
-	 * 
 	 * @param <T>    class type
 	 * @param clazz  class type
 	 * @param region index of the assigned region
-	 * @return collection of class objects from persistence store
+	 * @return list of objects from persistence storage
 	 * @throws Exception JPA or IO exception
 	 */
-	public <T> Collection<T> load(Class<T> clazz, Region region) throws Exception {
+	public <T> List<T> load(Class<T> clazz, Region region) throws Exception {
 		final CriteriaBuilder cb=pm.getCriteriaBuilder();
 		final CriteriaQuery<T> cq=cb.createQuery(clazz);
 		final Root<T> root=cq.from(clazz);
@@ -76,7 +72,7 @@ public final class DataAccessObject {
 		return pm.createQuery(cq).getResultList();
 	}
 
-	public <T> void store(Collection<T> set) throws Exception {
+	public <T> void save(Collection<T> set) throws Exception {
 		pm.getTransaction().begin();
 		for (T item : set) pm.persist(item);
 		pm.getTransaction().commit();

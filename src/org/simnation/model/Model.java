@@ -135,9 +135,9 @@ public final class Model extends RoutingDomain implements Persistable {
 
 	@Override
 	public void save(DataAccessObject dao) throws Exception {
-		dao.store(regions);
-		dao.store(goods);
-		dao.store(needs);
+		dao.save(regions);
+		dao.save(goods);
+		dao.save(needs);
 	}
 
 	@Override

@@ -70,7 +70,7 @@ public final class NeedSet implements Persistable {
 	
 	@Override
 	public void save(DataAccessObject dao) throws Exception {
-		dao.store(needs);
+		dao.save(needs);
 	}
 
 }

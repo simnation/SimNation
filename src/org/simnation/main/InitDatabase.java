@@ -43,18 +43,18 @@ public class InitDatabase {
 		final InitDatabase id=new InitDatabase();	
 		try {
 			id.populateRegionSet();
-			dao.store(id.regions);
+			dao.save(id.regions);
 
 			id.populateGoodSet();
 			id.populateNeedSet();
 			id.nutrition.setSatisfier(id.pizza);
-			dao.store(id.goods);
-			dao.store(id.needs);
+			dao.save(id.goods);
+			dao.save(id.needs);
 
 			id.households.add(id.generateHousehold());
-			dao.store(id.households);
+			dao.save(id.households);
 			id.traders.add(id.generateTrader());
-			dao.store(id.traders);
+			dao.save(id.traders);
 			System.out.println("done.");
 		} catch (Exception e) {
 			e.printStackTrace();

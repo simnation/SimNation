@@ -56,7 +56,7 @@ public final class RegionSet implements Persistable {
 
 	@Override
 	public void save(DataAccessObject dao) throws Exception {
-		dao.store(regions);
+		dao.save(regions);
 	}
 
 }

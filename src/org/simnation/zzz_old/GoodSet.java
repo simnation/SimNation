@@ -66,7 +66,7 @@ public final class GoodSet implements Persistable {
 
 	@Override
 	public void save(DataAccessObject dao) throws Exception {
-		dao.store(goods);
+		dao.save(goods);
 	}
 
 	/**
