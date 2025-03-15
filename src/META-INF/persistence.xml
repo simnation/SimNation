@@ -18,7 +18,7 @@
 		<properties>
 			<property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.H2Platform"/>	
 			<property name="jakarta.persistence.jdbc.driver" value="org.h2.Driver" />
-			<property name="jakarta.persistence.jdbc.url" value="jdbc:h2:file:.//eclipse-workspace//data//test" />
+			<property name="jakarta.persistence.jdbc.url" value="jdbc:h2:file:~//simnation//scenario//test" />
 			<property name="jakarta.persistence.jdbc.user" value="sa" />
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
 			<property name="eclipselink.ddl-generation.output-mode" value="database" />

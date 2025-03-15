@@ -17,6 +17,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.math3.util.FastMath;
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Money;
@@ -151,10 +152,8 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		// set personal security factor to an individual constant representing the agent's personality trait
 		final double ePers=getState().getExtraversion(); // [0.5;1.5]
 		// calc modifying factor as geometric mean of the four factors above
-		//final double modifier=Math.sqrt(Math.sqrt(eUrg*eInt*eExt*ePers)); //x^0.25=(x^0.5)^0.5 
-		
-		// do not need a geometric mean, but chained percental change modifiers
-		return expectedPrice*eUrg*eInt*eExt*ePers; // price multiplied with percental change modifiers
+		final double modifier=FastMath.pow(eUrg*eInt*eExt*ePers,0.25); //x^0.25=(x^0.5)^0.5 
+		return expectedPrice*modifier; // price multiplied with percental change modifiers
 	}
 
 	/**
@@ -174,7 +173,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 					log("Price="+price+" for "+nd.getSatisfier().getName());
 					if (price>0) budget=(int) (price*getMonthlyConsumption(nd));
 					// fall back: without a market price calc with equal budgets for all needs 
-					else budget=(int) (getState().getTotalBudget()/Model.getInstance().getNeedCount());
+					else budget=(int) (getState().getTotalBudget()/Model.getInstance().getNeedSet().size());
 					if (total<budget) budget=(int) total; // adjust if out of budget 
 					total-=budget;
 					getState().setBudget(nd,budget);

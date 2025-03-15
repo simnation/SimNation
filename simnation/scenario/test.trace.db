@@ -1,0 +1,509 @@
+2025-02-23 12:11:15.784968+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PRECURSOR" not found; SQL statement:
+ALTER TABLE PRECURSOR DROP CONSTRAINT FK_PRECURSOR_GOOD_FK [42102-232]
+2025-02-23 12:11:15.800314+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PRECURSOR" not found; SQL statement:
+ALTER TABLE PRECURSOR DROP CONSTRAINT FK_PRECURSOR_PRECURSOR_FK [42102-232]
+2025-02-23 12:11:15.801224+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "NEEDDEFINITION" not found; SQL statement:
+ALTER TABLE NEEDDEFINITION DROP CONSTRAINT FK_NEEDDEFINITION_GOOD_FK [42102-232]
+2025-02-23 12:11:15.801741+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "HOUSEHOLDDBS" not found; SQL statement:
+ALTER TABLE HOUSEHOLDDBS DROP CONSTRAINT FK_HOUSEHOLDDBS_REGION_FK [42102-232]
+2025-02-23 12:11:15.802149+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRADERDBS" not found; SQL statement:
+ALTER TABLE TRADERDBS DROP CONSTRAINT FK_TRADERDBS_Good_FK [42102-232]
+2025-02-23 12:11:15.802526+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRADERDBS" not found; SQL statement:
+ALTER TABLE TRADERDBS DROP CONSTRAINT FK_TRADERDBS_Region_FK [42102-232]
+2025-02-23 12:11:15.803866+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "REGION" not found; SQL statement:
+DROP TABLE REGION [42102-232]
+2025-02-23 12:11:15.804374+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "GOOD" not found; SQL statement:
+DROP TABLE GOOD [42102-232]
+2025-02-23 12:11:15.804844+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PRECURSOR" not found; SQL statement:
+DROP TABLE PRECURSOR [42102-232]
+2025-02-23 12:11:15.805256+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "NEEDDEFINITION" not found; SQL statement:
+DROP TABLE NEEDDEFINITION [42102-232]
+2025-02-23 12:11:15.805653+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "HOUSEHOLDDBS" not found; SQL statement:
+DROP TABLE HOUSEHOLDDBS [42102-232]
+2025-02-23 12:11:15.806024+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRADERDBS" not found; SQL statement:
+DROP TABLE TRADERDBS [42102-232]
+2025-02-23 12:11:15.806451+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "REGION" not found; SQL statement:
+DROP TABLE REGION [42102-232]
+2025-02-23 12:11:15.806937+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "GOOD" not found; SQL statement:
+DROP TABLE GOOD [42102-232]
+2025-02-23 12:11:15.807390+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PRECURSOR" not found; SQL statement:
+DROP TABLE PRECURSOR [42102-232]
+2025-02-23 12:11:15.807820+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "NEEDDEFINITION" not found; SQL statement:
+DROP TABLE NEEDDEFINITION [42102-232]
+2025-02-23 12:11:15.808311+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "HOUSEHOLDDBS" not found; SQL statement:
+DROP TABLE HOUSEHOLDDBS [42102-232]
+2025-02-23 12:11:15.808802+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRADERDBS" not found; SQL statement:
+DROP TABLE TRADERDBS [42102-232]
+2025-02-23 12:11:15.809372+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "REGION" not found; SQL statement:
+DROP TABLE REGION [42102-232]
+2025-02-23 12:11:15.809757+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "GOOD" not found; SQL statement:
+DROP TABLE GOOD [42102-232]
+2025-02-23 12:11:15.810117+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PRECURSOR" not found; SQL statement:
+DROP TABLE PRECURSOR [42102-232]
+2025-02-23 12:11:15.810508+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "NEEDDEFINITION" not found; SQL statement:
+DROP TABLE NEEDDEFINITION [42102-232]
+2025-02-23 12:11:15.810873+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "HOUSEHOLDDBS" not found; SQL statement:
+DROP TABLE HOUSEHOLDDBS [42102-232]
+2025-02-23 12:11:15.811271+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRADERDBS" not found; SQL statement:
+DROP TABLE TRADERDBS [42102-232]
+2025-02-23 12:11:15.811647+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "REGION" not found; SQL statement:
+DROP TABLE REGION [42102-232]
+2025-02-23 12:11:15.812141+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "GOOD" not found; SQL statement:
+DROP TABLE GOOD [42102-232]
+2025-02-23 12:11:15.812610+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PRECURSOR" not found; SQL statement:
+DROP TABLE PRECURSOR [42102-232]
+2025-02-23 12:11:15.812996+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "NEEDDEFINITION" not found; SQL statement:
+DROP TABLE NEEDDEFINITION [42102-232]
+2025-02-23 12:11:15.813492+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "HOUSEHOLDDBS" not found; SQL statement:
+DROP TABLE HOUSEHOLDDBS [42102-232]
+2025-02-23 12:11:15.813900+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRADERDBS" not found; SQL statement:
+DROP TABLE TRADERDBS [42102-232]
+2025-02-23 12:11:15.814273+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "REGION" not found; SQL statement:
+DROP TABLE REGION [42102-232]
+2025-02-23 12:11:15.814796+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "GOOD" not found; SQL statement:
+DROP TABLE GOOD [42102-232]
+2025-02-23 12:11:15.815268+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "PRECURSOR" not found; SQL statement:
+DROP TABLE PRECURSOR [42102-232]
+2025-02-23 12:11:15.815625+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "NEEDDEFINITION" not found; SQL statement:
+DROP TABLE NEEDDEFINITION [42102-232]
+2025-02-23 12:11:15.815958+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "HOUSEHOLDDBS" not found; SQL statement:
+DROP TABLE HOUSEHOLDDBS [42102-232]
+2025-02-23 12:11:15.816308+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Table "TRADERDBS" not found; SQL statement:
+DROP TABLE TRADERDBS [42102-232]
+2025-02-23 12:11:15.844777+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Sequence "SEQ_GEN_SEQUENCE" not found; SQL statement:
+DROP SEQUENCE SEQ_GEN_SEQUENCE [90036-232]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:644)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.command.ddl.DropSequence.update(DropSequence.java:41)
+	at org.h2.command.ddl.SchemaOwnerCommand.update(SchemaOwnerCommand.java:33)
+	at org.h2.command.CommandContainer.update(CommandContainer.java:139)
+	at org.h2.command.Command.executeUpdate(Command.java:304)
+	at org.h2.command.Command.executeUpdate(Command.java:248)
+	at org.h2.jdbc.JdbcPreparedStatement.executeUpdateInternal(JdbcPreparedStatement.java:213)
+	at org.h2.jdbc.JdbcPreparedStatement.executeUpdate(JdbcPreparedStatement.java:172)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.executeDirectNoSelect(DatabaseAccessor.java:909)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.executeNoSelect(DatabaseAccessor.java:981)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.basicExecuteCall(DatabaseAccessor.java:642)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.executeCall(DatabaseAccessor.java:569)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.basicExecuteCall(AbstractSession.java:2048)
+	at org.eclipse.persistence.sessions.server.ServerSession.executeCall(ServerSession.java:611)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:280)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:266)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeNoSelectCall(DatasourceCallQueryMechanism.java:323)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeNoSelect(DatasourceCallQueryMechanism.java:294)
+	at org.eclipse.persistence.queries.DataModifyQuery.executeDatabaseQuery(DataModifyQuery.java:88)
+	at org.eclipse.persistence.queries.DatabaseQuery.execute(DatabaseQuery.java:913)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.internalExecuteQuery(AbstractSession.java:3311)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1841)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1823)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1773)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.priviledgedExecuteNonSelectingCall(AbstractSession.java:5058)
+	at org.eclipse.persistence.tools.schemaframework.DatabaseObjectDefinition.dropFromDatabase(DatabaseObjectDefinition.java:254)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.dropObject(SchemaManager.java:555)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinition(SchemaManager.java:380)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinitions(SchemaManager.java:417)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.createOrReplaceSequences(SchemaManager.java:296)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.createTables(TableCreator.java:203)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTablesAndConstraints(TableCreator.java:366)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTables(TableCreator.java:354)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.replaceDefaultTables(SchemaManager.java:1116)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryProvider.generateDefaultTables(EntityManagerFactoryProvider.java:120)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDLToDatabase(EntityManagerSetupImpl.java:4735)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4663)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4563)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.deploy(EntityManagerSetupImpl.java:815)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.getAbstractSession(EntityManagerFactoryDelegate.java:226)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.createEntityManagerImpl(EntityManagerFactoryDelegate.java:340)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManagerImpl(EntityManagerFactoryImpl.java:343)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManager(EntityManagerFactoryImpl.java:306)
+	at org.simnation.persistence.DataAccessObject.<init>(DataAccessObject.java:30)
+	at org.simnation.main.InitDatabase.main(InitDatabase.java:42)
+2025-02-23 12:11:15.855045+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Sequence "SEQ_GEN_SEQUENCE" not found; SQL statement:
+CALL NEXT VALUE FOR SEQ_GEN_SEQUENCE [90036-232]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:644)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.command.Parser.readSequence(Parser.java:8018)
+	at org.h2.command.Parser.readTermWithIdentifier(Parser.java:5278)
+	at org.h2.command.Parser.readTermWithIdentifier(Parser.java:5148)
+	at org.h2.command.Parser.readTerm(Parser.java:4828)
+	at org.h2.command.Parser.readFactor(Parser.java:3323)
+	at org.h2.command.Parser.readSum(Parser.java:3310)
+	at org.h2.command.Parser.readConcat(Parser.java:3275)
+	at org.h2.command.Parser.readCondition(Parser.java:3065)
+	at org.h2.command.Parser.readExpression(Parser.java:2985)
+	at org.h2.command.Parser.parseCall(Parser.java:6611)
+	at org.h2.command.Parser.parsePrepared(Parser.java:647)
+	at org.h2.command.Parser.parse(Parser.java:581)
+	at org.h2.command.Parser.parse(Parser.java:556)
+	at org.h2.command.Parser.prepareCommand(Parser.java:484)
+	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:645)
+	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:561)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1164)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:93)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:315)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.prepareStatement(DatabaseAccessor.java:1750)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.prepareStatement(DatabaseAccessor.java:1697)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseCall.prepareStatement(DatabaseCall.java:770)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.basicExecuteCall(DatabaseAccessor.java:630)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.executeCall(DatabaseAccessor.java:569)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.basicExecuteCall(AbstractSession.java:2048)
+	at org.eclipse.persistence.sessions.server.ServerSession.executeCall(ServerSession.java:611)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:280)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:266)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeSelectCall(DatasourceCallQueryMechanism.java:352)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeSelect(DatasourceCallQueryMechanism.java:334)
+	at org.eclipse.persistence.queries.DataReadQuery.executeNonCursor(DataReadQuery.java:199)
+	at org.eclipse.persistence.queries.DataReadQuery.executeDatabaseQuery(DataReadQuery.java:154)
+	at org.eclipse.persistence.queries.DatabaseQuery.execute(DatabaseQuery.java:913)
+	at org.eclipse.persistence.queries.DataReadQuery.execute(DataReadQuery.java:139)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.internalExecuteQuery(AbstractSession.java:3311)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1841)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1823)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1773)
+	at org.eclipse.persistence.sequencing.QuerySequence.select(QuerySequence.java:337)
+	at org.eclipse.persistence.sequencing.QuerySequence.updateAndSelectSequence(QuerySequence.java:282)
+	at org.eclipse.persistence.sequencing.StandardSequence.getGeneratedVector(StandardSequence.java:81)
+	at org.eclipse.persistence.sequencing.Sequence.getGeneratedVector(Sequence.java:268)
+	at org.eclipse.persistence.tools.schemaframework.SequenceObjectDefinition.checkIfExist(SequenceObjectDefinition.java:104)
+	at org.eclipse.persistence.tools.schemaframework.SequenceDefinition.createOnDatabase(SequenceDefinition.java:91)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.createObject(SchemaManager.java:224)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinition(SchemaManager.java:387)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinitions(SchemaManager.java:417)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.createOrReplaceSequences(SchemaManager.java:296)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.createTables(TableCreator.java:203)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTablesAndConstraints(TableCreator.java:366)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTables(TableCreator.java:354)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.replaceDefaultTables(SchemaManager.java:1116)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryProvider.generateDefaultTables(EntityManagerFactoryProvider.java:120)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDLToDatabase(EntityManagerSetupImpl.java:4735)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4663)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4563)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.deploy(EntityManagerSetupImpl.java:815)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.getAbstractSession(EntityManagerFactoryDelegate.java:226)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.createEntityManagerImpl(EntityManagerFactoryDelegate.java:340)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManagerImpl(EntityManagerFactoryImpl.java:343)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManager(EntityManagerFactoryImpl.java:306)
+	at org.simnation.persistence.DataAccessObject.<init>(DataAccessObject.java:30)
+	at org.simnation.main.InitDatabase.main(InitDatabase.java:42)
+2025-02-23 12:11:38.251296+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Sequence "SEQ_GEN_SEQUENCE" not found; SQL statement:
+CALL NEXT VALUE FOR SEQ_GEN_SEQUENCE [90036-232]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:644)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.command.Parser.readSequence(Parser.java:8018)
+	at org.h2.command.Parser.readTermWithIdentifier(Parser.java:5278)
+	at org.h2.command.Parser.readTermWithIdentifier(Parser.java:5148)
+	at org.h2.command.Parser.readTerm(Parser.java:4828)
+	at org.h2.command.Parser.readFactor(Parser.java:3323)
+	at org.h2.command.Parser.readSum(Parser.java:3310)
+	at org.h2.command.Parser.readConcat(Parser.java:3275)
+	at org.h2.command.Parser.readCondition(Parser.java:3065)
+	at org.h2.command.Parser.readExpression(Parser.java:2985)
+	at org.h2.command.Parser.parseCall(Parser.java:6611)
+	at org.h2.command.Parser.parsePrepared(Parser.java:647)
+	at org.h2.command.Parser.parse(Parser.java:581)
+	at org.h2.command.Parser.parse(Parser.java:556)
+	at org.h2.command.Parser.prepareCommand(Parser.java:484)
+	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:645)
+	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:561)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1164)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:93)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:315)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.prepareStatement(DatabaseAccessor.java:1750)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.prepareStatement(DatabaseAccessor.java:1697)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseCall.prepareStatement(DatabaseCall.java:770)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.basicExecuteCall(DatabaseAccessor.java:630)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.executeCall(DatabaseAccessor.java:569)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.basicExecuteCall(AbstractSession.java:2048)
+	at org.eclipse.persistence.sessions.server.ServerSession.executeCall(ServerSession.java:611)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:280)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:266)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeSelectCall(DatasourceCallQueryMechanism.java:352)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeSelect(DatasourceCallQueryMechanism.java:334)
+	at org.eclipse.persistence.queries.DataReadQuery.executeNonCursor(DataReadQuery.java:199)
+	at org.eclipse.persistence.queries.DataReadQuery.executeDatabaseQuery(DataReadQuery.java:154)
+	at org.eclipse.persistence.queries.DatabaseQuery.execute(DatabaseQuery.java:913)
+	at org.eclipse.persistence.queries.DataReadQuery.execute(DataReadQuery.java:139)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.internalExecuteQuery(AbstractSession.java:3311)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1841)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1823)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1773)
+	at org.eclipse.persistence.sequencing.QuerySequence.select(QuerySequence.java:337)
+	at org.eclipse.persistence.sequencing.QuerySequence.updateAndSelectSequence(QuerySequence.java:282)
+	at org.eclipse.persistence.sequencing.StandardSequence.getGeneratedVector(StandardSequence.java:81)
+	at org.eclipse.persistence.sequencing.Sequence.getGeneratedVector(Sequence.java:268)
+	at org.eclipse.persistence.tools.schemaframework.SequenceObjectDefinition.checkIfExist(SequenceObjectDefinition.java:104)
+	at org.eclipse.persistence.tools.schemaframework.SequenceDefinition.createOnDatabase(SequenceDefinition.java:91)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.createObject(SchemaManager.java:224)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinition(SchemaManager.java:387)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinitions(SchemaManager.java:417)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.createOrReplaceSequences(SchemaManager.java:296)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.createTables(TableCreator.java:203)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTablesAndConstraints(TableCreator.java:366)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTables(TableCreator.java:354)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.replaceDefaultTables(SchemaManager.java:1116)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryProvider.generateDefaultTables(EntityManagerFactoryProvider.java:120)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDLToDatabase(EntityManagerSetupImpl.java:4735)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4663)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4563)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.deploy(EntityManagerSetupImpl.java:815)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.getAbstractSession(EntityManagerFactoryDelegate.java:226)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.createEntityManagerImpl(EntityManagerFactoryDelegate.java:340)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManagerImpl(EntityManagerFactoryImpl.java:343)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManager(EntityManagerFactoryImpl.java:306)
+	at org.simnation.persistence.DataAccessObject.<init>(DataAccessObject.java:30)
+	at org.simnation.main.InitDatabase.main(InitDatabase.java:42)
+2025-02-23 12:16:24.859470+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Sequence "SEQ_GEN_SEQUENCE" not found; SQL statement:
+CALL NEXT VALUE FOR SEQ_GEN_SEQUENCE [90036-232]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:644)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.command.Parser.readSequence(Parser.java:8018)
+	at org.h2.command.Parser.readTermWithIdentifier(Parser.java:5278)
+	at org.h2.command.Parser.readTermWithIdentifier(Parser.java:5148)
+	at org.h2.command.Parser.readTerm(Parser.java:4828)
+	at org.h2.command.Parser.readFactor(Parser.java:3323)
+	at org.h2.command.Parser.readSum(Parser.java:3310)
+	at org.h2.command.Parser.readConcat(Parser.java:3275)
+	at org.h2.command.Parser.readCondition(Parser.java:3065)
+	at org.h2.command.Parser.readExpression(Parser.java:2985)
+	at org.h2.command.Parser.parseCall(Parser.java:6611)
+	at org.h2.command.Parser.parsePrepared(Parser.java:647)
+	at org.h2.command.Parser.parse(Parser.java:581)
+	at org.h2.command.Parser.parse(Parser.java:556)
+	at org.h2.command.Parser.prepareCommand(Parser.java:484)
+	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:645)
+	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:561)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1164)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:93)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:315)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.prepareStatement(DatabaseAccessor.java:1750)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.prepareStatement(DatabaseAccessor.java:1697)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseCall.prepareStatement(DatabaseCall.java:770)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.basicExecuteCall(DatabaseAccessor.java:630)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.executeCall(DatabaseAccessor.java:569)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.basicExecuteCall(AbstractSession.java:2048)
+	at org.eclipse.persistence.sessions.server.ServerSession.executeCall(ServerSession.java:611)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:280)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:266)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeSelectCall(DatasourceCallQueryMechanism.java:352)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeSelect(DatasourceCallQueryMechanism.java:334)
+	at org.eclipse.persistence.queries.DataReadQuery.executeNonCursor(DataReadQuery.java:199)
+	at org.eclipse.persistence.queries.DataReadQuery.executeDatabaseQuery(DataReadQuery.java:154)
+	at org.eclipse.persistence.queries.DatabaseQuery.execute(DatabaseQuery.java:913)
+	at org.eclipse.persistence.queries.DataReadQuery.execute(DataReadQuery.java:139)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.internalExecuteQuery(AbstractSession.java:3311)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1841)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1823)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1773)
+	at org.eclipse.persistence.sequencing.QuerySequence.select(QuerySequence.java:337)
+	at org.eclipse.persistence.sequencing.QuerySequence.updateAndSelectSequence(QuerySequence.java:282)
+	at org.eclipse.persistence.sequencing.StandardSequence.getGeneratedVector(StandardSequence.java:81)
+	at org.eclipse.persistence.sequencing.Sequence.getGeneratedVector(Sequence.java:268)
+	at org.eclipse.persistence.tools.schemaframework.SequenceObjectDefinition.checkIfExist(SequenceObjectDefinition.java:104)
+	at org.eclipse.persistence.tools.schemaframework.SequenceDefinition.createOnDatabase(SequenceDefinition.java:91)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.createObject(SchemaManager.java:224)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinition(SchemaManager.java:387)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinitions(SchemaManager.java:417)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.createOrReplaceSequences(SchemaManager.java:296)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.createTables(TableCreator.java:203)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTablesAndConstraints(TableCreator.java:366)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTables(TableCreator.java:354)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.replaceDefaultTables(SchemaManager.java:1116)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryProvider.generateDefaultTables(EntityManagerFactoryProvider.java:120)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDLToDatabase(EntityManagerSetupImpl.java:4735)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4663)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4563)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.deploy(EntityManagerSetupImpl.java:815)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.getAbstractSession(EntityManagerFactoryDelegate.java:226)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.createEntityManagerImpl(EntityManagerFactoryDelegate.java:340)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManagerImpl(EntityManagerFactoryImpl.java:343)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManager(EntityManagerFactoryImpl.java:306)
+	at org.simnation.persistence.DataAccessObject.<init>(DataAccessObject.java:30)
+	at org.simnation.main.InitDatabase.main(InitDatabase.java:42)
+2025-02-23 12:17:36.642045+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Sequence "SEQ_GEN_SEQUENCE" not found; SQL statement:
+CALL NEXT VALUE FOR SEQ_GEN_SEQUENCE [90036-232]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:644)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.command.Parser.readSequence(Parser.java:8018)
+	at org.h2.command.Parser.readTermWithIdentifier(Parser.java:5278)
+	at org.h2.command.Parser.readTermWithIdentifier(Parser.java:5148)
+	at org.h2.command.Parser.readTerm(Parser.java:4828)
+	at org.h2.command.Parser.readFactor(Parser.java:3323)
+	at org.h2.command.Parser.readSum(Parser.java:3310)
+	at org.h2.command.Parser.readConcat(Parser.java:3275)
+	at org.h2.command.Parser.readCondition(Parser.java:3065)
+	at org.h2.command.Parser.readExpression(Parser.java:2985)
+	at org.h2.command.Parser.parseCall(Parser.java:6611)
+	at org.h2.command.Parser.parsePrepared(Parser.java:647)
+	at org.h2.command.Parser.parse(Parser.java:581)
+	at org.h2.command.Parser.parse(Parser.java:556)
+	at org.h2.command.Parser.prepareCommand(Parser.java:484)
+	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:645)
+	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:561)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1164)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:93)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:315)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.prepareStatement(DatabaseAccessor.java:1750)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.prepareStatement(DatabaseAccessor.java:1697)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseCall.prepareStatement(DatabaseCall.java:770)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.basicExecuteCall(DatabaseAccessor.java:630)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.executeCall(DatabaseAccessor.java:569)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.basicExecuteCall(AbstractSession.java:2048)
+	at org.eclipse.persistence.sessions.server.ServerSession.executeCall(ServerSession.java:611)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:280)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:266)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeSelectCall(DatasourceCallQueryMechanism.java:352)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeSelect(DatasourceCallQueryMechanism.java:334)
+	at org.eclipse.persistence.queries.DataReadQuery.executeNonCursor(DataReadQuery.java:199)
+	at org.eclipse.persistence.queries.DataReadQuery.executeDatabaseQuery(DataReadQuery.java:154)
+	at org.eclipse.persistence.queries.DatabaseQuery.execute(DatabaseQuery.java:913)
+	at org.eclipse.persistence.queries.DataReadQuery.execute(DataReadQuery.java:139)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.internalExecuteQuery(AbstractSession.java:3311)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1841)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1823)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1773)
+	at org.eclipse.persistence.sequencing.QuerySequence.select(QuerySequence.java:337)
+	at org.eclipse.persistence.sequencing.QuerySequence.updateAndSelectSequence(QuerySequence.java:282)
+	at org.eclipse.persistence.sequencing.StandardSequence.getGeneratedVector(StandardSequence.java:81)
+	at org.eclipse.persistence.sequencing.Sequence.getGeneratedVector(Sequence.java:268)
+	at org.eclipse.persistence.tools.schemaframework.SequenceObjectDefinition.checkIfExist(SequenceObjectDefinition.java:104)
+	at org.eclipse.persistence.tools.schemaframework.SequenceDefinition.createOnDatabase(SequenceDefinition.java:91)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.createObject(SchemaManager.java:224)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinition(SchemaManager.java:387)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinitions(SchemaManager.java:417)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.createOrReplaceSequences(SchemaManager.java:296)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.createTables(TableCreator.java:203)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTablesAndConstraints(TableCreator.java:366)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTables(TableCreator.java:354)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.replaceDefaultTables(SchemaManager.java:1116)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryProvider.generateDefaultTables(EntityManagerFactoryProvider.java:120)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDLToDatabase(EntityManagerSetupImpl.java:4735)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4663)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4563)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.deploy(EntityManagerSetupImpl.java:815)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.getAbstractSession(EntityManagerFactoryDelegate.java:226)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.createEntityManagerImpl(EntityManagerFactoryDelegate.java:340)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManagerImpl(EntityManagerFactoryImpl.java:343)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManager(EntityManagerFactoryImpl.java:306)
+	at org.simnation.persistence.DataAccessObject.<init>(DataAccessObject.java:30)
+	at org.simnation.main.InitDatabase.main(InitDatabase.java:42)
+2025-02-23 12:19:00.513475+01:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Sequence "SEQ_GEN_SEQUENCE" not found; SQL statement:
+CALL NEXT VALUE FOR SEQ_GEN_SEQUENCE [90036-232]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:644)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:489)
+	at org.h2.message.DbException.get(DbException.java:223)
+	at org.h2.message.DbException.get(DbException.java:199)
+	at org.h2.command.Parser.readSequence(Parser.java:8018)
+	at org.h2.command.Parser.readTermWithIdentifier(Parser.java:5278)
+	at org.h2.command.Parser.readTermWithIdentifier(Parser.java:5148)
+	at org.h2.command.Parser.readTerm(Parser.java:4828)
+	at org.h2.command.Parser.readFactor(Parser.java:3323)
+	at org.h2.command.Parser.readSum(Parser.java:3310)
+	at org.h2.command.Parser.readConcat(Parser.java:3275)
+	at org.h2.command.Parser.readCondition(Parser.java:3065)
+	at org.h2.command.Parser.readExpression(Parser.java:2985)
+	at org.h2.command.Parser.parseCall(Parser.java:6611)
+	at org.h2.command.Parser.parsePrepared(Parser.java:647)
+	at org.h2.command.Parser.parse(Parser.java:581)
+	at org.h2.command.Parser.parse(Parser.java:556)
+	at org.h2.command.Parser.prepareCommand(Parser.java:484)
+	at org.h2.engine.SessionLocal.prepareLocal(SessionLocal.java:645)
+	at org.h2.engine.SessionLocal.prepareCommand(SessionLocal.java:561)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1164)
+	at org.h2.jdbc.JdbcPreparedStatement.<init>(JdbcPreparedStatement.java:93)
+	at org.h2.jdbc.JdbcConnection.prepareStatement(JdbcConnection.java:315)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.prepareStatement(DatabaseAccessor.java:1750)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.prepareStatement(DatabaseAccessor.java:1697)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseCall.prepareStatement(DatabaseCall.java:770)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.basicExecuteCall(DatabaseAccessor.java:630)
+	at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.executeCall(DatabaseAccessor.java:569)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.basicExecuteCall(AbstractSession.java:2048)
+	at org.eclipse.persistence.sessions.server.ServerSession.executeCall(ServerSession.java:611)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:280)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeCall(DatasourceCallQueryMechanism.java:266)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeSelectCall(DatasourceCallQueryMechanism.java:352)
+	at org.eclipse.persistence.internal.queries.DatasourceCallQueryMechanism.executeSelect(DatasourceCallQueryMechanism.java:334)
+	at org.eclipse.persistence.queries.DataReadQuery.executeNonCursor(DataReadQuery.java:199)
+	at org.eclipse.persistence.queries.DataReadQuery.executeDatabaseQuery(DataReadQuery.java:154)
+	at org.eclipse.persistence.queries.DatabaseQuery.execute(DatabaseQuery.java:913)
+	at org.eclipse.persistence.queries.DataReadQuery.execute(DataReadQuery.java:139)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.internalExecuteQuery(AbstractSession.java:3311)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1841)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1823)
+	at org.eclipse.persistence.internal.sessions.AbstractSession.executeQuery(AbstractSession.java:1773)
+	at org.eclipse.persistence.sequencing.QuerySequence.select(QuerySequence.java:337)
+	at org.eclipse.persistence.sequencing.QuerySequence.updateAndSelectSequence(QuerySequence.java:282)
+	at org.eclipse.persistence.sequencing.StandardSequence.getGeneratedVector(StandardSequence.java:81)
+	at org.eclipse.persistence.sequencing.Sequence.getGeneratedVector(Sequence.java:268)
+	at org.eclipse.persistence.tools.schemaframework.SequenceObjectDefinition.checkIfExist(SequenceObjectDefinition.java:104)
+	at org.eclipse.persistence.tools.schemaframework.SequenceDefinition.createOnDatabase(SequenceDefinition.java:91)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.createObject(SchemaManager.java:224)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinition(SchemaManager.java:387)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.processSequenceDefinitions(SchemaManager.java:417)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.createOrReplaceSequences(SchemaManager.java:296)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.createTables(TableCreator.java:203)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTablesAndConstraints(TableCreator.java:366)
+	at org.eclipse.persistence.tools.schemaframework.TableCreator.replaceTables(TableCreator.java:354)
+	at org.eclipse.persistence.tools.schemaframework.SchemaManager.replaceDefaultTables(SchemaManager.java:1116)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryProvider.generateDefaultTables(EntityManagerFactoryProvider.java:120)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDLToDatabase(EntityManagerSetupImpl.java:4735)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4663)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.writeDDL(EntityManagerSetupImpl.java:4563)
+	at org.eclipse.persistence.internal.jpa.EntityManagerSetupImpl.deploy(EntityManagerSetupImpl.java:815)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.getAbstractSession(EntityManagerFactoryDelegate.java:226)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryDelegate.createEntityManagerImpl(EntityManagerFactoryDelegate.java:340)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManagerImpl(EntityManagerFactoryImpl.java:343)
+	at org.eclipse.persistence.internal.jpa.EntityManagerFactoryImpl.createEntityManager(EntityManagerFactoryImpl.java:306)
+	at org.simnation.persistence.DataAccessObject.<init>(DataAccessObject.java:30)
+	at org.simnation.main.InitDatabase.main(InitDatabase.java:42)

@@ -1,0 +1,35 @@
+{
+	"folders": {},
+	"connections": {
+		"h2_embedded-19549a1da9b-4c78d5b6f6448877": {
+			"provider": "h2",
+			"driver": "h2_embedded",
+			"name": "test.mv.db",
+			"save-password": true,
+			"configuration": {
+				"database": "/home/lindos/simnation/scenario/test.mv.db",
+				"url": "jdbc:h2:/home/lindos/simnation/scenario/test.mv.db",
+				"configurationType": "MANUAL",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"auth-model": "native"
+			}
+		}
+	},
+	"connection-types": {
+		"dev": {
+			"name": "Development",
+			"color": "255,255,255",
+			"description": "Regular development database",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false,
+			"smart-commit": false,
+			"smart-commit-recover": true,
+			"auto-close-transactions": true,
+			"close-transactions-period": 1800,
+			"auto-close-connections": true,
+			"close-connections-period": 14400
+		}
+	}
+}

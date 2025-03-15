@@ -18,7 +18,6 @@ import org.simnation.agents.market.GoodsMarketB2C;
 import org.simnation.context.geography.Region;
 import org.simnation.context.technology.Good;
 import org.simnation.persistence.DataAccessObject;
-import org.simnation.persistence.Persistable;
 import org.simplesim.model.RoutingDomain;
 
 /**
@@ -42,7 +41,7 @@ import org.simplesim.model.RoutingDomain;
  * </ul>
  * 
  */
-public final class Model extends RoutingDomain implements Persistable {
+public final class Model extends RoutingDomain {
 
 	private static Model instance=null;
 
@@ -53,10 +52,10 @@ public final class Model extends RoutingDomain implements Persistable {
 	private Set<Good> goods=Collections.emptySet();
 
 	/** set of all resources, acting as source nodes of value chain graph */
-	private Set<Good> resources=Collections.emptySet();
+	final private Set<Good> resources=new HashSet<>();
 
 	/** set of all consumable goods, acting as sink nodes of value chain graph */
-	private Set<Good> consumables=Collections.emptySet();
+	final private Set<Good> consumables=new HashSet<>();
 
 	/** set of all needs */
 	private Set<NeedDefinition> needs=Collections.emptySet();
@@ -87,35 +86,17 @@ public final class Model extends RoutingDomain implements Persistable {
 	
 	public Set<GoodsMarketB2C> getB2CMarketSet() { return b2cMarkets; }
 
-	public int getGoodCount() { return goods.size(); }
-	
-	public int getNeedCount() { return needs.size(); }
-	
-	public int getConsumableCount() { return consumables.size(); }
-	
-	public int getResourceCount() { return resources.size(); }
-	
-	public int getRegionCount() { return regions.size(); }
-
-	@Override
 	public void load(DataAccessObject dao) throws Exception {
-		regions=Collections.unmodifiableSet(new HashSet<>(dao.load(Region.class))); // load regions
-		goods=Collections.unmodifiableSet(new HashSet<>(dao.load(Good.class))); // load goods, set up value chain
-		needs=Collections.unmodifiableSet(new HashSet<>(dao.load(NeedDefinition.class))); // load needs
-		// sort out resource as source of value chain
-		final Set<Good> resourceSet=new HashSet<>();
-		resources=Collections.unmodifiableSet(resourceSet);
-		for (Good good : getGoodSet()) if (good.isResource()) resourceSet.add(good);
-		// sort out consumables as sink of value chain
-		final Set<Good> consumableSet=new HashSet<>();
-		consumables=Collections.unmodifiableSet(consumableSet);
-		for (NeedDefinition nd : getNeedSet()) {
-			System.out.println(nd.toString());
-			consumableSet.add(nd.getSatisfier());
-		}
-		System.out.println(getConsumableSet().toString());
-		// init household's need hierarchy and event tables
-		Household.initNeedMap(getNeedSet());
+		regions=new HashSet<>(dao.load(Region.class)); // load regions
+		goods=new HashSet<>(dao.load(Good.class)); // load goods, set up value chain
+		needs=new HashSet<>(dao.load(NeedDefinition.class)); // load needs
+		
+		for (Good good : getGoodSet()) if (good.isResource()) resources.add(good);
+		for (NeedDefinition nd : getNeedSet()) consumables.add(nd.getSatisfier());
+		
+		Household.initNeedMap(getNeedSet()); // init household's need hierarchy and event tables
+		
+		
 		final Set<GoodsMarketB2C> b2c=new HashSet<>();
 		b2cMarkets=Collections.unmodifiableSet(b2c);
 		//Set<LaborMarket> lm=new HashSet<>();
@@ -133,7 +114,6 @@ public final class Model extends RoutingDomain implements Persistable {
 		
 	}
 
-	@Override
 	public void save(DataAccessObject dao) throws Exception {
 		dao.save(regions);
 		dao.save(goods);

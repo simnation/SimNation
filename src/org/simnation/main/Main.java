@@ -28,9 +28,6 @@ import org.simplesim.simulator.Simulator;
  */
 public class Main {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {	
 		// build model
 		try {
