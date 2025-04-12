@@ -17,7 +17,7 @@ import java.util.List;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Money;
 import org.simnation.agents.business.Supply;
-import org.simnation.agents.common.Batch;
+import org.simnation.common.Batch;
 import org.simnation.context.technology.Good;
 
 /**

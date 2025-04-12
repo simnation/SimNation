@@ -1,4 +1,4 @@
-package org.simnation.agents.common;
+package org.simnation.common;
 
 import org.simnation.core.Address;
 

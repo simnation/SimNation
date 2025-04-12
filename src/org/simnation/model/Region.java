@@ -12,7 +12,7 @@ package org.simnation.model;
 
 
 import org.simnation.agents.market.GoodsMarketB2C;
-import org.simnation.context.geography.Region;
+import org.simnation.context.geography.RegionData;
 import org.simplesim.model.RoutingDomain;
 
 
@@ -28,13 +28,13 @@ import org.simplesim.model.RoutingDomain;
  * <li> firms
  * </ul>
  */
-public final class Domain extends RoutingDomain {
+public final class Region extends RoutingDomain {
 
-	private final Region region; // the region represented by this domain
+	private final RegionData region; // the region represented by this domain
 	private final GoodsMarketB2C goodsMarket;
 	//private final LaborMarket lm;
 	
-	public Domain(Region r,GoodsMarketB2C gm) {
+	public Region(RegionData r,GoodsMarketB2C gm) {
 		super();
 		region=r;
 		goodsMarket=gm;
@@ -43,7 +43,7 @@ public final class Domain extends RoutingDomain {
 
 	public GoodsMarketB2C getGoodsMarket() { return goodsMarket; }
 
-	public Region getRegion() { return region; }
+	public RegionData getRegion() { return region; }
 	
 	/**
 	 * Returns the index of this domain.

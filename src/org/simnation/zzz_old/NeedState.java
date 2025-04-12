@@ -10,8 +10,8 @@
  */
 package org.simnation.zzz_old;
 
-import org.simnation.agents.common.Batch;
 import org.simnation.agents.household.NeedDefinition;
+import org.simnation.common.Batch;
 import org.simplesim.core.scheduling.Time;
 
 /**

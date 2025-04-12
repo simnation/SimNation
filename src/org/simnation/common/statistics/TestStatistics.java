@@ -8,14 +8,14 @@
  * 	- Rene Kuhlemann - development and initial implementation
  * 
  */
-package org.simnation.agents.math;
+package org.simnation.common.statistics;
 
 /**
  *
  */
 public class TestStatistics {
 
-	private static final double ts[]= { 71, 34, -2, 17, 65, 103, 53, 78, 7, 0, 75, 34, 23, 22, 81 };
+	private static final double ts[]= { 25, 25, 25, 25, 26, 24, 26, 24, 26, 24, 26, 24, 26, 24, 26, 24, 26, 24, 26 };
 	
 	/**
 	 * @param args
@@ -23,7 +23,7 @@ public class TestStatistics {
 	public static void main(String[] args) {
 		// final Statistics stat=new SimpleMovingAverageStatistics();
 		final Statistics stat=new ExponentialSmoothingStatistics();
-		
+		stat.reset(25);
 		
 		for (double value : ts) {
 			stat.update(value);

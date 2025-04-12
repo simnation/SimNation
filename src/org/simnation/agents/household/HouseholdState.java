@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.simnation.agents.business.Money;
-import org.simnation.agents.common.Batch;
+import org.simnation.common.Batch;
 import org.simnation.context.technology.Good;
 import org.simplesim.core.scheduling.Time;
 import org.simplesim.model.State;

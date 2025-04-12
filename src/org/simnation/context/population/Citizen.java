@@ -13,7 +13,7 @@ package org.simnation.context.population;
 import java.io.Serializable;
 import java.util.EnumMap;
 
-import org.simnation.model.Limits;
+import org.simnation.context.Limits;
 import org.simplesim.core.scheduling.Time;
 
 /**

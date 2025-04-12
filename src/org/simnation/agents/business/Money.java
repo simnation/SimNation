@@ -7,7 +7,7 @@ package org.simnation.agents.business;
 
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.simnation.agents.common.Mergable;
+import org.simnation.common.Mergable;
 
 /**
  * Represents an amount of cash.

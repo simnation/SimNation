@@ -11,6 +11,7 @@
 package org.simnation.main;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 import org.simnation.agents.firm.trader.TraderDBS;
@@ -19,8 +20,9 @@ import org.simnation.agents.household.NeedDefinition;
 import org.simnation.agents.household.NeedDefinition.DURATION;
 import org.simnation.agents.household.NeedDefinition.INCIDENCE;
 import org.simnation.agents.household.NeedDefinition.URGENCY;
-import org.simnation.context.geography.Region;
+import org.simnation.context.geography.RegionData;
 import org.simnation.context.technology.Good;
+import org.simnation.model.Model;
 import org.simnation.persistence.DataAccessObject;
 
 /**
@@ -30,13 +32,13 @@ public class InitDatabase {
 
 	private final Set<NeedDefinition> needs=new HashSet<>();
 	private final Set<Good> goods=new HashSet<>();
-	private final Set<Region> regions=new HashSet<>();
+	private final Set<RegionData> regions=new HashSet<>();
 	private final Set<HouseholdDBS> households=new HashSet<>();
 	private final Set<TraderDBS> traders=new HashSet<>();
 
 	private Good pizza;
 	private NeedDefinition nutrition;
-	private Region domain;
+	private RegionData domain;
 
 	public static void main(String[] args) throws Exception {
 		final DataAccessObject dao=new DataAccessObject("Scenario");
@@ -87,7 +89,7 @@ public class InitDatabase {
 	}
 
 	private void populateRegionSet() {
-		domain=new Region();
+		domain=new RegionData();
 		domain.setName("Bavaria");
 		domain.setCity("Munich");
 		domain.setArea(10.24d);
@@ -134,5 +136,22 @@ public class InitDatabase {
 		nutrition.setDuration(DURATION.INSTANTLY);
 		needs.add(nutrition);
 	}
+	/*
+	@Override
+	public void generateDBS(RegionData reg, Random rng) { 
+		region=reg;
+		extraversion=rng.nextFloat()+0.5f; // [0.5; 1.5]
+		adults=1;
+		if (rng.nextBoolean()) adults++; // [1; 2]
+		children=rng.nextInt(5);
+		cash=10000+rng.nextInt(10000);
+		int index=0;
+		needSatisfaction=new int[Model.getInstance().getNeedSet().size()];
+		for (NeedDefinition nd : Model.getInstance().getNeedSet()) {
+			int c=nd.getDailyConsumptionAdult()*adults+nd.getDailyConsumptionChild()*children;
+			needSatisfaction[index]=rng.nextInt(c*nd.getActivationDays());
+			index++;
+		}
+	 }*/
 
 }

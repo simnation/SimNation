@@ -10,7 +10,7 @@
  */
 package org.simnation.zzz_old;
 
-import org.simnation.agents.common.Batch;
+import org.simnation.common.Batch;
 import org.simnation.context.technology.Good;
 import org.simplesim.core.scheduling.Time;
 

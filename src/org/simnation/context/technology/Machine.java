@@ -15,9 +15,9 @@ import org.simplesim.core.scheduling.Time;
 
 import javax.jdo.annotations.PersistenceCapable;
 
-import org.simnation.agents.common.Batch;
-import org.simnation.agents.common.MachineJob;
 import org.simnation.agents.firm.manufacturer.Forecast;
+import org.simnation.common.Batch;
+import org.simnation.common.MachineJob;
 import org.simnation.zzz_old.Product;
 
 

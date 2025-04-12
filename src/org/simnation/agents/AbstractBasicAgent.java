@@ -5,7 +5,7 @@
  */
 package org.simnation.agents;
 
-import org.simnation.model.Domain;
+import org.simnation.model.Region;
 import org.simplesim.core.messaging.RoutingMessage;
 import org.simplesim.core.scheduling.HeapEventQueue;
 import org.simplesim.core.scheduling.Time;
@@ -105,7 +105,7 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 		getEventQueue().enqueue(event,time);
 	}
 	
-	public Domain getDomain() { return (Domain) getParent(); }
+	public Region getDomain() { return (Region) getParent(); }
 	
 	/**
 	 * Returns the index of this agent's domain.
@@ -113,7 +113,7 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 	 * @return index of the domain this agent resides in
 	 */
 	public int getDomainIndex() {
-		return Domain.getDomainIndex(getAddress());
+		return Region.getDomainIndex(getAddress());
 	}
 
 }

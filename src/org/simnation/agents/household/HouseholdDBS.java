@@ -13,9 +13,9 @@ package org.simnation.agents.household;
 import java.util.Random;
 
 import org.simnation.agents.business.Money;
-import org.simnation.agents.common.DatabaseState;
-import org.simnation.context.geography.Region;
+import org.simnation.context.geography.RegionData;
 import org.simnation.model.Model;
+import org.simnation.persistence.DataTransferObject;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,7 +32,7 @@ import jakarta.persistence.OneToOne;
  *
  */
 @Entity
-public class HouseholdDBS implements DatabaseState<HouseholdState> {
+public class HouseholdDBS implements DataTransferObject<HouseholdState> {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE)
@@ -40,7 +40,7 @@ public class HouseholdDBS implements DatabaseState<HouseholdState> {
 
 	@OneToOne
 	@JoinColumn(name="REGION_FK")
-	private Region region=null; // the household's parent region
+	private RegionData region=null; // the household's parent region
 	private int adults, children;
 	private long cash;
 	private float extraversion; // the households affinity to risk, [safe;risky] --> [0.5;1.5]
@@ -60,23 +60,6 @@ public class HouseholdDBS implements DatabaseState<HouseholdState> {
 		state.extraversion=getExtraversion();
 		return state;
 	}
-	
-	@Override
-	public void generateDBS(Region reg, Random rng) { 
-		region=reg;
-		extraversion=rng.nextFloat()+0.5f; // [0.5; 1.5]
-		adults=1;
-		if (rng.nextBoolean()) adults++; // [1; 2]
-		children=rng.nextInt(5);
-		cash=10000+rng.nextInt(10000);
-		int index=0;
-		needSatisfaction=new int[Model.getInstance().getNeedCount()];
-		for (NeedDefinition nd : Model.getInstance().getNeedSet()) {
-			int c=nd.getDailyConsumptionAdult()*adults+nd.getDailyConsumptionChild()*children;
-			needSatisfaction[index]=rng.nextInt(c*nd.getActivationDays());
-			index++;
-		}
-	 }
 
 	public Money getMoney() { return new Money(cash); }
 
@@ -92,9 +75,9 @@ public class HouseholdDBS implements DatabaseState<HouseholdState> {
 
 	public int getNeedSatisfaction(int index) { return needSatisfaction[index]; }
 
-	public Region getRegion() { return region; }
+	public RegionData getRegion() { return region; }
 
-	public void setRegion(Region region) { this.region=region; }
+	public void setRegion(RegionData region) { this.region=region; }
 
 	public int getAdults() { return adults; }
 

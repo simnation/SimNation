@@ -9,7 +9,7 @@ import java.util.Set;
 
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
-import org.simnation.agents.common.Batch;
+import org.simnation.common.Batch;
 import org.simnation.context.technology.Good;
 
 /**
@@ -28,19 +28,12 @@ public final class GoodsMarketB2C extends Market<Good> {
 		super(segments,new SimpleDoubleAuctionStrategy<>());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.simnation.simulation.agents.market.Market#trade(org.simnation.simulation.
-	 * business.Supply, org.simnation.simulation.business.Demand, int, float)
-	 */
 	@Override
 	long trade(Demand<Good> demand, Supply<Good> supply, long amount, double price) {
 		long cost=Math.round(price*amount);
 		long quantity=amount;
 		if (cost>demand.getMoney().getValue()) { // insufficient funds
-			quantity=(long) Math.floor(demand.getMoney().getValue()/price); // round off
+			quantity=(long) (demand.getMoney().getValue()/price); // round off
 			cost=Math.round(price*quantity);
 		}
 		log("\t market price: $"+Double.toString(price)+", demand: "+amount+",affordable: "+quantity+", cost: $"+cost);

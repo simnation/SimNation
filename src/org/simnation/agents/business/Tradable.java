@@ -10,8 +10,8 @@
  */
 package org.simnation.agents.business;
 
-import org.simnation.agents.common.Batch;
-import org.simnation.agents.common.Labor;
+import org.simnation.common.Batch;
+import org.simnation.common.Labor;
 
 /**
  * This interface marks any object type that can be traded on a {@code Market}.

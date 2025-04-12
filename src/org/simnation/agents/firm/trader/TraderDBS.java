@@ -4,11 +4,11 @@ package org.simnation.agents.firm.trader;
 import java.util.Random;
 
 import org.simnation.agents.business.Money;
-import org.simnation.agents.common.Batch;
-import org.simnation.agents.common.DatabaseState;
 import org.simnation.agents.firm.common.Storage;
-import org.simnation.context.geography.Region;
+import org.simnation.common.Batch;
+import org.simnation.context.geography.RegionData;
 import org.simnation.context.technology.Good;
+import org.simnation.persistence.DataTransferObject;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,7 +18,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class TraderDBS implements DatabaseState<TraderState> {
+public class TraderDBS implements DataTransferObject<TraderState> {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE)
@@ -26,7 +26,7 @@ public class TraderDBS implements DatabaseState<TraderState> {
 
 	@OneToOne
 	@JoinColumn(name="Region_FK")
-	private Region region;
+	private RegionData region;
 	
 	@OneToOne
 	@JoinColumn(name="Good_FK")
@@ -37,9 +37,9 @@ public class TraderDBS implements DatabaseState<TraderState> {
 	private long stockQuantity;
 	private long cash;
 
-	public Region getRegion() { return region; }
+	public RegionData getRegion() { return region; }
 
-	public void setRegion(Region value) { region=value; }
+	public void setRegion(RegionData value) { region=value; }
 
 	public long getCash() { return cash; }
 
@@ -80,7 +80,7 @@ public class TraderDBS implements DatabaseState<TraderState> {
 	public void setIndex(int index) { this.index=index; }
 
 	@Override
-	public void generateDBS(Region region, Random rnd) { // TODO Auto-generated method stub
+	public void generateDBS(RegionData region, Random rnd) { // TODO Auto-generated method stub
 	 }
 
 }

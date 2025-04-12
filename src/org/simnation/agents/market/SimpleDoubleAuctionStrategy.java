@@ -22,41 +22,35 @@ import org.simnation.agents.market.Market.PriceVolumeDataPoint;
  */
 public class SimpleDoubleAuctionStrategy<T> implements MarketStrategy<T> {
 
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * org.simnation.simulation.agents.market.MarketStrategy#doMarketClearing(org.simnation.simulation.agents.market.
-	 * Market, java.util.List, java.util.List)
-	 */
 	@Override
 	public PriceVolumeDataPoint doMarketClearing(Market<T> market, List<Demand<T>> demand, List<Supply<T>> supply) {
 		if (supply.isEmpty()||demand.isEmpty()) return null; // check for empty lists
 		demand.sort((o1, o2) -> -o1.compareTo(o2)); // sort demand with descending price
 		supply.sort(null); // sort supply with ascending price
 		final double price=findEquilibriumPrice(demand,supply);
-		final PriceVolumeDataPoint result=new PriceVolumeDataPoint(price); 
+		long volume=0;
 		final Iterator<Demand<T>> diter=demand.iterator();
 		final Iterator<Supply<T>> siter=supply.iterator();
 		Demand<T> ask=diter.next(); 	// check for empty list done before
 		Supply<T> bid=siter.next(); 	// check for empty list done before
 		while (ask.getMaxPrice()>=bid.getPrice()) {
 			if (bid.getQuantity()>ask.getQuantity()) {
-				result.addVolume(market.trade(ask,bid,ask.getQuantity(),price));
+				volume+=market.trade(ask,bid,ask.getQuantity(),price);
 				if (!diter.hasNext()) break; // demand completely satisfied --> exit
 				ask=diter.next();
 			} else if (bid.getQuantity()<ask.getQuantity()) {
-				result.addVolume(market.trade(ask,bid,bid.getQuantity(),price));
+				volume+=market.trade(ask,bid,bid.getQuantity(),price);
 				if (!siter.hasNext()) break; // supply completely sold --> exit
 				bid=siter.next();
 			} else { // askQty==bidQty
-				result.addVolume(market.trade(ask,bid,ask.getQuantity(),price));
+				volume+=market.trade(ask,bid,ask.getQuantity(),price);
 				if (diter.hasNext()&&siter.hasNext()) {
 					ask=diter.next();
 					bid=siter.next();
 				} else break; // supply and demand simultaneously cleared - this is rare!
 			}
 		}
-		return result;
+		return new PriceVolumeDataPoint(price, volume);
 	}
 	
 	/**

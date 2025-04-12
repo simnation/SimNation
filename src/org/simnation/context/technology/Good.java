@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.simnation.agents.household.NeedDefinition;
+import org.simnation.context.Limits;
 import org.simnation.context.technology.ProductionTechnology.IProductionFunction;
-import org.simnation.model.Limits;
 import org.simnation.zzz_old.GoodSet;
 import org.simplesim.core.scheduling.Time;
 

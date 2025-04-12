@@ -10,9 +10,9 @@
  */
 package org.simnation.agents.firm.common;
 
-import org.simnation.agents.common.Batch;
-import org.simnation.agents.math.ExponentialSmoothingStatistics;
-import org.simnation.agents.math.Statistics;
+import org.simnation.common.Batch;
+import org.simnation.common.statistics.ExponentialSmoothingStatistics;
+import org.simnation.common.statistics.Statistics;
 import org.simnation.context.technology.Good;
 
 /**
@@ -106,9 +106,9 @@ public class Storage {
 	 */
 	public long forecastStockLevel(float sl) {
 		// calc safety stock for a full period based on service level and variance of previous demands
-		final double safetyStock=getSafetyFactor(sl)*Math.sqrt(stat.getVariance()*orderCount);
+		final double safetyStock=getSafetyFactor(sl)*Math.sqrt(stat.getVAR()*orderCount);
 		// return estimated demand volume of next period plus safety stock
-		return Math.round(orderCount*stat.getAverage()+safetyStock);
+		return Math.round(orderCount*stat.getAVG()+safetyStock);
 	}
 
 	/**

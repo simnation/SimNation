@@ -16,10 +16,10 @@ import java.util.Map;
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
-import org.simnation.agents.common.Batch;
 import org.simnation.agents.market.GoodsMarketB2C;
-import org.simnation.agents.math.ExponentialSmoothingStatistics;
-import org.simnation.agents.math.Statistics;
+import org.simnation.common.Batch;
+import org.simnation.common.statistics.ExponentialSmoothingStatistics;
+import org.simnation.common.statistics.Statistics;
 import org.simnation.context.technology.Good;
 import org.simnation.model.Model;
 import org.simplesim.core.messaging.RoutingMessage;
@@ -101,9 +101,9 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 		for (GoodsMarketB2C market : Model.getInstance().getB2CMarketSet()) {
 			final Statistics statistics=salesVolume.get(market.getAddress());
 			// estimate delivery volume as average sales volume plus standard deviation
-			double quantity=statistics.getAverage()+Math.sqrt(statistics.getVariance());
+			double quantity=statistics.getAVG()+Math.sqrt(statistics.getVAR());
 			// if there are no statistics yet, deliver an equal share of the current stock to each market
-			if (quantity==0) quantity=getState().getStorage().getStockLevel()/Model.getInstance().getRegionCount();
+			if (quantity==0) quantity=getState().getStorage().getStockLevel()/Model.getInstance().getRegionSet().size();
 			final Batch batch=getState().getStorage().removeFromStock((long) quantity);
 			// supply price is the actual value plus a margin (cost plus approach)
 			final double price=batch.getPrice()*getState().getMargin();

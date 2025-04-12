@@ -5,10 +5,10 @@ import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Invoice;
 import org.simnation.agents.business.Order;
 import org.simnation.agents.business.Supply;
-import org.simnation.agents.common.Batch;
 import org.simnation.agents.firm.manufacturer.Manufacturer;
 import org.simnation.agents.market.GoodsMarketB2B;
 import org.simnation.agents.market.MarketInfo;
+import org.simnation.common.Batch;
 import org.simnation.context.technology.Good;
 import org.simnation.core.Message;
 

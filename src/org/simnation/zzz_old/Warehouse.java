@@ -3,8 +3,8 @@ package org.simnation.zzz_old;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.simnation.agents.common.Batch;
 import org.simnation.agents.firm.manufacturer.Manufacturer;
+import org.simnation.common.Batch;
 import org.simnation.context.technology.Good;
 import org.simnation.core.Limits;
 import org.simnation.core.Product;

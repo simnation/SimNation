@@ -8,7 +8,9 @@
  * 	- Rene Kuhlemann - development and initial implementation
  * 
  */
-package org.simnation.agents.math;
+package org.simnation.common.statistics;
+
+import org.simnation.context.Limits;
 
 /**
  * Calculates mean and variance by exponential smoothing.
@@ -24,43 +26,43 @@ package org.simnation.agents.math;
  */
 public final class ExponentialSmoothingStatistics implements Statistics {
 
-	private double average=0;	// weighted average 
-	private double variance=0;	// weighted variance
-	private float alpha;		// exponential smoothing factor, has to be between 0 and 1.
-
+	private volatile double average;	// weighted average 
+	private volatile double variance;	// weighted variance
+	private volatile double lastValue;	// last value of this time series
+	private final float alpha;	// exponential smoothing factor, has to be between 0 and 1.
 	
-	public ExponentialSmoothingStatistics(float esf) { alpha=esf; }
+	public ExponentialSmoothingStatistics(float esf) { 	
+		reset(0);
+		alpha=esf; 
+	}
 	
-	public ExponentialSmoothingStatistics() { this(0.2f); }
+	public ExponentialSmoothingStatistics() { this(Limits.DEFAULT_SMOOTHING_FACTOR); }
 	
 	@Override
-	public double update(double value) {
+	public void update(double value) {
 		final double diff=value-average;
 		final double incr=alpha*diff;
-		average+=incr; // update average
+		average=average+incr; // update average
 		variance=(1.0f-alpha)*(variance+diff*incr); // calculation according to the above paper
-		return value;
+		lastValue=value;
 	}
 
 	@Override
-	public void reset() {
-		average=variance=0;
+	public void reset(double avg) {
+		average=lastValue=avg;
+		variance=0;
 	}
+	
+	@Override
+	public double getLastValue() { return lastValue; }
 
 	@Override
-	public double getAverage() { return average; }
+	public double getAVG() { return average; }
 
 	@Override
-	public double getVariance() { return variance; }
+	public double getVAR() { return variance; }
 
 	public float getSmoothingFactor() { return alpha; }
-
-	/**
-	 * Sets the factor used for exponential smoothing.
-	 * 
-	 * @param data.alpha the smoothing factor, must be between 0 and 1 
-	 **/
-	public void setSmoothingFactor(float value) { alpha=value; }
 
 	@Override
 	public String toString() {

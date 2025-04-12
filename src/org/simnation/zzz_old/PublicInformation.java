@@ -6,8 +6,8 @@ package org.simnation.zzz_old;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.simnation.agents.common.RegionalInformation;
 import org.simnation.agents.market.MarketInfo;
+import org.simnation.common.RegionalInformation;
 import org.simnation.context.technology.Good;
 import org.simnation.core.Address;
 

@@ -5,7 +5,7 @@ import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
-import org.simnation.context.geography.Region;
+import org.simnation.context.geography.RegionData;
 
 @PersistenceCapable
 public class EnterpriseDBS {
@@ -13,14 +13,14 @@ public class EnterpriseDBS {
 	@Persistent(primaryKey="true",valueStrategy=IdGeneratorStrategy.NATIVE)
 	private int id;
 	@Column(name="region",jdbcType="INTEGER",targetMember="id")
-	private Region region;
+	private RegionData region;
 	private int cash;
 	
-	public Region getRegion() {
+	public RegionData getRegion() {
 		return region;
 	}
 
-	public void setRegion(Region region) {
+	public void setRegion(RegionData region) {
 		this.region=region;
 	}
 

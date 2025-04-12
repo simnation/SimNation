@@ -5,7 +5,7 @@
  */
 package org.simnation.agents.business;
 
-import org.simnation.agents.common.Batch;
+import org.simnation.common.Batch;
 import org.simnation.context.technology.Good;
 
 /**
@@ -98,10 +98,6 @@ public final class Demand<T> implements Comparable<Demand<?>> {
 		return "["+getQuantity()+"U of "+getMarketSegment()+" for $"+getMaxPrice()+"] cash: "+getMoney().toString();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
 	@Override
 	public int compareTo(Demand<?> other) {
 		if (this.getMaxPrice()<other.getMaxPrice()) return -1;

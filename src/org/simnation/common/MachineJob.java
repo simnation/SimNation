@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.simnation.agents.common;
+package org.simnation.common;
 
 import java.util.ArrayList;
 import java.util.List;

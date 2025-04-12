@@ -16,7 +16,7 @@ import java.util.Arrays;
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
-import org.simnation.agents.common.Command;
+import org.simnation.common.Command;
 import org.simnation.core.AgentType;
 import org.simnation.core.SkillDefinition;
 

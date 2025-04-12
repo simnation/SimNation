@@ -10,7 +10,7 @@
  */
 package org.simnation.agents.business;
 
-import org.simnation.agents.common.Batch;
+import org.simnation.common.Batch;
 import org.simplesim.core.messaging.RoutingMessage;
 
 public final class Delivery extends RoutingMessage {

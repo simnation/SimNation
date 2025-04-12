@@ -1,4 +1,4 @@
-package org.simnation.model;
+package org.simnation.context;
 
 import org.simplesim.core.scheduling.Time;
 
@@ -53,5 +53,8 @@ public final class Limits {
 	public static final int BUDGET_PERIOD=DAYS_PER_BUDGET_PERIOD*Time.TICKS_PER_DAY;
 	
 	public static final int CHANGING=-1; // changing period length, needed for EventType
+	
+	// default parameter values
+	public static final float DEFAULT_SMOOTHING_FACTOR=0.3f;
 	
 }

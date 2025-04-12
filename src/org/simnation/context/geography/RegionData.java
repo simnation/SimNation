@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
 
 @Entity
-public class Region {
+public class RegionData {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE)
@@ -28,11 +28,11 @@ public class Region {
 	@Transient
 	private int population=1000;
 	@Transient
-	private final List<Region> neighbor_list=new ArrayList<>();
+	private final List<RegionData> neighbor_list=new ArrayList<>();
 	@Transient
 	private final List<Double> distance_list=new ArrayList<>();
 
-	public void addNeighbor(Region dest) {
+	public void addNeighbor(RegionData dest) {
 		final double distance=this.distanceTo(dest);
 		distance_list.add(distance);
 		dest.distance_list.add(distance);
@@ -59,7 +59,7 @@ public class Region {
 		return Math.acos(temp)*EARTH_RADIUS;
 	}
 
-	public double distanceTo(Region dest) {
+	public double distanceTo(RegionData dest) {
 		return distanceTo(dest.longitude,dest.latitude);
 	}
 
@@ -70,7 +70,7 @@ public class Region {
 	public List<Double> getDistanceList() { return distance_list; }
 
 	// returns distance to neighbor or POSITIVE_INFINITY if region is not a neighbor
-	public double getDistanceToNeighbor(Region region) {
+	public double getDistanceToNeighbor(RegionData region) {
 		final int index=neighbor_list.indexOf(region);
 		if (index==-1) return Double.POSITIVE_INFINITY;
 		else return distance_list.get(index);
@@ -82,7 +82,7 @@ public class Region {
 
 	public double getLongitude() { return Math.toDegrees(longitude); }
 
-	public List<Region> getNeighborList() { return neighbor_list; }
+	public List<RegionData> getNeighborList() { return neighbor_list; }
 
 	public int getPopulation() { return population; }
 
@@ -107,7 +107,7 @@ public class Region {
 	@Override
 	public String toString() {
 		final String neighbors="";
-		for (final Region iter : neighbor_list)
+		for (final RegionData iter : neighbor_list)
 			neighbors.concat(String.format("# %s(%g km) ",iter.city,getDistanceToNeighbor(iter)));
 		return city+" ["+longitude+"|"+latitude+"] "+neighbors;
 	}

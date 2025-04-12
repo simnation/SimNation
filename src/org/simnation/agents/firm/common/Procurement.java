@@ -4,10 +4,10 @@ package org.simnation.agents.firm.common;
 import org.simnation.agents.business.DemandMtS;
 import org.simnation.agents.business.Offer;
 import org.simnation.agents.business.SupplyMtO;
-import org.simnation.agents.common.Batch;
 import org.simnation.agents.firm.Enterprise;
 import org.simnation.agents.firm.EnterpriseState;
 import org.simnation.agents.market.GoodsMarketB2B;
+import org.simnation.common.Batch;
 import org.simnation.core.Message;
 import org.simnation.simulation.model.Good;
 

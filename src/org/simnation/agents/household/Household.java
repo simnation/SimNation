@@ -21,11 +21,10 @@ import org.apache.commons.math3.util.FastMath;
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Money;
-import org.simnation.agents.common.Batch;
 import org.simnation.agents.household.NeedDefinition.URGENCY;
-import org.simnation.agents.market.MarketStatistics;
+import org.simnation.common.Batch;
 import org.simnation.context.technology.Good;
-import org.simnation.model.Domain;
+import org.simnation.model.Region;
 import org.simnation.model.Model;
 import org.simplesim.core.messaging.RoutingMessage;
 import org.simplesim.core.scheduling.Time;
@@ -76,7 +75,7 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		final float quality=getState().getStock(nd).getQuality();
 		final Money money=getState().getMoney().split((long) (amount*price)+1); // round up
 		final Demand<Good> demand=new Demand<>(getAddress(),nd.getSatisfier(),amount,price,quality,money);
-		sendMessage(new RoutingMessage(getAddress(),((Domain) getParent()).getGoodsMarket().getAddress(),demand));
+		sendMessage(new RoutingMessage(getAddress(),((Region) getParent()).getGoodsMarket().getAddress(),demand));
 		log("\t send demand to market: "+demand.toString());
 	}
 
@@ -169,10 +168,10 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 				if (total>0) {
 					int budget;
 					// calc with local market pricing
-					final double price=getDomain().getGoodsMarket().getLastPrice(nd.getSatisfier());
+					final double price=getDomain().getGoodsMarket().getMarketData(nd.getSatisfier()).getPrice();
 					log("Price="+price+" for "+nd.getSatisfier().getName());
 					if (price>0) budget=(int) (price*getMonthlyConsumption(nd));
-					// fall back: without a market price calc with equal budgets for all needs 
+					// fall back: without a market price calc with equal budget share for all needs 
 					else budget=(int) (getState().getTotalBudget()/Model.getInstance().getNeedSet().size());
 					if (total<budget) budget=(int) total; // adjust if out of budget 
 					total-=budget;

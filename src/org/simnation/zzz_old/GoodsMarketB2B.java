@@ -8,7 +8,7 @@ import static org.simnation.simulation.model.Time.HOUR;
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
-import org.simnation.agents.common.Batch;
+import org.simnation.common.Batch;
 /**National goods market for trading between enterprises
  * 
  * @author Rene Kuhlemann

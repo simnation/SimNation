@@ -8,7 +8,7 @@
  * 	- Rene Kuhlemann - development and initial implementation
  * 
  */
-package org.simnation.agents.math;
+package org.simnation.common.statistics;
 
 /**
  * Calculates average and variance by a simple moving window.
@@ -20,22 +20,23 @@ package org.simnation.agents.math;
  */
 public final class SimpleMovingAverageStatistics implements Statistics {
 
-	private final double buffer[];	// circular buffer
+	private final double buffer[];		// circular buffer
 	private final int sampleSize;
-	private int head, tail;			// circular buffer indices
-	private double average;	
-	private double sumVar; 		// sum for variance calculation
+	private int head, tail;				// circular buffer indices
+	private volatile double average;	
+	private volatile double sumVar;		// sum for variance calculation
+	private volatile double lastValue;	// last value of this time series
 
 	public SimpleMovingAverageStatistics(int size) {
 		sampleSize=size;
 		buffer=new double[size+1];
-		reset();
+		reset(0);
 	}
 
 	public SimpleMovingAverageStatistics() { this(5); }
 
 	@Override
-	public double update(double value) {
+	public void update(double value) {
 		final double oldAvg=average;
 		if (size()<sampleSize) {
 			final double diff=value-oldAvg;
@@ -48,20 +49,23 @@ public final class SimpleMovingAverageStatistics implements Statistics {
 			sumVar+=diff*(value-average+oldVal-oldAvg);		
 		}
 		addToHead(value);
-		return value;
 	}
 
 	@Override
-	public void reset() {
+	public void reset(double avg) {
 		head=tail=0;
-		average=sumVar=0;
+		average=avg;
+		sumVar=0;
 	}
 
 	@Override
-	public double getAverage() { return average; }
+	public double getAVG() { return average; }
 
 	@Override
-	public double getVariance() { return sumVar/size(); }
+	public double getVAR() { return sumVar/size(); }
+	
+	@Override
+	public double getLastValue() { return lastValue; }
 	
 	private void addToHead(double value) {
 		buffer[head]=value;
@@ -82,7 +86,7 @@ public final class SimpleMovingAverageStatistics implements Statistics {
 
 	@Override
 	public String toString() {
-		return "[avg="+getAverage()+", var="+getVariance()+"]";
+		return "[avg="+getAVG()+", var="+getVAR()+"]";
 	}
 
 }

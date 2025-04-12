@@ -8,26 +8,26 @@ import org.simnation.persistence.Persistable;
 
 public final class RegionSet implements Persistable {
 
-	private final Set<Region> regions=new HashSet<>();
+	private final Set<RegionData> regions=new HashSet<>();
 	private DistanceMatrix matrix=null;
 
-	public void add(Region region) {
+	public void add(RegionData region) {
 		regions.add(region);
 	}
 
-	public Set<Region> get() {
+	public Set<RegionData> get() {
 		return regions;
 	}
 
-	public Region get(String name) {
-		for (final Region region : regions) if (region.getName().equalsIgnoreCase(name)) return region;
+	public RegionData get(String name) {
+		for (final RegionData region : regions) if (region.getName().equalsIgnoreCase(name)) return region;
 		return null;
 	}
 
 	public int getTotal() { return regions.size(); }
 
 	public void clear() {
-		for (final Region region : regions) region.disposeNeighbors();
+		for (final RegionData region : regions) region.disposeNeighbors();
 		regions.clear();
 		matrix=null;
 	}
@@ -51,7 +51,7 @@ public final class RegionSet implements Persistable {
 	@Override
 	public void load(DataAccessObject dao) throws Exception {
 		clear();
-		regions.addAll(dao.load(Region.class));
+		regions.addAll(dao.load(RegionData.class));
 	}
 
 	@Override

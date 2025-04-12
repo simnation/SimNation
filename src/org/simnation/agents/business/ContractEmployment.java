@@ -4,7 +4,7 @@
 package org.simnation.agents.business;
 
 import org.simnation.core.Citizen;
-import org.simnation.agents.common.Labor;
+import org.simnation.common.Labor;
 import org.simnation.core.Address;
 
 /**

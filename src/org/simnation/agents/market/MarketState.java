@@ -31,24 +31,24 @@ import org.simplesim.model.State;
 public class MarketState<T> implements State {
 
 	
-	private final Map<T,List<Demand<T>>> demandList=new IdentityHashMap<>();
-	private final Map<T,List<Supply<T>>> supplyList=new IdentityHashMap<>();
+	private final Map<T,List<Demand<T>>> demandMap=new IdentityHashMap<>();
+	private final Map<T,List<Supply<T>>> supplyMap=new IdentityHashMap<>();
+	
+	private final Map<T,MarketData> statistics=new IdentityHashMap<>();
+
 	
 	public MarketState(Set<T> segmentList) {
-		for (T segement : segmentList) {
-			demandList.put(segement,new ArrayList<Demand<T>>());
-			supplyList.put(segement,new ArrayList<Supply<T>>());
-		}
-		
+		for (T segment : segmentList) {
+			demandMap.put(segment,new ArrayList<Demand<T>>());
+			supplyMap.put(segment,new ArrayList<Supply<T>>());
+			statistics.put(segment,new MarketData());
+		}		
 	}
+	
+public MarketData getMarketData(T segment) { return statistics.get(segment); }
 
-public List<Demand<T>> getDemandList(T segment) {
-	return demandList.get(segment);
-}
+public List<Demand<T>> getDemandList(T segment) { return demandMap.get(segment); }
 
-public List<Supply<T>> getSupplyList(T segment) {
-	return supplyList.get(segment);
-}
-
+public List<Supply<T>> getSupplyList(T segment) { return supplyMap.get(segment); }
 
 }

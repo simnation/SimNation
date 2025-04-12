@@ -3,12 +3,12 @@
  */
 package org.simnation.agents.firm.common;
 
-import org.simnation.agents.common.Batch;
-import org.simnation.agents.common.Labor;
-import org.simnation.agents.common.MachineJob;
 import org.simnation.agents.firm.manufacturer.Forecast;
 import org.simnation.agents.firm.manufacturer.Manufacturer;
 import org.simnation.agents.firm.manufacturer.ProductionPlan;
+import org.simnation.common.Batch;
+import org.simnation.common.Labor;
+import org.simnation.common.MachineJob;
 import org.simnation.core.Machine;
 import org.simnation.core.SkillDefinition;
 import org.simnation.core.Tools;

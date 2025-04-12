@@ -8,7 +8,18 @@
  * 	- Rene Kuhlemann - development and initial implementation
  * 
  */
+package org.simnation.common;
+
 /**
- * Contains math routines used by various agents.
+ * Marks types that have merge and split functionality
+ *
+ * @see Batch
+ * @see Money
  */
-package org.simnation.agents.math;
+public interface Mergable<T extends Mergable<T>> {
+	
+	public T split(long amount);
+	
+	public long merge(T other);
+
+}

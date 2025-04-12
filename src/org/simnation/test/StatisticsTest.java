@@ -10,7 +10,7 @@
  */
 package org.simnation.test;
 
-import org.simnation.agents.math.WarehouseStatistics;
+import org.simnation.statistics.WarehouseStatistics;
 
 /**
  *

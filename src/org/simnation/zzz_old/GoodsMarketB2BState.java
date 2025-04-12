@@ -4,7 +4,7 @@ package org.simnation.zzz_old;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 
-import org.simnation.agents.common.Batch;
+import org.simnation.common.Batch;
 import org.simnation.simulation.model.Good;
 import org.simnation.simulation.model.ValueChain;
 import org.simnation.simulation.scenario.GoodsMarketB2BStateReader;
