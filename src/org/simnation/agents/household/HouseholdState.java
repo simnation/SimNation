@@ -10,13 +10,8 @@
  */
 package org.simnation.agents.household;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.simnation.agents.business.Money;
-import org.simnation.common.Batch;
-import org.simnation.context.technology.Good;
+import org.simnation.model.Model;
 import org.simplesim.core.scheduling.Time;
 import org.simplesim.model.State;
 
@@ -28,57 +23,48 @@ public class HouseholdState implements State {
 	Money money;
 	float extraversion;
 
-	// set at any time
+	// set at during simulation
 	private Time budgetPeriodStart;
 	private long totalBudget;
-	private final int budget[];
-	private final int saturationLevel[];
-	private final Map<Good, Batch> stock=new IdentityHashMap<>(9);
+	private final int budget[]; // budgets per need
+	private final int needLevel[]; // saturation
 
-	/**
-	 * @param size
-	 */
-	public HouseholdState(Set<NeedDefinition> needSet) {
-		budget=new int[needSet.size()];
-		saturationLevel=new int[needSet.size()];
-		for (NeedDefinition nd : needSet) {
-			stock.put(nd.getSatisfier(),new Batch(nd.getSatisfier()));
-			setSaturation(nd,0);
-		}
+
+	public HouseholdState() {
+		budget=new int[Model.getInstance().getNeeds().size()];
+		needLevel=new int[Model.getInstance().getNeeds().size()];
 	}
 
-	public Money getMoney() { return money; }
+	Money getMoney() { return money; }
 
-	public int getAdults() { return adults; }
+	int getAdults() { return adults; }
 
-	public int getChildren() { return children; }
+	int getChildren() { return children; }
+
+	float getExtraversion() { return extraversion; }
+
+	int getUrgencyLevel() { return urgencyLevel; }
+
+	void setUrgencyLevel(int value) { urgencyLevel=value; }
+
+	long getTotalBudget() { return totalBudget; }
+
+	void setTotalBudget(long value) { totalBudget=value; }
+
+	int getBudget(Need nd) { return budget[nd.getIndex()]; }
+
+	void setBudget(Need nd, int value) { budget[nd.getIndex()]=value; }
+
+	int getNeedLevel(Need nd) { return needLevel[nd.getIndex()]; }
+
+	void setNeedLevel(Need nd, int value) { needLevel[nd.getIndex()]=value; }
 	
-	public double getExtraversion() { return extraversion; }
+	void decreaseNeedLevel(Need nd, int value) { needLevel[nd.getIndex()]-=value; }
+	
+	void increaseNeedLevel(Need nd, int value) { needLevel[nd.getIndex()]+=value; }
+	
+	Time getBudgetPeriodStart() { return budgetPeriodStart; }
 
-	public int getUrgencyLevel() { return urgencyLevel; }
-
-	public void setUrgencyLevel(int value) { urgencyLevel=value; }
-
-	public long getTotalBudget() { return totalBudget; }
-
-	public void setTotalBudget(long value) { totalBudget=value; }
-
-	public int getBudget(NeedDefinition nd) { return budget[nd.getIndex()]; }
-
-	public void setBudget(NeedDefinition nd, int value) { budget[nd.getIndex()]=value; }
-
-	public Batch getStock(NeedDefinition nd) { return stock.get(nd.getSatisfier()); }
-
-	public void addToStock(Good good, Batch batch) { stock.get(good).merge(batch); }
-
-	public int getSaturation(NeedDefinition nd) { return saturationLevel[nd.getIndex()]; }
-
-	public void setSaturation(NeedDefinition nd, int value) { saturationLevel[nd.getIndex()]=value; }
-
-	public void addToSaturation(NeedDefinition nd, int value) { saturationLevel[nd.getIndex()]+=value; }
-
-	public Time getBudgetPeriodStart() { return budgetPeriodStart; }
-
-	public void setBudgetPeriodStart(Time value) { budgetPeriodStart = value; }
+	void setBudgetPeriodStart(Time value) { budgetPeriodStart = value; }
 
 }

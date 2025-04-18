@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
 
 @Entity
-public class RegionData {
+public class Region {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE)
@@ -28,11 +28,11 @@ public class RegionData {
 	@Transient
 	private int population=1000;
 	@Transient
-	private final List<RegionData> neighbor_list=new ArrayList<>();
+	private final List<Region> neighbor_list=new ArrayList<>();
 	@Transient
 	private final List<Double> distance_list=new ArrayList<>();
 
-	public void addNeighbor(RegionData dest) {
+	public void addNeighbor(Region dest) {
 		final double distance=this.distanceTo(dest);
 		distance_list.add(distance);
 		dest.distance_list.add(distance);
@@ -59,7 +59,7 @@ public class RegionData {
 		return Math.acos(temp)*EARTH_RADIUS;
 	}
 
-	public double distanceTo(RegionData dest) {
+	public double distanceTo(Region dest) {
 		return distanceTo(dest.longitude,dest.latitude);
 	}
 
@@ -70,7 +70,7 @@ public class RegionData {
 	public List<Double> getDistanceList() { return distance_list; }
 
 	// returns distance to neighbor or POSITIVE_INFINITY if region is not a neighbor
-	public double getDistanceToNeighbor(RegionData region) {
+	public double getDistanceToNeighbor(Region region) {
 		final int index=neighbor_list.indexOf(region);
 		if (index==-1) return Double.POSITIVE_INFINITY;
 		else return distance_list.get(index);
@@ -82,7 +82,7 @@ public class RegionData {
 
 	public double getLongitude() { return Math.toDegrees(longitude); }
 
-	public List<RegionData> getNeighborList() { return neighbor_list; }
+	public List<Region> getNeighborList() { return neighbor_list; }
 
 	public int getPopulation() { return population; }
 
@@ -107,7 +107,7 @@ public class RegionData {
 	@Override
 	public String toString() {
 		final String neighbors="";
-		for (final RegionData iter : neighbor_list)
+		for (final Region iter : neighbor_list)
 			neighbors.concat(String.format("# %s(%g km) ",iter.city,getDistanceToNeighbor(iter)));
 		return city+" ["+longitude+"|"+latitude+"] "+neighbors;
 	}

@@ -13,23 +13,12 @@ package org.simnation.persistence;
 import org.simplesim.model.State;
 
 /**
- * Interface to be implemented from all DBS classes
+ * A DTO stores all data to make the agent state and event queue persistent.
  */
-public interface DataTransferObject<X extends State> {
-
-	/**
-	 * Converts the agents state into the database state
-	 * @param state
-	 */
-	void convertToDBS(X state);
-
-	/**
-	 * Converts the database state into the the actual agent state using the provided state.
-	 *
-	 * @param state a provided state to be overwritten by the database state data.
-	 *
-	 * @return the agent state
-	 */
-	X convertToState(X state);
+public interface DataTransferObject<S extends State> {
+	
+	void convertToState(S state);
+	
+	void convertToDTO(S state);
 
 }

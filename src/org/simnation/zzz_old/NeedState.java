@@ -10,7 +10,7 @@
  */
 package org.simnation.zzz_old;
 
-import org.simnation.agents.household.NeedDefinition;
+import org.simnation.agents.household.Need;
 import org.simnation.common.Batch;
 import org.simplesim.core.scheduling.Time;
 
@@ -28,7 +28,7 @@ public interface NeedState {
 	 * @param dc the household's daily consumption of the need's satisfier
 	 * @param batch the batch to consume 
 	 */
-	public void satisfice(NeedDefinition nd, long dc, Batch batch);
+	public void satisfice(Need nd, long dc, Batch batch);
 		
 	/**
 	 * @return
@@ -47,7 +47,7 @@ public interface NeedState {
 	 * @param actualTime
 	 * @return
 	 */
-	default boolean isFrustrated(Time actualTime, NeedDefinition nd) {
+	default boolean isFrustrated(Time actualTime, Need nd) {
 		final long delta=actualTime.getTicks()-getActivationTime().getTicks();
 		return delta>nd.getFrustrationDays()*Time.TICKS_PER_DAY;
 	}

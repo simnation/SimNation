@@ -17,18 +17,18 @@ import org.simnation.persistence.Persistable;
  */
 public final class NeedSet implements Persistable {
 
-	private final Set<NeedDefinition> needs=new HashSet<>();
+	private final Set<Need> needs=new HashSet<>();
 
 	/** list of all consumable goods, acting as sink node of a graph */
 	private final Set<Good> consumables=new HashSet<>();
 	
 
-	public void add(NeedDefinition need) {
+	public void add(Need need) {
 		needs.add(need); // add new type
 		consumables.add(need.getSatisfier());
 	}
 
-	public Set<NeedDefinition> get() {
+	public Set<Need> get() {
 		return needs;
 	}
 
@@ -37,11 +37,11 @@ public final class NeedSet implements Persistable {
 		consumables.clear();
 	}
 
-	public boolean remove(NeedDefinition nd) {
+	public boolean remove(Need nd) {
 		return needs.remove(nd);
 	}
 
-	public boolean exists(NeedDefinition need) {
+	public boolean exists(Need need) {
 		return needs.contains(need);
 	}
 
@@ -63,8 +63,8 @@ public final class NeedSet implements Persistable {
 	@Override
 	public void load(DataAccessObject dao) throws Exception {
 		clear();
-		final Collection<NeedDefinition> list=dao.load(NeedDefinition.class);
-		for (NeedDefinition need : list) add(need);
+		final Collection<Need> list=dao.load(Need.class);
+		for (Need need : list) add(need);
 		Household.initNeedMap(needs);
 	}
 	

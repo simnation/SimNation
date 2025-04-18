@@ -2,23 +2,20 @@ package org.simnation.context.geography;
 
 import java.util.List;
 
-import org.simnation.model.geography.DistanceMatrix;
-import org.simnation.model.geography.Region;
-
 public class GabrielGraphAlgorithm  {
 
-	private final List<RegionData> graph;
+	private final List<Region> graph;
 	
-	public GabrielGraphAlgorithm(List<RegionData> list) {
+	public GabrielGraphAlgorithm(List<Region> list) {
 		graph=list;
 	}
 
-	private boolean isNeighbor(RegionData from,RegionData to) {
+	private boolean isNeighbor(Region from,Region to) {
 		final double lng=0.5*(from.getLongitude()+to.getLongitude()); // calc the circle's mid point
 		final double lat=0.5*(from.getLatitude()+to.getLatitude());
 		final double r=0.5*from.distanceTo(to); // radius of circle equals half of the distance
 
-		for (final RegionData reg : graph) {
+		for (final Region reg : graph) {
 			if (reg==from||reg==to) continue; // ignore "from" and "to"
 			if (reg.distanceTo(lng,lat)<r) return false; // is any other point within the circle?
 		}

@@ -21,7 +21,6 @@ import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
 import org.simplesim.model.State;
 
-
 /**
  * Basic market state contains all general data all markets have
  * 
@@ -30,25 +29,23 @@ import org.simplesim.model.State;
 
 public class MarketState<T> implements State {
 
-	
-	private final Map<T,List<Demand<T>>> demandMap=new IdentityHashMap<>();
-	private final Map<T,List<Supply<T>>> supplyMap=new IdentityHashMap<>();
-	
-	private final Map<T,MarketData> statistics=new IdentityHashMap<>();
+	private final Map<T, List<Demand<T>>> demandMap = new IdentityHashMap<>();
+	private final Map<T, List<Supply<T>>> supplyMap = new IdentityHashMap<>();
 
-	
+	private final Map<T, MarketData> statistics = new IdentityHashMap<>();
+
 	public MarketState(Set<T> segmentList) {
 		for (T segment : segmentList) {
-			demandMap.put(segment,new ArrayList<Demand<T>>());
-			supplyMap.put(segment,new ArrayList<Supply<T>>());
-			statistics.put(segment,new MarketData());
-		}		
+			demandMap.put(segment, new ArrayList<Demand<T>>());
+			supplyMap.put(segment, new ArrayList<Supply<T>>());
+			statistics.put(segment, new MarketData());
+		}
 	}
-	
-public MarketData getMarketData(T segment) { return statistics.get(segment); }
 
-public List<Demand<T>> getDemandList(T segment) { return demandMap.get(segment); }
+	MarketData getMarketData(T segment) { return statistics.get(segment); }
 
-public List<Supply<T>> getSupplyList(T segment) { return supplyMap.get(segment); }
+	List<Demand<T>> getDemand(T segment) { return demandMap.get(segment); }
+
+	List<Supply<T>> getSupply(T segment) { return supplyMap.get(segment); }
 
 }

@@ -21,11 +21,13 @@ import org.apache.commons.math3.util.FastMath;
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Money;
-import org.simnation.agents.household.NeedDefinition.URGENCY;
+import org.simnation.agents.household.Need.TYPE;
+import org.simnation.agents.household.Need.URGENCY;
 import org.simnation.common.Batch;
 import org.simnation.context.technology.Good;
-import org.simnation.model.Region;
+import org.simnation.model.Domain;
 import org.simnation.model.Model;
+import org.simnation.persistence.DataTransferObject;
 import org.simplesim.core.messaging.RoutingMessage;
 import org.simplesim.core.scheduling.Time;
 
@@ -39,16 +41,13 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	private static final Time BUDGET_PERIOD=Time.MONTH;	 // monthly budget planning
 	
 	
-	public Household(HouseholdDBS dbs) {
-		super(new HouseholdState(Model.getInstance().getNeedSet()));
-		dbs.convertToState(getState());
-		// init Stock and enqueue all need events
-		// Time.ZERO may be substituted by deterministic RNG
-		// saving initial saturation values in database may be omitted by RNG
-		// a need not queued here will never be called!
-		for (NeedDefinition nd : Model.getInstance().getNeedSet()) {
-			getState().setSaturation(nd,0);
-			enqueueEvent(nd.getEvent(),new Time(Time.hours(6)));
+	public Household(HouseholdDTO dto) {
+		super(new HouseholdState());
+		dto.convertToState(getState());	// setup state
+		for (Need need : Model.getInstance().getNeeds()) { // setup need level and events
+			final double x=dto.getNeedLevel(need.getIndex());
+			getState().setNeedLevel(need,(int) (getActivationLevel(need)*x));
+			enqueueEvent(need.getEvent(),new Time((long) (x*Time.days(need.getActivationDays()))));
 		}
 		enqueueEvent(EVENT.planBudget,BUDGET_OFFSET);
 	}
@@ -71,39 +70,45 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	/**
 	 * @param i
 	 */
-	private void sendDemand(NeedDefinition nd, int amount, double price) {
-		final float quality=getState().getStock(nd).getQuality();
+	private void sendDemand(Need nd, int amount, double price) {
+		final float quality=0;
 		final Money money=getState().getMoney().split((long) (amount*price)+1); // round up
 		final Demand<Good> demand=new Demand<>(getAddress(),nd.getSatisfier(),amount,price,quality,money);
-		sendMessage(new RoutingMessage(getAddress(),((Region) getParent()).getGoodsMarket().getAddress(),demand));
-		log("\t send demand to market: "+demand.toString());
+		sendMessage(new RoutingMessage(getAddress(),((Domain) getParent()).getGoodsMarket().getAddress(),demand));
+		log("\t sent demand to market: "+demand.toString());
 	}
 
-	/**
-	 * @param needDefinition
-	 */
 	private void processNeedActivationEvent(EVENT event, Time time) {
-		final NeedDefinition nd=getNeedDefinition(event);
-		final long dailyConsumption=getDailyConsumption(nd);
-		log("\t need activation: "+nd.getName());
-		int saturation=getState().getSaturation(nd)+(int) getState().getStock(nd).consume();
-		if (saturation>=0) {
-			saturation-=nd.getActivationDays()*dailyConsumption;
-			getState().setSaturation(nd,saturation);
-			enqueueEvent(nd.getEvent(),time.add(Time.days(nd.getActivationDays())));
-		} else { // saturation is negative 
-			saturation-=dailyConsumption;
-			getState().setSaturation(nd,saturation);
-			enqueueEvent(nd.getEvent(),time.add(Time.DAY));
-		}
-		if (-saturation/dailyConsumption>=nd.getFrustrationDays()) startRegression(nd);
-		else sendDemand(nd,-saturation,calcPricing(nd,time));
+		final Need need=mapEvent2Need(event);
+		final int nl=getState().getNeedLevel(need);
+		final int al=getActivationLevel(need);
+
+		if (nl==0) { // normal cycle, need fully satisfied
+			getState().setNeedLevel(need,al);
+			enqueueEvent(need.getEvent(),time.add(Time.DAY.getTicks()*need.getActivationDays()));
+		} 
+		else if (nl<getActivationLevel(need)) { // normal cycle, need partially satisfied
+			getState().setNeedLevel(need,al);			
+			enqueueEvent(need.getEvent(),time.add(((al-nl)*Time.DAY.getTicks()*need.getActivationDays())/al));
+		} 
+		else if (nl<=getFrustrationLevel(need)) { // frustration phase
+			getState().increaseNeedLevel(need,getConsumption(need,1));	// increase by consumption of one day
+			enqueueEvent(need.getEvent(),time.add(Time.DAY.getTicks()));// try again the next day
+		} 
+		else { // regression
+			// modify urgency level
+		} 
+		sendDemand(need,getState().getNeedLevel(need),calcPricing(need,time));
 	}
+
+	private int getFrustrationLevel(Need need) { return getConsumption(need,need.getActivationDays()+need.getFrustrationDays()); }
+
+	private int getActivationLevel(Need need) { return getConsumption(need,need.getActivationDays()); }
 
 	/**
 	 * @param nd
 	 */
-	private void startRegression(NeedDefinition nd) { // TODO Auto-generated method stub
+	private void startRegression(Need nd) { // TODO Auto-generated method stub
 		log("\t Regression called.");
 		/*
 		 * existential: death basic: regression to existential luxury: regression to
@@ -118,8 +123,8 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 		if (msg.getContent().getClass()==Demand.class) {
 			final Demand<Good> demand=msg.getContent();
 			final Batch batch=(Batch) demand.getItem();
-			if (batch!=null) log("got "+batch.getQuantity()+" U of "+batch.getType().getName());
-			if (batch!=null) getState().addToStock(batch.getType(),batch); // add delivery to stock
+			if (batch!=null) // reduce need level by consumption
+				getState().decreaseNeedLevel(mapConsumable2Need(batch.getType()),(int) batch.consume());
 			getState().getMoney().merge(demand.getMoney()); // take back change money
 			demand.setItem(null); 							// item used, prevent memory leak
 		} else throw new UnhandledMessageType(msg,this);
@@ -134,20 +139,18 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	 * 
 	 * @return the current demand price
 	 */
-	private double calcPricing(NeedDefinition nd, Time time) {
-		final double dailyConsumption=getDailyConsumption(nd);
+	private double calcPricing(Need nd, Time time) {
 		// calc expected price as monthly budget divided by monthly consumption
-		final double expectedPrice=getState().getBudget(nd)/(dailyConsumption*Time.DAYS_PER_MONTH);
+		final double expectedPrice=(double) getState().getBudget(nd)/getConsumption(nd,Time.DAYS_PER_MONTH);
 		// calc urgency factor as remaining consumption divided by consumption per activation period
-		final double consumption=dailyConsumption*nd.getActivationDays();
-		final double eUrg=(consumption-getState().getSaturation(nd))/consumption;
+		final double eUrg=(double) getState().getNeedLevel(nd)/getConsumption(nd,nd.getActivationDays());
 		// calc internal security factor as ratio of remaining money vs. remaining time
-		final double moneyRatio=((double) getState().getMoney().getValue())/getState().getTotalBudget();
+		final double moneyRatio=(double) getState().getMoney().getValue()/getState().getTotalBudget();
 		final double remainingTicks=(getState().getBudgetPeriodStart().getTicks()+Time.TICKS_PER_MONTH-time.getTicks());
 		final double timeRatio=remainingTicks/Time.TICKS_PER_MONTH;
 		final double eInt=moneyRatio/timeRatio;
 		// set external security factor as economic growth forecast
-		final double eExt=1;
+		final double eExt=Model.getInstance().getEconomicGrowth();
 		// set personal security factor to an individual constant representing the agent's personality trait
 		final double ePers=getState().getExtraversion(); // [0.5;1.5]
 		// calc modifying factor as geometric mean of the four factors above
@@ -159,24 +162,21 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 	 * Plans budget for a one month period
 	 */
 	private void planBudget(Time time) {
-		log("\t plan budget");
 		getState().setBudgetPeriodStart(time);
 		long total=getState().getMoney().getValue();
 		getState().setTotalBudget(total);
 		for (URGENCY urgency : URGENCY.values()) { // traverse need hierarchy from bottom to top
-			for (NeedDefinition nd : getUrgencySet(urgency)) { // traverse all needs of a level
+			for (Need need : getUrgencySet(urgency)) { // traverse all needs of a level
 				if (total>0) {
-					int budget;
 					// calc with local market pricing
-					final double price=getDomain().getGoodsMarket().getMarketData(nd.getSatisfier()).getPrice();
-					log("Price="+price+" for "+nd.getSatisfier().getName());
-					if (price>0) budget=(int) (price*getMonthlyConsumption(nd));
+					final double price=getDomain().getGoodsMarket().getPrice(need.getSatisfier());
+					int budget=(int) (price*getConsumption(need,Time.DAYS_PER_MONTH));
 					// fall back: without a market price calc with equal budget share for all needs 
-					else budget=(int) (getState().getTotalBudget()/Model.getInstance().getNeedSet().size());
+					if (price<=0) budget=(int) (getState().getTotalBudget()/Model.getInstance().getNeeds().size());
 					if (total<budget) budget=(int) total; // adjust if out of budget 
 					total-=budget;
-					getState().setBudget(nd,budget);
-				} else getState().setBudget(nd,0);
+					getState().setBudget(need,budget);
+				} else getState().setBudget(need,0);
 			}
 		}
 		enqueueEvent(EVENT.planBudget,time.add(BUDGET_PERIOD));
@@ -184,19 +184,13 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 
 	private URGENCY getUrgency() { return URGENCY.values()[getState().getUrgencyLevel()]; }
 
-	private boolean isNeedDisabled(NeedDefinition nd) { return getState().getBudget(nd)==NEED_DISABLED; }
-
-	private void disableNeed(NeedDefinition nd) { getState().setBudget(nd,NEED_DISABLED); }
-
-	private int getDailyConsumption(NeedDefinition nd) {
-		return nd.getDailyConsumptionAdult()*getState().getAdults()
-				+nd.getDailyConsumptionChild()*getState().getChildren();
-	}
 	
-	private int getMonthlyConsumption(NeedDefinition nd) {
-		return getDailyConsumption(nd)*Time.DAYS_PER_MONTH;
-	}
-		
+	private int getConsumption(Need nd, int days) {
+		final int consumption=nd.getDailyConsumptionAdult()*getState().getAdults()
+				+nd.getDailyConsumptionChild()*getState().getChildren();
+		// if (nd.getType()==TYPE.FIXED) return consumption;
+		return consumption*days;
+	}		
 
 	@Override
 	public String getName() { return "Household"; }
@@ -216,54 +210,53 @@ public final class Household extends AbstractBasicAgent<HouseholdState, Househol
 
 	}
 
-	private static final int NEED_DISABLED=Integer.MIN_VALUE;
 	public static final int MAX_NEEDS=EVENT.activation_event_limit.ordinal();
 
 	/* map each urgency level to its corresponding subset of need definitions */
-	private static final EnumMap<URGENCY, Set<NeedDefinition>> mapUrgency2NeedDefinition=new EnumMap<>(URGENCY.class);
+	private static final EnumMap<URGENCY, Set<Need>> mappingUrgency2Need=new EnumMap<>(URGENCY.class);
 
 	/* map activation event to need definition */
-	private static final Map<EVENT, NeedDefinition> mapEvent2NeedDefinition=new EnumMap<>(EVENT.class);
+	private static final Map<EVENT, Need> mappingEvent2Need=new EnumMap<>(EVENT.class);
 
 	/* map satisficing good to corresponding need activation event */
-	private static final Map<Good, EVENT> mapSatisfier2Event=new IdentityHashMap<>();
+	private static final Map<Good, Need> mappingConsumable2Need=new IdentityHashMap<>();
 
 	/**
 	 * This method has to be called AFTER initializing the model context and BEFORT starting a simulation run.
 	 * 
 	 * @param needSet the actual set of needs
 	 */
-	public static void initNeedMap(Collection<NeedDefinition> needSet) {
+	public static void initNeedMap(Collection<Need> needSet) {
 		int index=0; // init mappings
-		mapUrgency2NeedDefinition.clear();
-		mapEvent2NeedDefinition.clear();
-		mapSatisfier2Event.clear();
-		for (URGENCY urgency : URGENCY.values()) mapUrgency2NeedDefinition.put(urgency,new HashSet<NeedDefinition>());
-		for (NeedDefinition nd : needSet) {
+		mappingUrgency2Need.clear();
+		mappingEvent2Need.clear();
+		mappingConsumable2Need.clear();
+		for (URGENCY urgency : URGENCY.values()) mappingUrgency2Need.put(urgency,new HashSet<Need>());
+		for (Need need : needSet) {
 			// map need urgency level
-			mapUrgency2NeedDefinition.get(nd.getUrgency()).add(nd);
+			mappingUrgency2Need.get(need.getUrgency()).add(need);
 			// bi-map activation event to need definition
 			final EVENT activation=EVENT.values()[index];
-			mapEvent2NeedDefinition.put(activation,nd);
-			nd.setEvent(activation);
+			mappingEvent2Need.put(activation,need);
+			need.setEvent(activation);
 			// map consumable to activation event
-			final Good satisfier=nd.getSatisfier();
-			if (mapSatisfier2Event.containsKey(satisfier)) throw new UniqueConstraintViolationException(
+			final Good satisfier=need.getSatisfier();
+			if (mappingConsumable2Need.containsKey(satisfier)) throw new UniqueConstraintViolationException(
 					satisfier.getName()+" is satfisfier for more than one need!");
-			mapSatisfier2Event.put(satisfier,activation);
+			mappingConsumable2Need.put(satisfier,need);
 			index++;
 			if (index>=MAX_NEEDS) throw new IndexOutOfBoundsException("Need set contains too many need definitions!");
 		}
 	}
 
-	Set<NeedDefinition> getUrgencySet(URGENCY urgency) { return mapUrgency2NeedDefinition.get(urgency); }
+	static Set<Need> getUrgencySet(URGENCY urgency) { return mappingUrgency2Need.get(urgency); }
 
-	private static EVENT getEvent(Good satisfier) {
-		return mapSatisfier2Event.get(satisfier);
+	private static Need mapConsumable2Need(Good good) {
+		return mappingConsumable2Need.get(good);
 	}
 
-	private static NeedDefinition getNeedDefinition(EVENT event) {
-		return mapEvent2NeedDefinition.get(event);
+	private static Need mapEvent2Need(EVENT event) {
+		return mappingEvent2Need.get(event);
 	}
 
 	private static boolean isNeedActivationEvent(EVENT event) {

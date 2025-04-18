@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.simnation.agents.household.NeedDefinition;
+import org.simnation.agents.household.Need;
 import org.simnation.context.Limits;
 import org.simnation.context.technology.ProductionTechnology.IProductionFunction;
 import org.simnation.zzz_old.GoodSet;
@@ -47,7 +47,7 @@ import jakarta.persistence.Transient;
  * <p>
  * Goods are made from precursors (production as transformation process). A good
  * that has no precursors is a <b>resource</b>. A good that satisfies a
- * {@link NeedDefinition} is a <b>consumable</b>. Thus, the value chain
+ * {@link Need} is a <b>consumable</b>. Thus, the value chain
  * resembles a production network with resources as <i>source</i> and
  * consumables as <i>sink</i> of the network.
  * <p>
@@ -69,7 +69,6 @@ import jakarta.persistence.Transient;
 @Entity
 public class Good {
 
-
 	public enum ResourceType {
 		INFINITE, LIMITED, POPULATION;
 	}
@@ -78,18 +77,17 @@ public class Good {
 	private String name; // name as primary key
 	private String unit;
 	private boolean service; // is it a service?
-	@Convert(converter=org.simnation.persistence.JPATimeConverter.class)
-	private Time depreciationTime=Time.ZERO; // depreciation or service availability time
+	@Convert(converter = org.simnation.persistence.JPATimeConverter.class)
+	private Time depreciationTime = Time.ZERO; // depreciation or service availability time
 
-	@OneToMany(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
-	@JoinColumn(name="PRECURSOR_FK")
-	//@ElementCollection
-	private List<Precursor> precursors=new ArrayList<>();
-	
-	//@Persistent(embeddedElement="true",defaultFetchGroup="true")
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "PRECURSOR_FK")
+	// @ElementCollection
+	private List<Precursor> precursors = new ArrayList<>();
+
+	// @Persistent(embeddedElement="true",defaultFetchGroup="true")
 	@Transient
 	private ProductionTechnology technology; // contains all technical specifications of this good
-
 
 	// raw material
 	// private RESOURCE_TYPE resourceType;
@@ -104,39 +102,31 @@ public class Good {
 	private double initialValue; // initial price
 
 	@Transient
-	private final List<Good> successorList=new ArrayList<>(); // links to the successors
+	private final List<Good> successorList = new ArrayList<>(); // links to the successors
 
 	@Transient
-	int hash=0; // caching the hash value
+	int hash = 0; // caching the hash value
 
 	public void addPrecursor(Good good, double value) {
-		assert getPrecursorCount()<Limits.MAX_PRECURSORS;
-		if (good!=null) {
-			precursors.add(new Precursor(good,value));
+		assert getPrecursorCount() < Limits.MAX_PRECURSORS;
+		if (good != null) {
+			precursors.add(new Precursor(good, value));
 			good.addSuccessor(this);
 		}
 	}
 
-	void addSuccessor(Good succ) {
-		successorList.add(succ);
-	}
+	void addSuccessor(Good succ) { successorList.add(succ); }
 
-	public void deletePrecursor(Good good) {
-		deletePrecursor(getPrecursorIndexOf(good));
-	}
+	public void deletePrecursor(Good good) { deletePrecursor(getPrecursorIndexOf(good)); }
 
 	public void deletePrecursor(int index) {
 		precursors.get(index).getGood().successorList.remove(this);
 		precursors.remove(index);
 	}
 
-	public void deleteSuccessor(Good good) {
-		successorList.remove(good);
-	}
+	public void deleteSuccessor(Good good) { successorList.remove(good); }
 
-	public void deleteSuccessor(int index) {
-		successorList.remove(index);
-	}
+	public void deleteSuccessor(int index) { successorList.remove(index); }
 
 	/**
 	 * Calculates the necessary output of this good to be generated per day
@@ -182,34 +172,31 @@ public class Good {
 
 	public String getName() { return name; }
 
-	public Precursor getPrecursor(Good good) {
-		return getPrecursors().get(getPrecursorIndexOf(good));
-	}
+	public Precursor getPrecursor(Good good) { return getPrecursors().get(getPrecursorIndexOf(good)); }
 
-	public Precursor getPrecursor(int index) {
-		return getPrecursors().get(index);
-	}
+	public Precursor getPrecursor(int index) { return getPrecursors().get(index); }
 
 	public List<Precursor> getPrecursors() { return precursors; }
 
 	public List<Good> getPrecursorGoods() {
-		final List<Good> result=new ArrayList<>(getPrecursorCount());
-		for (final Precursor prec : precursors) result.add(prec.getGood());
+		final List<Good> result = new ArrayList<>(getPrecursorCount());
+		for (final Precursor prec : precursors)
+			result.add(prec.getGood());
 		return result;
 	}
 
 	public Time getDepreciationTime() { return depreciationTime; }
 
 	int getPrecursorIndexOf(Good good) {
-		for (int i=0; i<getPrecursorCount(); i++) if (getPrecursors().get(i).getGood().equals(good)) return i;
+		for (int i = 0; i < getPrecursorCount(); i++)
+			if (getPrecursors().get(i).getGood().equals(good))
+				return i;
 		return -1;
 	}
 
 	public int getPrecursorCount() { return precursors.size(); }
 
-	public Good getSuccessor(int index) {
-		return successorList.get(index);
-	}
+	public Good getSuccessor(int index) { return successorList.get(index); }
 
 	public List<Good> getSuccessors() { return Collections.unmodifiableList(successorList); }
 
@@ -219,9 +206,7 @@ public class Good {
 
 	public double getValue() { return initialValue; }
 
-	public boolean hasPrecursors() {
-		return !getPrecursors().isEmpty();
-	}
+	public boolean hasPrecursors() { return !getPrecursors().isEmpty(); }
 
 	public boolean isManufactured() { return hasPrecursors(); }
 
@@ -229,57 +214,50 @@ public class Good {
 
 	public boolean isService() { return service; }
 
-	void setDailyOutput(double value) { initialOutput=value; }
+	void setDailyOutput(double value) { initialOutput = value; }
 
-	public void setDepreciationTime(Time depreciationTime) { this.depreciationTime=depreciationTime; }
+	public void setDepreciationTime(Time depreciationTime) { this.depreciationTime = depreciationTime; }
 
-	public void setName(String value) { name=value; hash=name.hashCode(); }
+	public void setName(String value) { name = value; }
 
-	public void setPrecursor(int index, Precursor value) {
-		getPrecursors().set(index,value);
-	}
+	public void setPrecursor(int index, Precursor value) { getPrecursors().set(index, value); }
 
-	public void setPrecursorAlpha(Good good, double value) {
-		setPrecursorAlpha(getPrecursorIndexOf(good),value);
-	}
+	public void setPrecursorAlpha(Good good, double value) { setPrecursorAlpha(getPrecursorIndexOf(good), value); }
 
-	public void setPrecursorAlpha(int index, double value) {
-		getPrecursor(index).setAlpha(value);
-	}
+	public void setPrecursorAlpha(int index, double value) { getPrecursor(index).setAlpha(value); }
 
-	public void setPrecursors(List<Precursor> precursors) { this.precursors=precursors; }
+	public void setPrecursors(List<Precursor> precursors) { this.precursors = precursors; }
 
-	void setOutputValue(double v) { initialValue=v; }
+	void setOutputValue(double v) { initialValue = v; }
 
-	public void setProductionTechnology(ProductionTechnology value) { technology=value; }
+	public void setProductionTechnology(ProductionTechnology value) { technology = value; }
 
-	public void setService(boolean value) { service=value; }
+	public void setService(boolean value) { service = value; }
 
-	public void setUnit(String value) { unit=value; }
+	public void setUnit(String value) { unit = value; }
 
 	// unties good from its connections to others good in chain
 	public void untie() {
-		for (final Precursor precursor : getPrecursors()) precursor.getGood().successorList.remove(this);
-		for (final Good successor : successorList) successor.deletePrecursor(this);
+		for (final Precursor precursor : getPrecursors())
+			precursor.getGood().successorList.remove(this);
+		for (final Good successor : successorList)
+			successor.deletePrecursor(this);
 	}
 
 	@Override
 	public int hashCode() {
+		if (hash == 0) hash = name.hashCode() + 37;
 		return hash;
 	}
 
 	@Override
-	public String toString() {
-		return name;
-	}
+	public String toString() { return name; }
 
 	@Override
 	public boolean equals(Object that) {
-		return this==that;
-		/*
-		 * if (this==that) return true; if (that==null||!(that instanceof Good)) return
-		 * false; return name.equals(((Good) that).name);
-		 */
+		if (this == that) return true;
+		if (that == null || !(that instanceof Good)) return false;
+		return name.equals(((Good) that).name);
 	}
 
 }

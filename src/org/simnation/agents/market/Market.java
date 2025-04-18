@@ -13,6 +13,7 @@ import java.util.Set;
 import org.simnation.agents.AbstractBasicAgent;
 import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
+import org.simnation.context.technology.Good;
 import org.simplesim.core.messaging.RoutingMessage;
 import org.simplesim.core.scheduling.Time;
 
@@ -74,8 +75,8 @@ public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Marke
 
 	private void doMarketClearing() {
 		for (T segment : marketSegments) {
-			final List<Demand<T>> demandList=getState().getDemandList(segment);
-			final List<Supply<T>> supplyList=getState().getSupplyList(segment);
+			final List<Demand<T>> demandList=getState().getDemand(segment);
+			final List<Supply<T>> supplyList=getState().getSupply(segment);
 			log("\tsupply list size="+supplyList.size());
 			log("\tdemand list size="+demandList.size());
 			final PriceVolumeDataPoint pvd=strategy.doMarketClearing(this,demandList,supplyList);
@@ -93,11 +94,11 @@ public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Marke
 	}
 
 	private void addDemand(Demand<T> demand) {
-		getState().getDemandList(demand.getMarketSegment()).add(demand);
+		getState().getDemand(demand.getMarketSegment()).add(demand);
 	}
 
 	private void addSupply(Supply<T> supply) {
-		getState().getSupplyList(supply.getMarketSegment()).add(supply);
+		getState().getSupply(supply.getMarketSegment()).add(supply);
 	}
 
 	/**
@@ -110,7 +111,7 @@ public abstract class Market<T> extends AbstractBasicAgent<MarketState<T>, Marke
 	 * @return the actual trading volume (may be less than amount)
 	 */
 	abstract long trade(Demand<T> d, Supply<T> s, long amount, double price);
-
-	public MarketStrategy<T> getStrategy() { return strategy; }
+	
+	public double getPrice(T segment) { return getState().getMarketData(segment).getPrice(); }
 
 }

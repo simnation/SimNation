@@ -44,7 +44,7 @@ public final class GoodsMarketB2C extends Market<Good> {
 		supply.getMoney().merge(demand.getMoney().split(cost));
 		return quantity;
 	}
-
+	
 	@Override
 	public String getName() { return "GoodsMarketB2C"; }
 

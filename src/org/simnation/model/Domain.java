@@ -12,7 +12,8 @@ package org.simnation.model;
 
 
 import org.simnation.agents.market.GoodsMarketB2C;
-import org.simnation.context.geography.RegionData;
+import org.simnation.context.geography.Region;
+import org.simplesim.model.BasicModelEntity;
 import org.simplesim.model.RoutingDomain;
 
 
@@ -28,13 +29,13 @@ import org.simplesim.model.RoutingDomain;
  * <li> firms
  * </ul>
  */
-public final class Region extends RoutingDomain {
+public final class Domain extends RoutingDomain {
 
-	private final RegionData region; // the region represented by this domain
+	private final Region region; // the region represented by this domain
 	private final GoodsMarketB2C goodsMarket;
 	//private final LaborMarket lm;
 	
-	public Region(RegionData r,GoodsMarketB2C gm) {
+	public Domain(Region r,GoodsMarketB2C gm) {
 		super();
 		region=r;
 		goodsMarket=gm;
@@ -43,7 +44,7 @@ public final class Region extends RoutingDomain {
 
 	public GoodsMarketB2C getGoodsMarket() { return goodsMarket; }
 
-	public RegionData getRegion() { return region; }
+	public Region getRegion() { return region; }
 	
 	/**
 	 * Returns the index of this domain.
@@ -51,7 +52,7 @@ public final class Region extends RoutingDomain {
 	 * @return index of this domain within the first level of the model tree 
 	 */
 	public int getDomainIndex() {
-		return getDomainIndex(getAddress());
+		return getDomainIndex(this);
 	}
 	
 	/**
@@ -60,8 +61,8 @@ public final class Region extends RoutingDomain {
 	 * @param addr the address
 	 * @return domain index of the entity with the given address within the model tree 
 	 */
-	public static int getDomainIndex(int[] addr) {
-		return addr[0];
+	public static int getDomainIndex(BasicModelEntity entity) {
+		return entity.getAddress()[0];
 	}
 	
 	public String getName() {

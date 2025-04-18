@@ -10,11 +10,8 @@
  */
 package org.simnation.agents.household;
 
-import java.util.Random;
-
 import org.simnation.agents.business.Money;
-import org.simnation.context.geography.RegionData;
-import org.simnation.model.Model;
+import org.simnation.context.geography.Region;
 import org.simnation.persistence.DataTransferObject;
 
 import jakarta.persistence.Entity;
@@ -32,34 +29,37 @@ import jakarta.persistence.OneToOne;
  *
  */
 @Entity
-public class HouseholdDBS implements DataTransferObject<HouseholdState> {
-	
+public class HouseholdDTO implements DataTransferObject<HouseholdState> {
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private int index;
 
 	@OneToOne
 	@JoinColumn(name="REGION_FK")
-	private RegionData region=null; // the household's parent region
+	private Region region=null; // the household's parent region
 	private int adults, children;
 	private long cash;
 	private float extraversion; // the households affinity to risk, [safe;risky] --> [0.5;1.5]
 
-	private int needSatisfaction[]; // initial need satisfaction
+	private float needLevel[]; // initial degree of need satisfaction [0;1]
 
+	
 	@Override
-	public void convertToDBS(HouseholdState state) { // TODO Auto-generated method stub
-	}
-
-	@Override
-	public HouseholdState convertToState(HouseholdState state) {
+	public void convertToState(HouseholdState state) {
 		state.adults=getAdults();
 		state.children=getChildren();
-		state.urgencyLevel=0;
 		state.money=new Money(getCash());
 		state.extraversion=getExtraversion();
-		return state;
 	}
+	
+	@Override
+	public void convertToDTO(HouseholdState state) { 
+		adults=state.getAdults();
+		children=state.getChildren();
+		cash=state.getMoney().getValue();
+		extraversion=state.getExtraversion();
+	 }
 
 	public Money getMoney() { return new Money(cash); }
 
@@ -67,17 +67,17 @@ public class HouseholdDBS implements DataTransferObject<HouseholdState> {
 
 	public void setCash(long cash) { this.cash=cash; }
 
-	public void setNeedSatisfaction(int[] value) { needSatisfaction=value; }
+	public void setNeedLevel(float[] value) { needLevel=value; }
 
-	public void setNeedSatisfaction(int index, int value) { needSatisfaction[index]=value; }
+	public void setNeedLevel(int index, float value) { needLevel[index]=value; }
 
-	public int[] getNeedSatisfaction() { return needSatisfaction; }
+	public float[] getNeedLevel() { return needLevel; }
 
-	public int getNeedSatisfaction(int index) { return needSatisfaction[index]; }
+	public float getNeedLevel(int index) { return needLevel[index]; }
 
-	public RegionData getRegion() { return region; }
+	public Region getRegion() { return region; }
 
-	public void setRegion(RegionData region) { this.region=region; }
+	public void setRegion(Region region) { this.region=region; }
 
 	public int getAdults() { return adults; }
 
@@ -86,11 +86,11 @@ public class HouseholdDBS implements DataTransferObject<HouseholdState> {
 	public int getChildren() { return children; }
 
 	public void setChildren(int children) { this.children=children; }
-	
+
 	public int getIndex() { return index; }
 
 	public void setIndex(int index) { this.index=index; }
-	
+
 	public float getExtraversion() { return extraversion; }
 
 	public void setExtraversion(float extraversion) { this.extraversion=extraversion; }

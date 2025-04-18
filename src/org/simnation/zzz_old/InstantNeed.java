@@ -10,7 +10,7 @@
  */
 package org.simnation.zzz_old;
 
-import org.simnation.agents.household.NeedDefinition;
+import org.simnation.agents.household.Need;
 import org.simnation.common.Batch;
 import org.simplesim.core.scheduling.Time;
 
@@ -45,7 +45,7 @@ public final class InstantNeed implements NeedState {
 	}
 
 	@Override
-	public void satisfice(NeedDefinition nd, long dailyConsumption, Batch batch) {
+	public void satisfice(Need nd, long dailyConsumption, Batch batch) {
 		long deltaT=(batch.consume()*Time.TICKS_PER_DAY)/dailyConsumption;
 		activationTime=activationTime.add(deltaT);
 	}

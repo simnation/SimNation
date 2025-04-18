@@ -103,7 +103,7 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 			// estimate delivery volume as average sales volume plus standard deviation
 			double quantity=statistics.getAVG()+Math.sqrt(statistics.getVAR());
 			// if there are no statistics yet, deliver an equal share of the current stock to each market
-			if (quantity==0) quantity=getState().getStorage().getStockLevel()/Model.getInstance().getRegionSet().size();
+			if (quantity==0) quantity=getState().getStorage().getStockLevel()/Model.getInstance().getRegions().size();
 			final Batch batch=getState().getStorage().removeFromStock((long) quantity);
 			// supply price is the actual value plus a margin (cost plus approach)
 			final double price=batch.getPrice()*getState().getMargin();

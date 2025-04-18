@@ -5,7 +5,7 @@
  */
 package org.simnation.agents;
 
-import org.simnation.model.Region;
+import org.simnation.model.Domain;
 import org.simplesim.core.messaging.RoutingMessage;
 import org.simplesim.core.scheduling.HeapEventQueue;
 import org.simplesim.core.scheduling.Time;
@@ -44,7 +44,7 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 	}
 
 	public AbstractBasicAgent(S state) {
-		super(new HeapEventQueue<E>(),state);
+		super(new HeapEventQueue<>(),state);
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 	 * @param src     sender of the message
 	 * @param dst     receiver of the message
 	 * @param content the content of the message
-	 * 
+	 *
 	 */
 	protected final void sendMessage(int[] src, int[] dst, Object content) {
 		sendMessage(new RoutingMessage(src,dst,content));
@@ -104,16 +104,16 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 	public void enqueueEvent(E event, Time time) {
 		getEventQueue().enqueue(event,time);
 	}
-	
-	public Region getDomain() { return (Region) getParent(); }
-	
+
+	public Domain getDomain() { return (Domain) getParent(); }
+
 	/**
 	 * Returns the index of this agent's domain.
-	 * 
+	 *
 	 * @return index of the domain this agent resides in
 	 */
 	public int getDomainIndex() {
-		return Region.getDomainIndex(getAddress());
+		return Domain.getDomainIndex(this);
 	}
 
 }

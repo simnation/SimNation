@@ -15,12 +15,11 @@ import java.util.Random;
 import java.util.Set;
 
 import org.simnation.agents.firm.trader.TraderDBS;
-import org.simnation.agents.household.HouseholdDBS;
-import org.simnation.agents.household.NeedDefinition;
-import org.simnation.agents.household.NeedDefinition.DURATION;
-import org.simnation.agents.household.NeedDefinition.INCIDENCE;
-import org.simnation.agents.household.NeedDefinition.URGENCY;
-import org.simnation.context.geography.RegionData;
+import org.simnation.agents.household.HouseholdDTO;
+import org.simnation.agents.household.Need;
+import org.simnation.agents.household.Need.INCIDENCE;
+import org.simnation.agents.household.Need.URGENCY;
+import org.simnation.context.geography.Region;
 import org.simnation.context.technology.Good;
 import org.simnation.model.Model;
 import org.simnation.persistence.DataAccessObject;
@@ -30,15 +29,15 @@ import org.simnation.persistence.DataAccessObject;
  */
 public class InitDatabase {
 
-	private final Set<NeedDefinition> needs=new HashSet<>();
+	private final Set<Need> needs=new HashSet<>();
 	private final Set<Good> goods=new HashSet<>();
-	private final Set<RegionData> regions=new HashSet<>();
-	private final Set<HouseholdDBS> households=new HashSet<>();
+	private final Set<Region> regions=new HashSet<>();
+	private final Set<HouseholdDTO> households=new HashSet<>();
 	private final Set<TraderDBS> traders=new HashSet<>();
 
 	private Good pizza;
-	private NeedDefinition nutrition;
-	private RegionData domain;
+	private Need nutrition;
+	private Region domain;
 
 	public static void main(String[] args) throws Exception {
 		final DataAccessObject dao=new DataAccessObject("Scenario");
@@ -66,8 +65,8 @@ public class InitDatabase {
 		}
 	}
 
-	private HouseholdDBS generateHousehold() {
-		HouseholdDBS hh=new HouseholdDBS();
+	private HouseholdDTO generateHousehold() {
+		HouseholdDTO hh=new HouseholdDTO();
 		hh.setRegion(domain);
 		hh.setAdults(2);
 		hh.setChildren(3);
@@ -89,7 +88,7 @@ public class InitDatabase {
 	}
 
 	private void populateRegionSet() {
-		domain=new RegionData();
+		domain=new Region();
 		domain.setName("Bavaria");
 		domain.setCity("Munich");
 		domain.setArea(10.24d);
@@ -125,7 +124,7 @@ public class InitDatabase {
 	 * @return
 	 */
 	private void populateNeedSet() {
-		nutrition=new NeedDefinition();
+		nutrition=new Need();
 		nutrition.setName("Nutrition");
 		nutrition.setActivationDays(7);
 		nutrition.setDailyConsumptionAdult(2);
@@ -133,7 +132,6 @@ public class InitDatabase {
 		nutrition.setFrustrationDays(10);
 		nutrition.setIncidence(INCIDENCE.CONTINUOUSLY);
 		nutrition.setUrgency(URGENCY.EXISTENTIAL);
-		nutrition.setDuration(DURATION.INSTANTLY);
 		needs.add(nutrition);
 	}
 	/*

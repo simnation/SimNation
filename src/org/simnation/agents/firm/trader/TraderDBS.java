@@ -6,7 +6,7 @@ import java.util.Random;
 import org.simnation.agents.business.Money;
 import org.simnation.agents.firm.common.Storage;
 import org.simnation.common.Batch;
-import org.simnation.context.geography.RegionData;
+import org.simnation.context.geography.Region;
 import org.simnation.context.technology.Good;
 import org.simnation.persistence.DataTransferObject;
 
@@ -26,7 +26,7 @@ public class TraderDBS implements DataTransferObject<TraderState> {
 
 	@OneToOne
 	@JoinColumn(name="Region_FK")
-	private RegionData region;
+	private Region region;
 	
 	@OneToOne
 	@JoinColumn(name="Good_FK")
@@ -37,9 +37,9 @@ public class TraderDBS implements DataTransferObject<TraderState> {
 	private long stockQuantity;
 	private long cash;
 
-	public RegionData getRegion() { return region; }
+	public Region getRegion() { return region; }
 
-	public void setRegion(RegionData value) { region=value; }
+	public void setRegion(Region value) { region=value; }
 
 	public long getCash() { return cash; }
 
@@ -80,7 +80,7 @@ public class TraderDBS implements DataTransferObject<TraderState> {
 	public void setIndex(int index) { this.index=index; }
 
 	@Override
-	public void generateDBS(RegionData region, Random rnd) { // TODO Auto-generated method stub
+	public void generateDBS(Region region, Random rnd) { // TODO Auto-generated method stub
 	 }
 
 }

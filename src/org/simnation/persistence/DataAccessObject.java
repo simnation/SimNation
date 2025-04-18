@@ -3,7 +3,7 @@ package org.simnation.persistence;
 import java.util.Collection;
 import java.util.List;
 
-import org.simnation.context.geography.RegionData;
+import org.simnation.context.geography.Region;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
@@ -63,7 +63,7 @@ public final class DataAccessObject {
 	 * @return list of objects from persistence storage
 	 * @throws Exception JPA or IO exception
 	 */
-	public <T> List<T> load(Class<T> clazz, RegionData region) throws Exception {
+	public <T> List<T> load(Class<T> clazz, Region region) throws Exception {
 		final CriteriaBuilder cb=pm.getCriteriaBuilder();
 		final CriteriaQuery<T> cq=cb.createQuery(clazz);
 		final Root<T> root=cq.from(clazz);
