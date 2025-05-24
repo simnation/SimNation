@@ -8,7 +8,7 @@
  * 	- Rene Kuhlemann - development and initial implementation
  * 
  */
-package org.simnation.common.statistics;
+package org.simnation.common;
 
 import org.simnation.context.Limits;
 
@@ -24,21 +24,23 @@ import org.simnation.context.Limits;
  *       <i>Incremental calculation of weighted mean and variance</i> by Tony Finch (2009)</a>
  * 
  */
-public final class ExponentialSmoothingStatistics implements Statistics {
+public final class Statistics {
 
 	private volatile double average;	// weighted average 
 	private volatile double variance;	// weighted variance
 	private volatile double lastValue;	// last value of this time series
-	private final float alpha;	// exponential smoothing factor, has to be between 0 and 1.
+	private static final float alpha=Limits.DEFAULT_SMOOTHING_FACTOR;	// exponential smoothing factor, has to be between 0 and 1.
 	
-	public ExponentialSmoothingStatistics(float esf) { 	
-		reset(0);
-		alpha=esf; 
+	public Statistics(double avg, double var) { 	
+		reset(avg,var);
 	}
 	
-	public ExponentialSmoothingStatistics() { this(Limits.DEFAULT_SMOOTHING_FACTOR); }
+	public Statistics(double avg) { 	
+		reset(avg,0);
+	}
 	
-	@Override
+	public Statistics() { this(0,0); }
+	
 	public void update(double value) {
 		final double diff=value-average;
 		final double incr=alpha*diff;
@@ -47,24 +49,21 @@ public final class ExponentialSmoothingStatistics implements Statistics {
 		lastValue=value;
 	}
 
-	@Override
-	public void reset(double avg) {
+	public void reset(double avg, double var) {
 		average=lastValue=avg;
-		variance=0;
+		variance=var;
 	}
 	
-	@Override
 	public double getLastValue() { return lastValue; }
 
-	@Override
 	public double getAVG() { return average; }
 
-	@Override
 	public double getVAR() { return variance; }
+	
+	public double getSTD() { return Math.sqrt(variance); }
 
 	public float getSmoothingFactor() { return alpha; }
 
-	@Override
 	public String toString() {
 		return "[avg="+average+", std="+Math.sqrt(variance)+"]";
 	}

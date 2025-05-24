@@ -5,8 +5,7 @@
  */
 package org.simnation.agents.market;
 
-import org.simnation.common.statistics.ExponentialSmoothingStatistics;
-import org.simnation.common.statistics.Statistics;
+import org.simnation.common.Statistics;
 
 /**
  * Class for providing general market information.
@@ -19,8 +18,8 @@ import org.simnation.common.statistics.Statistics;
  */
 public final class MarketData {
 	
-	private final Statistics price=new ExponentialSmoothingStatistics();
-	private final Statistics volume=new ExponentialSmoothingStatistics();
+	private final Statistics price=new Statistics();
+	private final Statistics volume=new Statistics();
 	
 	
 	public double getPrice() { return price.getAVG(); }
@@ -50,9 +49,9 @@ public final class MarketData {
 		volume.update(v); 
 	}
 	
-	void reset(double p, double v) {
-		price.reset(p);;
-		volume.reset(v);
+	void setValues(PriceVolumeDataPoint pvdp) {
+		price.reset(pvdp.getPriceAVG(),pvdp.getPriceVAR());
+		volume.reset(pvdp.getVolumeAVG(),pvdp.getVolumeVAR());
 	}
 
 }

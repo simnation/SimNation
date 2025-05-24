@@ -46,7 +46,7 @@ public class HouseholdDTO implements DataTransferObject<HouseholdState> {
 
 	
 	@Override
-	public void convertToState(HouseholdState state) {
+	public void convertDTO2State(HouseholdState state) {
 		state.adults=getAdults();
 		state.children=getChildren();
 		state.money=new Money(getCash());
@@ -54,7 +54,7 @@ public class HouseholdDTO implements DataTransferObject<HouseholdState> {
 	}
 	
 	@Override
-	public void convertToDTO(HouseholdState state) { 
+	public void convertState2DTO(HouseholdState state) { 
 		adults=state.getAdults();
 		children=state.getChildren();
 		cash=state.getMoney().getValue();

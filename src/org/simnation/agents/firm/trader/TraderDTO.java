@@ -1,8 +1,6 @@
 package org.simnation.agents.firm.trader;
 
 
-import java.util.Random;
-
 import org.simnation.agents.business.Money;
 import org.simnation.agents.firm.common.Storage;
 import org.simnation.common.Batch;
@@ -18,8 +16,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class TraderDBS implements DataTransferObject<TraderState> {
-	
+public class TraderDTO implements DataTransferObject<TraderState> {
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private int index;
@@ -27,11 +25,11 @@ public class TraderDBS implements DataTransferObject<TraderState> {
 	@OneToOne
 	@JoinColumn(name="Region_FK")
 	private Region region;
-	
+
 	@OneToOne
 	@JoinColumn(name="Good_FK")
 	private Good good;
-	
+
 	private long stockValue;
 	private float stockQuality;
 	private long stockQuantity;
@@ -45,18 +43,14 @@ public class TraderDBS implements DataTransferObject<TraderState> {
 
 	public void setCash(long value) { cash=value; }
 
-	@Override
-	public void convertToDBS(TraderState state) { // TODO Auto-generated method stub
-	}
 
 	@Override
-	public TraderState convertToState(TraderState state) {
+	public void convertDTO2State(TraderState state) {
 		state.money=new Money(getCash());
 		state.storage=new Storage(getGood());
 		state.getStorage().addToStock(new Batch(getGood(),getStock(),getValue(),getQuality()));
 		state.setMargin(1.2f); // 20% margin
 		state.setServiceLevel(0.95f); // 95% service level
-		return state;
 	}
 
 	public long getStock() { return stockQuantity; }
@@ -74,13 +68,14 @@ public class TraderDBS implements DataTransferObject<TraderState> {
 	public long getValue() { return stockValue; }
 
 	public void setValue(long value) { this.stockValue=value; }
-	
+
 	public int getIndex() { return index; }
 
 	public void setIndex(int index) { this.index=index; }
 
+
 	@Override
-	public void generateDBS(Region region, Random rnd) { // TODO Auto-generated method stub
+	public void convertState2DTO(TraderState state) { // TODO Auto-generated method stub
 	 }
 
 }

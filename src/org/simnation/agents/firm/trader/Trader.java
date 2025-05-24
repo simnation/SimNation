@@ -18,8 +18,7 @@ import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
 import org.simnation.agents.market.GoodsMarketB2C;
 import org.simnation.common.Batch;
-import org.simnation.common.statistics.ExponentialSmoothingStatistics;
-import org.simnation.common.statistics.Statistics;
+import org.simnation.common.Statistics;
 import org.simnation.context.technology.Good;
 import org.simnation.model.Model;
 import org.simplesim.core.messaging.RoutingMessage;
@@ -50,12 +49,12 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 	private final Map<int[], Statistics> salesVolume=new HashMap<>();
 	private final Map<int[], Statistics> salesTurnover=new HashMap<>();
 
-	public Trader(TraderDBS dbs) {
+	public Trader(TraderDTO dbs) {
 		super(new TraderState());
-		dbs.convertToState(getState());
+		dbs.convertDTO2State(getState());
 		for (GoodsMarketB2C market : Model.getInstance().getB2CMarketSet()) {
-			salesVolume.put(market.getAddress(),new ExponentialSmoothingStatistics());
-			salesTurnover.put(market.getAddress(),new ExponentialSmoothingStatistics());
+			salesVolume.put(market.getAddress(),new Statistics());
+			salesTurnover.put(market.getAddress(),new Statistics());
 		}
 		enqueueEvent(EVENT.supplyMarket,TRADER_OFFSET); // start simulation with posting offers to market
 	}

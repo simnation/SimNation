@@ -68,14 +68,14 @@ public class Need {
 	 * individual dies eventually
 	 * <li>BASIC: basic needs are not existential but crucial to be pursued after
 	 * existence needs have been met
-	 * <li>CONVENIENCE: needs that add to the overall content level of an individual
-	 * <li>LUXURY: surplus needs addressing an individual's social status
+	 * <li>COMFORTABLE: needs that add to the overall content level of an individual
+	 * <li>SELF_ACTUALIZATION: surplus needs addressing an individual's social status
 	 * </ul>
 	 * Needs are organized as a hierarchy where a new level can only be reached if
 	 * <u>all</u> needs of the lower hierarchy level are satisfied (according to the
 	 * theories by Maslow/Alderfer).
 	 */
-	public enum URGENCY {	EXISTENTIAL, BASIC, CONVENIENCE, LUXURY; }
+	public enum URGENCY {	EXISTENTIAL, BASIC, COMFORTABLE, SELF_ACTUALIZATION; }
 	
 	public enum TYPE {	FIXED, LINEAR; }
 	

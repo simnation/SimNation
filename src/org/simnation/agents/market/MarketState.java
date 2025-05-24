@@ -1,12 +1,12 @@
 /*
- * SimNation is a multi-agent model to simulate economic systems. It is scalable 
+ * SimNation is a multi-agent model to simulate economic systems. It is scalable
  * and used JSimpleSim as technical backbone for concurrent discrete event simulation.
- * 
+ *
  * This software is published as open source and licensed under GNU GPLv3.
- * 
+ *
  * Contributors:
  * 	- Rene Kuhlemann - development and initial implementation
- * 
+ *
  */
 package org.simnation.agents.market;
 
@@ -23,7 +23,7 @@ import org.simplesim.model.State;
 
 /**
  * Basic market state contains all general data all markets have
- * 
+ *
  * @param <T> - type characterizing market segments, e.g. Good, SkillSet
  */
 
@@ -34,13 +34,19 @@ public class MarketState<T> implements State {
 
 	private final Map<T, MarketData> statistics = new IdentityHashMap<>();
 
-	public MarketState(Set<T> segmentList) {
-		for (T segment : segmentList) {
-			demandMap.put(segment, new ArrayList<Demand<T>>());
-			supplyMap.put(segment, new ArrayList<Supply<T>>());
-			statistics.put(segment, new MarketData());
+	public MarketState(Set<T> segmentSet) {
+		for (T segment : segmentSet) {
+			demandMap.put(segment, new ArrayList<>());
+			supplyMap.put(segment, new ArrayList<>());
+			statistics.put(segment,new MarketData());
 		}
 	}
+
+	void setMarketData(T segment, PriceVolumeDataPoint pvdp) {
+		statistics.get(segment).setValues(pvdp);
+	}
+	
+	Set<T> getMarketSegments() { return statistics.keySet(); }
 
 	MarketData getMarketData(T segment) { return statistics.get(segment); }
 

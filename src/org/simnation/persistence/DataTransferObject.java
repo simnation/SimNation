@@ -17,8 +17,8 @@ import org.simplesim.model.State;
  */
 public interface DataTransferObject<S extends State> {
 	
-	void convertToState(S state);
+	void convertDTO2State(S state);
 	
-	void convertToDTO(S state);
+	void convertState2DTO(S state);
 
 }

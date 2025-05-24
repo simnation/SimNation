@@ -16,22 +16,15 @@ import java.util.List;
 
 import org.simnation.agents.household.Need;
 import org.simnation.context.Limits;
-import org.simnation.context.technology.ProductionTechnology.IProductionFunction;
-import org.simnation.zzz_old.GoodSet;
 import org.simplesim.core.scheduling.Time;
 
-import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Convert;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Transient;
 
 /**

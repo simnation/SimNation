@@ -10,15 +10,19 @@
  */
 package org.simnation.main;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import org.simnation.agents.firm.trader.TraderDBS;
+import org.simnation.agents.firm.trader.TraderDTO;
 import org.simnation.agents.household.HouseholdDTO;
 import org.simnation.agents.household.Need;
-import org.simnation.agents.household.Need.INCIDENCE;
+import org.simnation.agents.household.Need.TYPE;
 import org.simnation.agents.household.Need.URGENCY;
+import org.simnation.agents.market.GoodsMarketB2CDTO;
+import org.simnation.agents.market.PriceVolumeDataPoint;
 import org.simnation.context.geography.Region;
 import org.simnation.context.technology.Good;
 import org.simnation.model.Model;
@@ -33,7 +37,7 @@ public class InitDatabase {
 	private final Set<Good> goods=new HashSet<>();
 	private final Set<Region> regions=new HashSet<>();
 	private final Set<HouseholdDTO> households=new HashSet<>();
-	private final Set<TraderDBS> traders=new HashSet<>();
+	private final Set<TraderDTO> traders=new HashSet<>();
 
 	private Good pizza;
 	private Need nutrition;
@@ -76,8 +80,8 @@ public class InitDatabase {
 		return hh;
 	}
 
-	private TraderDBS generateTrader() {
-		TraderDBS tr=new TraderDBS();
+	private TraderDTO generateTrader() {
+		TraderDTO tr=new TraderDTO();
 		tr.setRegion(domain);
 		tr.setGood(pizza);
 		tr.setStock(5000);
@@ -85,6 +89,19 @@ public class InitDatabase {
 		tr.setQuality(0.43f);
 		tr.setCash(100000);
 		return tr;
+	}
+	
+	private GoodsMarketB2CDTO generateGoodsMarket() {
+		final GoodsMarketB2CDTO b2c= new GoodsMarketB2CDTO();
+		final PriceVolumeDataPoint pvdp=new PriceVolumeDataPoint();
+		pvdp.setPriceAVG(10);
+		pvdp.setPriceVAR(0);
+		pvdp.setVolumeAVG(100);
+		pvdp.setVolumeVAR(0);
+		Map<Good,PriceVolumeDataPoint> pvmap=new HashMap<>();
+		pvmap.put(pizza,pvdp);
+		b2c.setPriceVolumeMap(pvmap);
+		return b2c;
 	}
 
 	private void populateRegionSet() {
@@ -130,7 +147,7 @@ public class InitDatabase {
 		nutrition.setDailyConsumptionAdult(2);
 		nutrition.setDailyConsumptionChild(1);
 		nutrition.setFrustrationDays(10);
-		nutrition.setIncidence(INCIDENCE.CONTINUOUSLY);
+		nutrition.setType(TYPE.LINEAR);
 		nutrition.setUrgency(URGENCY.EXISTENTIAL);
 		needs.add(nutrition);
 	}

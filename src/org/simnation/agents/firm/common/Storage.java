@@ -11,8 +11,7 @@
 package org.simnation.agents.firm.common;
 
 import org.simnation.common.Batch;
-import org.simnation.common.statistics.ExponentialSmoothingStatistics;
-import org.simnation.common.statistics.Statistics;
+import org.simnation.common.Statistics;
 import org.simnation.context.technology.Good;
 
 /**
@@ -37,9 +36,9 @@ import org.simnation.context.technology.Good;
 public class Storage {
 
 	private final Batch batch;	// stored items
-	private final Statistics stat=new ExponentialSmoothingStatistics(); // statistics
-	private int orderCount=0;	// total requests
-	private int missCount=0; 	// out-of-stock requests
+	private final Statistics stat=new Statistics(); // statistics
+	private int orderCount=0;	// counter for total requests
+	private int missCount=0; 	// counter for out-of-stock requests
 	
 	public Storage(Good good) {
 		batch=new Batch(good);
@@ -72,7 +71,7 @@ public class Storage {
 	 */
 	public void addToStock(Batch item) {
 		if (!batch.isSameGoodAs(item))
-			throw new IllegalArgumentException("Storage.addToStock(): Tried to add a batch of a different good!");
+			throw new IllegalArgumentException("Storage.addToStock: Tried to add a batch of a different good!");
 		batch.merge(item);
 	}
 
@@ -115,7 +114,7 @@ public class Storage {
 	 * Resets all statistics and begin a new time series
 	 **/
 	public void reset() {
-		stat.reset();
+		stat.reset(0);
 		missCount=orderCount=0;
 	}
 

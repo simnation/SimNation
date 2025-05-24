@@ -11,6 +11,7 @@
 package org.simnation.agents.household;
 
 import org.simnation.agents.business.Money;
+import org.simnation.agents.household.Need.URGENCY;
 import org.simnation.model.Model;
 import org.simplesim.core.scheduling.Time;
 import org.simplesim.model.State;
@@ -19,7 +20,7 @@ public class HouseholdState implements State {
 
 	// set during initialization
 	int adults, children;
-	int urgencyLevel;
+	
 	Money money;
 	float extraversion;
 
@@ -28,6 +29,7 @@ public class HouseholdState implements State {
 	private long totalBudget;
 	private final int budget[]; // budgets per need
 	private final int needLevel[]; // saturation
+	private int urgencyLevel;
 
 
 	public HouseholdState() {

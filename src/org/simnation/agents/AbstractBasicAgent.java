@@ -49,7 +49,6 @@ public abstract class AbstractBasicAgent<S extends State, E extends Enum<E>> ext
 
 	@Override
 	public Time doEvent(Time time) {
-		log(time,"doEvent started");
 		// process messages
 		while (getInport().hasMessages()) handleMessage(getInport().poll());
 		// process events

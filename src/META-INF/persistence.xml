@@ -6,14 +6,17 @@
 
 	<persistence-unit name="Scenario" transaction-type="RESOURCE_LOCAL">
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-
+		<!-- basic persistent data types -->
 		<class>org.simnation.persistence.JPATimeConverter</class>
 		<class>org.simnation.context.geography.Region</class>
 		<class>org.simnation.context.technology.Good</class>
 		<class>org.simnation.context.technology.Precursor</class>
-		<class>org.simnation.agents.household.NeedDefinition</class>
-		<class>org.simnation.agents.household.HouseholdDBS</class>
-		<class>org.simnation.agents.firm.trader.TraderDBS</class>
+		<class>org.simnation.agents.household.Need</class>
+		<class>org.simnation.agents.market.PriceVolumeDataPoint</class>
+		<!-- data transfer objects for agents -->
+		<class>org.simnation.agents.market.GoodMarketB2CDTO</class>
+		<class>org.simnation.agents.household.HouseholdDTO</class>
+		<class>org.simnation.agents.firm.trader.TraderDTO</class>
 		<exclude-unlisted-classes />
 		<properties>
 			<property name="eclipselink.target-database" value="org.eclipse.persistence.platform.database.H2Platform"/>	

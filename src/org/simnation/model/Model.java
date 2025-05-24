@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.simnation.agents.firm.trader.Trader;
-import org.simnation.agents.firm.trader.TraderDBS;
+import org.simnation.agents.firm.trader.TraderDTO;
 import org.simnation.agents.household.Household;
 import org.simnation.agents.household.HouseholdDTO;
 import org.simnation.agents.household.Need;
@@ -107,7 +107,7 @@ public final class Model extends RoutingDomain {
 			domain.addEntity(gm);
 			// adding households and companies externally
 			for (HouseholdDTO dto : dao.load(HouseholdDTO.class,region)) domain.addEntity(new Household(dto));
-			for (TraderDBS dbs : dao.load(TraderDBS.class,region)) domain.addEntity(new Trader(dbs));
+			for (TraderDTO dbs : dao.load(TraderDTO.class,region)) domain.addEntity(new Trader(dbs));
 		}
 
 	}
