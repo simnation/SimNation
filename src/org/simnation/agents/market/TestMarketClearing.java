@@ -19,7 +19,7 @@ import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Money;
 import org.simnation.agents.business.Supply;
 import org.simnation.common.Batch;
-import org.simnation.context.technology.Good;
+import org.simnation.environment.Good;
 
 /**
  * Test the market clearing mechanism

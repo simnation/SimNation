@@ -5,7 +5,7 @@ import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
-import org.simnation.context.geography.Region;
+import org.simnation.environment.Region;
 
 @PersistenceCapable
 public class EnterpriseDBS {

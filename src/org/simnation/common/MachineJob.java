@@ -6,8 +6,8 @@ package org.simnation.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.simnation.context.technology.Good;
 import org.simnation.core.Limits;
+import org.simnation.environment.Good;
 
 
 /**Provides an amount of precursors ({@link Batch}) and working power ({@link Labor}) as input 

@@ -10,7 +10,7 @@
  */
 package org.simnation.main;
 
-import org.simnation.common.Statistics;
+import org.simnation.common.TimeSeries;
 
 /**
  *
@@ -24,7 +24,7 @@ public class TestStatistics {
 	 */
 	public static void main(String[] args) {
 		// final Statistics stat=new SimpleMovingAverageStatistics();
-		final Statistics stat=new Statistics();
+		final TimeSeries stat=new TimeSeries();
 		stat.reset(25,0);
 		
 		for (double value : ts) {

@@ -8,7 +8,7 @@
  * Contributors: - Rene Kuhlemann - development and initial implementation
  *
  */
-package org.simnation.context.technology;
+package org.simnation.environment.technology;
 
 
 import org.simplesim.core.scheduling.Time;
@@ -18,6 +18,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import org.simnation.agents.firm.manufacturer.Forecast;
 import org.simnation.common.Batch;
 import org.simnation.common.MachineJob;
+import org.simnation.environment.Good;
 import org.simnation.zzz_old.Product;
 
 

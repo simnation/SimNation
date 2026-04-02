@@ -1,6 +1,8 @@
-package org.simnation.context.geography;
+package org.simnation.environment.geography;
 
 import java.util.List;
+
+import org.simnation.environment.Region;
 
 public class GabrielGraphAlgorithm  {
 

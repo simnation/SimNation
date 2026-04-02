@@ -5,7 +5,7 @@
  */
 package org.simnation.agents.market;
 
-import org.simnation.common.Statistics;
+import org.simnation.common.TimeSeries;
 
 /**
  * Class for providing general market information.
@@ -18,8 +18,8 @@ import org.simnation.common.Statistics;
  */
 public final class MarketData {
 	
-	private final Statistics price=new Statistics();
-	private final Statistics volume=new Statistics();
+	private final TimeSeries price=new TimeSeries();
+	private final TimeSeries volume=new TimeSeries();
 	
 	
 	public double getPrice() { return price.getAVG(); }

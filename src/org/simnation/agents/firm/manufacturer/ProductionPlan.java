@@ -4,7 +4,7 @@
 package org.simnation.agents.firm.manufacturer;
 
 
-import org.simnation.context.technology.Good;
+import org.simnation.environment.Good;
 
 /**Contains a preliminary production plan. When planning has finished, this can be used to order input factors 
  * 

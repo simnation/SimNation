@@ -8,8 +8,9 @@
  * 	- Rene Kuhlemann - development and initial implementation
  * 
  */
-package org.simnation.context.technology;
+package org.simnation.environment.technology;
 
+import org.simnation.environment.Good;
 import org.simplesim.core.scheduling.Time;
 
 /**

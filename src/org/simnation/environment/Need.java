@@ -8,11 +8,11 @@
  * Contributors: - Rene Kuhlemann - development and initial implementation
  *
  */
-package org.simnation.agents.household;
-
-import org.simnation.context.technology.Good;
+package org.simnation.environment;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -57,7 +57,6 @@ import jakarta.persistence.Transient;
  * @see Household
  * @see Good
  */
-
 @Entity
 public class Need {
 
@@ -80,11 +79,12 @@ public class Need {
 	public enum TYPE {	FIXED, LINEAR; }
 	
 	@Id
+	private int index;
 	private String name;
 
 	/** link to good that can satisfy this need */
 	@OneToOne
-	@JoinColumn(name="GOOD_FK")
+	@JoinColumn(name="good_fk")
 	private Good satisfier=null;
 
 	/** the household's buy-ahead period */
@@ -103,24 +103,18 @@ public class Need {
 	private int dailyConsumptionChild;
 
 	/** urgency level of this need */
+	@Enumerated(EnumType.STRING)
 	private URGENCY urgency;
-
-	/** the need event assigned to this need - this is a (1:1) relation */
-	@Transient
-	private Household.EVENT event;
 
 	/** caching the hash code */
 	@Transient
 	private int hash=0;
 	
 	/** is consumption fixed or linear per day? */
+	@Enumerated(EnumType.STRING)
 	private TYPE type;
 
-	public int getIndex() { return event.ordinal(); }
-
-	void setEvent(Household.EVENT value) { event=value; }
-
-	public Household.EVENT getEvent() { return event; }
+	public int getIndex() { return index; }
 
 	public int getActivationDays() { return activationDays; }
 
@@ -163,7 +157,7 @@ public class Need {
 
 	@Override
 	public int hashCode() {
-		if (hash==0) hash=name.hashCode() + 42;
+		if (hash==0) hash=name.hashCode() + 41;
 		return hash;
 	}
 

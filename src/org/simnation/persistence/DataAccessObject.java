@@ -3,7 +3,7 @@ package org.simnation.persistence;
 import java.util.Collection;
 import java.util.List;
 
-import org.simnation.context.geography.Region;
+import org.simnation.environment.Region;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;

@@ -4,8 +4,8 @@ package org.simnation.agents.firm.trader;
 import org.simnation.agents.business.Money;
 import org.simnation.agents.firm.common.Storage;
 import org.simnation.common.Batch;
-import org.simnation.context.geography.Region;
-import org.simnation.context.technology.Good;
+import org.simnation.environment.Good;
+import org.simnation.environment.Region;
 import org.simnation.persistence.DataTransferObject;
 
 import jakarta.persistence.Entity;

@@ -10,7 +10,7 @@
  */
 package org.simnation.common;
 
-import org.simnation.context.Limits;
+import org.simnation.environment.Limits;
 
 /**
  * Calculates mean and variance by exponential smoothing.
@@ -24,27 +24,32 @@ import org.simnation.context.Limits;
  *       <i>Incremental calculation of weighted mean and variance</i> by Tony Finch (2009)</a>
  * 
  */
-public final class Statistics {
+public final class TimeSeries {
 
 	private volatile double average;	// weighted average 
 	private volatile double variance;	// weighted variance
 	private volatile double lastValue;	// last value of this time series
-	private static final float alpha=Limits.DEFAULT_SMOOTHING_FACTOR;	// exponential smoothing factor, has to be between 0 and 1.
+	private final float alpha;			// exponential smoothing factor, has to be between 0 and 1.
 	
-	public Statistics(double avg, double var) { 	
+	public TimeSeries(double avg, double var, float sf) {
+		alpha=sf;
 		reset(avg,var);
 	}
 	
-	public Statistics(double avg) { 	
-		reset(avg,0);
+	public TimeSeries(double avg, double var) {
+		this(avg,var,Limits.DEFAULT_SMOOTHING_FACTOR);
 	}
 	
-	public Statistics() { this(0,0); }
+	public TimeSeries(double avg) { 	
+		this(avg,0);
+	}
+	
+	public TimeSeries() { this(0,0); }
 	
 	public void update(double value) {
 		final double diff=value-average;
 		final double incr=alpha*diff;
-		average=average+incr; // update average
+		average=average+incr; 						// update average
 		variance=(1.0f-alpha)*(variance+diff*incr); // calculation according to the above paper
 		lastValue=value;
 	}

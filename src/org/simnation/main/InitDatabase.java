@@ -18,13 +18,13 @@ import java.util.Set;
 
 import org.simnation.agents.firm.trader.TraderDTO;
 import org.simnation.agents.household.HouseholdDTO;
-import org.simnation.agents.household.Need;
-import org.simnation.agents.household.Need.TYPE;
-import org.simnation.agents.household.Need.URGENCY;
 import org.simnation.agents.market.GoodsMarketB2CDTO;
 import org.simnation.agents.market.PriceVolumeDataPoint;
-import org.simnation.context.geography.Region;
-import org.simnation.context.technology.Good;
+import org.simnation.environment.Good;
+import org.simnation.environment.Need;
+import org.simnation.environment.Region;
+import org.simnation.environment.Need.TYPE;
+import org.simnation.environment.Need.URGENCY;
 import org.simnation.model.Model;
 import org.simnation.persistence.DataAccessObject;
 
@@ -76,7 +76,9 @@ public class InitDatabase {
 		hh.setChildren(3);
 		hh.setCash(10000);
 		hh.setExtraversion(1.0f);
-		hh.setNeedSatisfaction(new int[1]);
+		float[] nl=new float[1];
+		nl[0]=0.5f;
+		hh.setNeedLevel(nl);
 		return hh;
 	}
 

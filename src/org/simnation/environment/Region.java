@@ -1,4 +1,4 @@
-package org.simnation.context.geography;
+package org.simnation.environment;
 
 import java.util.ArrayList;
 import java.util.List;

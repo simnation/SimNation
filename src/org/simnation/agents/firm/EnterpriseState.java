@@ -10,7 +10,7 @@ import org.simnation.agents.business.Money;
 import org.simnation.agents.firm.common.Staff;
 import org.simnation.agents.firm.common.Staffing;
 import org.simnation.agents.firm.common.Warehouse;
-import org.simnation.context.population.SkillDefinition;
+import org.simnation.environment.population.SkillDefinition;
 import org.simplesim.core.scheduling.Time;
 import org.simplesim.model.State;
 

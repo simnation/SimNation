@@ -12,7 +12,7 @@ package org.simnation.model;
 
 
 import org.simnation.agents.market.GoodsMarketB2C;
-import org.simnation.context.geography.Region;
+import org.simnation.environment.Region;
 import org.simplesim.model.BasicModelEntity;
 import org.simplesim.model.RoutingDomain;
 

@@ -1,4 +1,4 @@
-package org.simnation.context.geography;
+package org.simnation.environment.geography;
 
 public final class DistanceMatrix {
 

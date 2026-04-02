@@ -11,7 +11,7 @@
 package org.simnation.agents.household;
 
 import org.simnation.agents.business.Money;
-import org.simnation.context.geography.Region;
+import org.simnation.environment.Region;
 import org.simnation.persistence.DataTransferObject;
 
 import jakarta.persistence.Entity;

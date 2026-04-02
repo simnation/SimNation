@@ -7,8 +7,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 import org.simnation.agents.market.MarketInfo;
-import org.simnation.context.technology.Good;
 import org.simnation.core.Address;
+import org.simnation.environment.Good;
 import org.simnation.simulation.model.Root;
 
 /**

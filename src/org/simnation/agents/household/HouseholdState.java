@@ -11,7 +11,8 @@
 package org.simnation.agents.household;
 
 import org.simnation.agents.business.Money;
-import org.simnation.agents.household.Need.URGENCY;
+import org.simnation.environment.Need;
+import org.simnation.environment.Need.URGENCY;
 import org.simnation.model.Model;
 import org.simplesim.core.scheduling.Time;
 import org.simplesim.model.State;

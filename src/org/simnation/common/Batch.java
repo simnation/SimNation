@@ -7,7 +7,7 @@ package org.simnation.common;
 
 import org.simnation.agents.business.Money;
 import org.simnation.agents.business.Tradable;
-import org.simnation.context.technology.Good;
+import org.simnation.environment.Good;
 
 /**
  * Represents a certain amount of a {@code Good}.

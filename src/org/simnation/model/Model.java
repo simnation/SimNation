@@ -5,17 +5,20 @@
  */
 package org.simnation.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.simnation.agents.firm.trader.Trader;
 import org.simnation.agents.firm.trader.TraderDTO;
 import org.simnation.agents.household.Household;
 import org.simnation.agents.household.HouseholdDTO;
-import org.simnation.agents.household.Need;
 import org.simnation.agents.market.GoodsMarketB2C;
-import org.simnation.context.geography.Region;
-import org.simnation.context.technology.Good;
+import org.simnation.environment.Good;
+import org.simnation.environment.Need;
+import org.simnation.environment.Region;
 import org.simnation.persistence.DataAccessObject;
 import org.simplesim.model.RoutingDomain;
 
@@ -44,12 +47,13 @@ public final class Model extends RoutingDomain {
 
 	private static Model instance=null;
 
-	/** set of all regions */
-	private final Set<Region> regions=new HashSet<>();
+	/** list of all goods representing the value chain */
+	private final List<Good> goods=new ArrayList<>();
+	
+	/** list of all regions */
+	private final List<Region> regions=new ArrayList<>();
 
-	/** set of all goods representing the value chain */
-	private final Set<Good> goods=new HashSet<>();
-
+	
 	/** set of all resources, acting as source nodes of value chain graph */
 	private final Set<Good> resources=new HashSet<>();
 

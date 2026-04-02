@@ -18,8 +18,8 @@ import org.simnation.agents.business.Demand;
 import org.simnation.agents.business.Supply;
 import org.simnation.agents.market.GoodsMarketB2C;
 import org.simnation.common.Batch;
-import org.simnation.common.Statistics;
-import org.simnation.context.technology.Good;
+import org.simnation.common.TimeSeries;
+import org.simnation.environment.Good;
 import org.simnation.model.Model;
 import org.simplesim.core.messaging.RoutingMessage;
 import org.simplesim.core.scheduling.Time;
@@ -46,15 +46,15 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 	 * ACCOUNTING_PERIOD_ENDED, MACHINE_LIFETIME_ENDED;
 	 */
 
-	private final Map<int[], Statistics> salesVolume=new HashMap<>();
-	private final Map<int[], Statistics> salesTurnover=new HashMap<>();
+	private final Map<int[], TimeSeries> salesVolume=new HashMap<>();
+	private final Map<int[], TimeSeries> salesTurnover=new HashMap<>();
 
 	public Trader(TraderDTO dbs) {
 		super(new TraderState());
 		dbs.convertDTO2State(getState());
 		for (GoodsMarketB2C market : Model.getInstance().getB2CMarketSet()) {
-			salesVolume.put(market.getAddress(),new Statistics());
-			salesTurnover.put(market.getAddress(),new Statistics());
+			salesVolume.put(market.getAddress(),new TimeSeries());
+			salesTurnover.put(market.getAddress(),new TimeSeries());
 		}
 		enqueueEvent(EVENT.supplyMarket,TRADER_OFFSET); // start simulation with posting offers to market
 	}
@@ -98,7 +98,7 @@ public final class Trader extends AbstractBasicAgent<TraderState, Trader.EVENT> 
 	private void sendSupplyToMarket() {
 		// send trading good to all markets
 		for (GoodsMarketB2C market : Model.getInstance().getB2CMarketSet()) {
-			final Statistics statistics=salesVolume.get(market.getAddress());
+			final TimeSeries statistics=salesVolume.get(market.getAddress());
 			// estimate delivery volume as average sales volume plus standard deviation
 			double quantity=statistics.getAVG()+Math.sqrt(statistics.getVAR());
 			// if there are no statistics yet, deliver an equal share of the current stock to each market

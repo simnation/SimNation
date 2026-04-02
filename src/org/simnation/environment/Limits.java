@@ -1,4 +1,4 @@
-package org.simnation.context;
+package org.simnation.environment;
 
 import org.simplesim.core.scheduling.Time;
 

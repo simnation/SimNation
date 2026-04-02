@@ -8,7 +8,7 @@
  * 	- Rene Kuhlemann - development and initial implementation
  * 
  */
-package org.simnation.context.population;
+package org.simnation.environment.population;
 
 public enum SkillDefinition {
 	/**

@@ -10,10 +10,9 @@
  */
 package org.simnation.persistence;
 
+import org.simnation.environment.technology.ProductionTechnology.ProductionFunctionType;
+
 import jakarta.persistence.AttributeConverter;
-
-import org.simnation.context.technology.ProductionTechnology.ProductionFunctionType;
-
 import jakarta.persistence.Converter;
 
 @Converter

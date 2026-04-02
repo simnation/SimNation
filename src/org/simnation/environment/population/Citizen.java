@@ -8,12 +8,12 @@
  * Contributors: - Rene Kuhlemann - development and initial implementation
  *
  */
-package org.simnation.context.population;
+package org.simnation.environment.population;
 
 import java.io.Serializable;
 import java.util.EnumMap;
 
-import org.simnation.context.Limits;
+import org.simnation.environment.Limits;
 import org.simplesim.core.scheduling.Time;
 
 /**

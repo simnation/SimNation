@@ -10,12 +10,12 @@ import org.simnation.agents.market.MarketInfo;
 import org.simnation.common.Batch;
 import org.simnation.common.Command;
 import org.simnation.common.Command.COMMAND;
-import org.simnation.context.technology.Good;
-import org.simnation.context.technology.Precursor;
 import org.simnation.core.AgentType;
 import org.simnation.core.Machine;
 import org.simnation.core.Message;
 import org.simnation.core.Time;
+import org.simnation.environment.Good;
+import org.simnation.environment.technology.Precursor;
 import org.simnation.persistence.ManufacturerDBS;
 import org.simnation.simulation.model.Root;
 

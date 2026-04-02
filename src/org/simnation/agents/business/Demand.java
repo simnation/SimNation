@@ -6,7 +6,7 @@
 package org.simnation.agents.business;
 
 import org.simnation.common.Batch;
-import org.simnation.context.technology.Good;
+import org.simnation.environment.Good;
 
 /**
  * Represents a demand for a {@code Good} that can be traded in form of a {@code Batch}.

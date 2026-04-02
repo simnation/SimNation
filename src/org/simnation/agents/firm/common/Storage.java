@@ -11,8 +11,8 @@
 package org.simnation.agents.firm.common;
 
 import org.simnation.common.Batch;
-import org.simnation.common.Statistics;
-import org.simnation.context.technology.Good;
+import org.simnation.common.TimeSeries;
+import org.simnation.environment.Good;
 
 /**
  * Storage represent a stock of a good and provides additional statistic
@@ -36,7 +36,7 @@ import org.simnation.context.technology.Good;
 public class Storage {
 
 	private final Batch batch;	// stored items
-	private final Statistics stat=new Statistics(); // statistics
+	private final TimeSeries ts=new TimeSeries(); // statistics
 	private int orderCount=0;	// counter for total requests
 	private int missCount=0; 	// counter for out-of-stock requests
 	
@@ -58,7 +58,7 @@ public class Storage {
 			missCount++;
 		}
 		orderCount++;
-		stat.update(quantity);
+		ts.update(quantity);
 		return batch.split(quantity);
 	}
 
@@ -105,16 +105,16 @@ public class Storage {
 	 */
 	public long forecastStockLevel(float sl) {
 		// calc safety stock for a full period based on service level and variance of previous demands
-		final double safetyStock=getSafetyFactor(sl)*Math.sqrt(stat.getVAR()*orderCount);
+		final double safetyStock=getSafetyFactor(sl)*Math.sqrt(ts.getVAR()*orderCount);
 		// return estimated demand volume of next period plus safety stock
-		return Math.round(orderCount*stat.getAVG()+safetyStock);
+		return Math.round(orderCount*ts.getAVG()+safetyStock);
 	}
 
 	/**
 	 * Resets all statistics and begin a new time series
 	 **/
 	public void reset() {
-		stat.reset(0);
+		ts.reset(0,0);
 		missCount=orderCount=0;
 	}
 
@@ -144,7 +144,7 @@ public class Storage {
 	private static float getSafetyFactor(float sl) {
 		if (sl<0.51f) return 0; // default value for service level below 51%
 		if (sl>=1.00f) return MAX_SAFETY_FACTOR; // for sl>=100% return max safety factor 
-		final int index=(int) ((sl-0.51f)*100.0f);
+		final int index=(int) ((sl-0.51f)*100.0f); 
 		return SAFETY_FACTOR[index]; // return lookup value from table for 51%<=sl<100%
 	}
 

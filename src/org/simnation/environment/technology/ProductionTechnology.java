@@ -8,9 +8,9 @@
  * Contributors: - Rene Kuhlemann - development and initial implementation
  *
  */
-package org.simnation.context.technology;
+package org.simnation.environment.technology;
 
-import org.simnation.context.technology.Precursor;
+import org.simnation.environment.Good;
 import org.simplesim.core.scheduling.Time;
 
 import jakarta.persistence.Embeddable;
@@ -21,6 +21,7 @@ import jakarta.persistence.Convert;
 @Embeddable
 public class ProductionTechnology {
 
+	@FunctionalInterface
 	public interface IProductionFunction {
 
 		/**
@@ -36,55 +37,53 @@ public class ProductionTechnology {
 
 	}
 
-	public enum ProductionFunctionType {
+	public enum ProductionFunctionType1 {
 
 		/**
 		 * The Leontief production function is based on the formula<br>
 		 * <i>output=min(input[0]/alpha[0],...,input[n]/alpha[n])</i><br>
 		 * and is used in the case of complete inelasticity of input factors.
 		 */
-		LEONTIEF("Leontief", (good, input) -> {
+		LEONTIEF {
+			
+			@Override		
+			public double calculateOutput(Good good, input int[]) {
+		
 			double result=input[0]/good.getPrecursor(0).getAlpha();
 			for (int i=1; i<good.getPrecursorCount(); i++)
 				result=Math.min(result,input[i]/good.getPrecursor(i).getAlpha());
 			return result;
-		}),
+		}
+			
+		},
 		/**
 		 * The Cobb-Douglas production function is based on the formula<br>
 		 * <i>output=input[0]^alpha[0]*...*input[n]^alpha[n]</i><br>
 		 * and is used if input factors can be substituted for each other, but not at a
 		 * constant rate
 		 */
-		COBB_DOUGLAS("Cobb-Douglas", (good, input) -> {
+		COBB_DOUGLAS {
+			public double calculateOutput(Good good, input int[]) {
 			double result=Math.pow(input[0],good.getPrecursor(0).getAlpha());
 			for (int i=1; i<good.getPrecursorCount(); i++) result*=Math.pow(input[i],good.getPrecursor(i).getAlpha());
 			return result;
-		}),
+		}
+		},
 		/**
 		 * The perfect substitution production function is based on the formula<br>
 		 * <i>output=input[0]*alpha[0]+...+input[n]*alpha[n]</i><br>
 		 * and is used if input factors can be substituted freely for each other
 		 */
-		PERFECT_SUBSTITUTION("Perfect Substitution", (good, input) -> {
+		PERFECT_SUBSTITUTION {
+			public double calculateOutput(Good good, input int[]) {
 			double result=input[0]*good.getPrecursor(0).getAlpha();
 			for (int i=1; i<good.getPrecursorCount(); i++) result+=input[i]*good.getPrecursor(i).getAlpha();
 			return result;
-		});
+			}
+		};
+		
 
-		private final IProductionFunction pfd;
-		private final String name;
-
-		ProductionFunctionType(String name, IProductionFunction pf) {
-			this.name=name;
-			pfd=pf;
-		}
-
-		public IProductionFunction getProductionFunctionDefinition() { return pfd; }
-
-		@Override
-		public String toString() {
-			return name;
-		}
+		public abstract double calculateOutput(Good good, input int[]);
 
 	}
 
